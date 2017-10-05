@@ -38,7 +38,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       alertConfigBuilder.handlers shouldBe Seq("noop")
       alertConfigBuilder.http5xxPercentThreshold shouldBe 100
       alertConfigBuilder.http5xxThreshold shouldBe Int.MaxValue
-      alertConfigBuilder.exceptionThreshold shouldBe 2
+      alertConfigBuilder.exceptionThreshold shouldBe Int.MaxValue
       alertConfigBuilder.containerKillThreshold shouldBe 1
     }
 
