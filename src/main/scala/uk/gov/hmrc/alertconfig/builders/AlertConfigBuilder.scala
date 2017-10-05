@@ -31,7 +31,7 @@ trait Builder[T] {
 
 case class AlertConfigBuilder(serviceName: String,
                               handlers: Seq[String] = Seq("noop"),
-                              exceptionThreshold: Int = 2,
+                              exceptionThreshold: Int = Int.MaxValue,
                               http5xxThreshold: Int = Int.MaxValue,
                               http5xxPercentThreshold: Double = 100,
                               containerKillThreshold: Int = 1,
@@ -123,7 +123,7 @@ case class AlertConfigBuilder(serviceName: String,
 
 case class TeamAlertConfigBuilder(services: Seq[String],
                                   handlers: Seq[String] = Seq("noop"),
-                                  exceptionThreshold: Int = 2,
+                                  exceptionThreshold: Int = Int.MaxValue,
                                   http5xxThreshold: Int = Int.MaxValue,
                                   http5xxPercentThreshold: Double = 100,
                                   containerKillThreshold: Int = 1,
