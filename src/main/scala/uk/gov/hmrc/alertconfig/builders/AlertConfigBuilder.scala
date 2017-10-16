@@ -20,7 +20,7 @@ import java.io.{File, FileInputStream, FileNotFoundException}
 
 import org.yaml.snakeyaml.Yaml
 import uk.gov.hmrc.alertconfig.logging.Logger
-import uk.gov.hmrc.alertconfig.{HttpStatusThreshold, LogMessageThreshold}
+import uk.gov.hmrc.alertconfig.{HttpStatusThreshold, LogMessageThreshold, KibanaQueryThreshold}
 
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.util.{Failure, Success, Try}
@@ -36,7 +36,8 @@ case class AlertConfigBuilder(serviceName: String,
                               http5xxPercentThreshold: Double = 100,
                               containerKillThreshold: Int = 1,
                               httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
-                              logMessageThresholds: Seq[LogMessageThreshold] = Nil
+                              logMessageThresholds: Seq[LogMessageThreshold] = Nil,
+                              kibanaQueryThresholds: Seq[KibanaQueryThreshold] = Nil
                              ) extends Builder[Option[String]] {
 
   import spray.json._
@@ -56,6 +57,8 @@ case class AlertConfigBuilder(serviceName: String,
   def withContainerKillThreshold(containerCrashThreshold: Int) = this.copy(containerKillThreshold = containerCrashThreshold)
 
   def withLogMessageThreshold(message: String, threshold: Int) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold))
+
+  def withKibanaQueryThreshold(name: String, query: String, threshold: Int) = this.copy(kibanaQueryThresholds = kibanaQueryThresholds :+ KibanaQueryThreshold(name, query, threshold))
 
   def build: Option[String] = {
     import uk.gov.hmrc.alertconfig.HttpStatusThresholdProtocol._
@@ -90,7 +93,8 @@ case class AlertConfigBuilder(serviceName: String,
              |"5xx-percent-threshold":$http5xxPercentThreshold,
              |"containerKillThreshold" : $containerKillThreshold,
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
-             |"log-message-thresholds" : $buildLogMessageThresholdsJson
+             |"log-message-thresholds" : $buildLogMessageThresholdsJson,
+             |"kibana-query-thresholds" : $buildKibanaQueryThresholdsJson
              |}
               """.stripMargin
         )
@@ -100,6 +104,11 @@ case class AlertConfigBuilder(serviceName: String,
   def buildLogMessageThresholdsJson = {
     import uk.gov.hmrc.alertconfig.LogMessageThresholdProtocol._
     logMessageThresholds.toJson.compactPrint
+  }
+
+  def buildKibanaQueryThresholdsJson = {
+    import uk.gov.hmrc.alertconfig.KibanaQueryThresholdProtocol._
+    kibanaQueryThresholds.toJson.compactPrint
   }
 
   def getZone(appConfigFile: File): Option[String] = {
@@ -128,7 +137,8 @@ case class TeamAlertConfigBuilder(services: Seq[String],
                                   http5xxPercentThreshold: Double = 100,
                                   containerKillThreshold: Int = 1,
                                   httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
-                                  logMessageThresholds: Seq[LogMessageThreshold] = Nil) extends Builder[Seq[AlertConfigBuilder]] {
+                                  logMessageThresholds: Seq[LogMessageThreshold] = Nil,
+                                  kibanaQueryThresholds: Seq[KibanaQueryThreshold] = Nil) extends Builder[Seq[AlertConfigBuilder]] {
 
   def withHandlers(handlers: String*) = this.copy(handlers = handlers)
 
@@ -144,8 +154,10 @@ case class TeamAlertConfigBuilder(services: Seq[String],
 
   def withLogMessageThreshold(message: String, threshold: Int) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold))
 
+  def withKibanaQueryThreshold(name: String, query: String, threshold: Int) = this.copy(kibanaQueryThresholds = kibanaQueryThresholds :+ KibanaQueryThreshold(name, query, threshold))
+
   override def build: Seq[AlertConfigBuilder] = services.map(service =>
-    AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxPercentThreshold, containerKillThreshold, httpStatusThresholds, logMessageThresholds)
+    AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxPercentThreshold, containerKillThreshold, httpStatusThresholds, logMessageThresholds, kibanaQueryThresholds)
   )
 }
 

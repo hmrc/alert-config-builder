@@ -107,6 +107,33 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
         )
     }
 
+    
+    "return TeamAlertConfigBuilder with correct kibanaQueryThresholds" in {
+
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withKibanaQueryThreshold("SIMULATED_ERROR1", "message: QUERY1", 21)
+        .withKibanaQueryThreshold("SIMULATED_ERROR2", "message: QUERY2", 22)
+
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("kibana-query-thresholds") shouldBe
+        JsArray(
+          JsObject("name" -> JsString("SIMULATED_ERROR1"), "query" -> JsString("message: QUERY1"), "count" -> JsNumber(21)),
+          JsObject("name" -> JsString("SIMULATED_ERROR2"), "query" -> JsString("message: QUERY2"), "count" -> JsNumber(22))
+        )
+      service2Config("kibana-query-thresholds") shouldBe
+        JsArray(
+          JsObject("name" -> JsString("SIMULATED_ERROR1"), "query" -> JsString("message: QUERY1"), "count" -> JsNumber(21)),
+          JsObject("name" -> JsString("SIMULATED_ERROR2"), "query" -> JsString("message: QUERY2"), "count" -> JsNumber(22))
+        )
+    }
+
 
     "throw exception if no service provided" in {
 

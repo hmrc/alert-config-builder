@@ -112,6 +112,20 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       )
     }
 
+    "build/configure kibanaQueryThresholds with given thresholds" in {
+
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withKibanaQueryThreshold("SIMULATED_ERROR1", "message: QUERY1", 3)
+        .withKibanaQueryThreshold("SIMULATED_ERROR2", "message: QUERY2", 4)
+        .withKibanaQueryThreshold("SIMULATED_ERROR3", "message: \"QUERY3\"" , 5).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("kibana-query-thresholds") shouldBe JsArray(
+        JsObject("name" -> JsString("SIMULATED_ERROR1"), "query" -> JsString("message: QUERY1"), "count" ->  JsNumber(3)),
+        JsObject("name" -> JsString("SIMULATED_ERROR2"), "query" -> JsString("message: QUERY2"), "count" ->  JsNumber(4)),
+        JsObject("name" -> JsString("SIMULATED_ERROR3"), "query" -> JsString("message: \"QUERY3\""), "count" ->  JsNumber(5))
+      )
+    }
+
     "build/configure any empty http status threshold" in {
 
       val serviceConfig = AlertConfigBuilder("service1").build.get.parseJson.asJsObject.fields
