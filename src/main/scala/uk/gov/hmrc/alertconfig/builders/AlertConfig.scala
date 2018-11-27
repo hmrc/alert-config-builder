@@ -19,5 +19,6 @@ package uk.gov.hmrc.alertconfig.builders
 trait AlertConfig {
   def alertConfig: Seq[AlertConfigBuilder]
 
-  implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
+  implicit def teamAlertConfigToAlertConfigs(
+      config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
 }

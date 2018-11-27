@@ -18,21 +18,29 @@ package uk.gov.hmrc.alertconfig.builders
 
 import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
 import spray.json.{JsArray, JsString}
-import uk.gov.hmrc.alertconfig.{HttpStatus, HttpStatusThreshold, LogMessageThreshold}
+import uk.gov.hmrc.alertconfig.{
+  HttpStatus,
+  HttpStatusThreshold,
+  LogMessageThreshold
+}
 import spray.json._
 
-
-class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
+class TeamAlertConfigBuilderSpec
+    extends WordSpec
+    with Matchers
+    with BeforeAndAfterEach {
 
   override def beforeEach() {
     System.setProperty("app-config-path", "src/test/resources/app-config")
-    System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
+    System.setProperty("zone-mapping-path",
+                       "src/test/resources/zone-to-service-domain-mapping.yml")
   }
 
   "teamAlerts" should {
     "return TeamAlertConfigBuilder with correct default values" in {
 
-      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+      val alertConfigBuilder =
+        TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
@@ -43,18 +51,18 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       alertConfigBuilder.containerKillThreshold shouldBe 1
     }
 
-
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {
 
       val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19)
       val threshold2 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_501, 20)
-      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
         .withHttpStatusThreshold(threshold1)
         .withHttpStatusThreshold(threshold2)
 
-
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
-      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val configs =
+        alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
 
       configs.size shouldBe 2
       val service1Config = configs(0)
@@ -62,51 +70,49 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
 
       service1Config("httpStatusThresholds") shouldBe
         JsArray(
-          JsObject("httpStatus" -> JsNumber(500),
-            "count" -> JsNumber(19)),
-          JsObject("httpStatus" -> JsNumber(501),
-            "count" -> JsNumber(20))
+          JsObject("httpStatus" -> JsNumber(500), "count" -> JsNumber(19)),
+          JsObject("httpStatus" -> JsNumber(501), "count" -> JsNumber(20))
         )
       service2Config("httpStatusThresholds") shouldBe
         JsArray(
-          JsObject("httpStatus" -> JsNumber(500),
-            "count" -> JsNumber(19)),
-          JsObject("httpStatus" -> JsNumber(501),
-            "count" -> JsNumber(20))
+          JsObject("httpStatus" -> JsNumber(500), "count" -> JsNumber(19)),
+          JsObject("httpStatus" -> JsNumber(501), "count" -> JsNumber(20))
         )
 
     }
 
-
     "build alert-config with correct allRequestThreshold" in {
 
       val requestThreshold = 35
-      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
         .withTotalHttpRequestsCountThreshold(requestThreshold)
 
-
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
-      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val configs =
+        alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
 
       configs.size shouldBe 2
       val service1Config: Map[String, JsValue] = configs(0)
       val service2Config: Map[String, JsValue] = configs(1)
 
-      service1Config("total-http-request-threshold") shouldBe JsNumber(requestThreshold)
-      service2Config("total-http-request-threshold") shouldBe JsNumber(requestThreshold)
+      service1Config("total-http-request-threshold") shouldBe JsNumber(
+        requestThreshold)
+      service2Config("total-http-request-threshold") shouldBe JsNumber(
+        requestThreshold)
 
     }
 
-
     "return TeamAlertConfigBuilder with correct logMessageThresholds" in {
 
-      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20)
 
-
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
-      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val configs =
+        alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
 
       configs.size shouldBe 2
       val service1Config = configs(0)
@@ -115,28 +121,25 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       service1Config("log-message-thresholds") shouldBe
         JsArray(
           JsObject("message" -> JsString("SIMULATED_ERROR1"),
-            "count" -> JsNumber(19)),
+                   "count" -> JsNumber(19)),
           JsObject("message" -> JsString("SIMULATED_ERROR2"),
-            "count" -> JsNumber(20))
+                   "count" -> JsNumber(20))
         )
       service2Config("log-message-thresholds") shouldBe
         JsArray(
           JsObject("message" -> JsString("SIMULATED_ERROR1"),
-            "count" -> JsNumber(19)),
+                   "count" -> JsNumber(19)),
           JsObject("message" -> JsString("SIMULATED_ERROR2"),
-            "count" -> JsNumber(20))
+                   "count" -> JsNumber(20))
         )
     }
 
-
     "throw exception if no service provided" in {
 
-      an [RuntimeException] should be thrownBy TeamAlertConfigBuilder.teamAlerts(Seq())
-
+      an[RuntimeException] should be thrownBy TeamAlertConfigBuilder.teamAlerts(
+        Seq())
 
     }
   }
-
-
 
 }

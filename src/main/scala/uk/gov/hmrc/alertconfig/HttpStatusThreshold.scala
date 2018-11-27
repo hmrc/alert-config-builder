@@ -19,9 +19,7 @@ package uk.gov.hmrc.alertconfig
 import spray.json.DefaultJsonProtocol
 import uk.gov.hmrc.alertconfig.HttpStatus.HttpStatusType
 
-
 case class HttpStatusThreshold(httpStatus: HttpStatusType, count: Int = 1)
-
 
 object HttpStatus extends Enumeration {
 
@@ -32,7 +30,6 @@ object HttpStatus extends Enumeration {
   val HTTP_STATUS_503 = Value(503)
   val HTTP_STATUS_504 = Value(504)
 }
-
 
 object HttpStatusThresholdProtocol extends DefaultJsonProtocol {
 

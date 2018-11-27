@@ -9,7 +9,6 @@ object LibDependencies {
     "org.yaml" % "snakeyaml" % "1.17"
   )
 
-
   val test = Seq(
     "org.json4s" %% "json4s-jackson" % "3.6.0" % "test",
     "org.scalatest" %% "scalatest" % "2.2.4" % "test",

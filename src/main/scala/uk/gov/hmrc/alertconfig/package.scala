@@ -16,16 +16,25 @@
 
 package uk.gov.hmrc
 
-import spray.json.{DeserializationException, JsNumber, JsString, JsValue, JsonFormat}
+import spray.json.{
+  DeserializationException,
+  JsNumber,
+  JsString,
+  JsValue,
+  JsonFormat
+}
 
 package object alertconfig {
 
-  def jsonHttpStatusEnum(enu: HttpStatus.type) = new JsonFormat[HttpStatus.Value] {
-    def write(obj: HttpStatus.HttpStatusType) = JsNumber(obj.id)
+  def jsonHttpStatusEnum(enu: HttpStatus.type) =
+    new JsonFormat[HttpStatus.Value] {
+      def write(obj: HttpStatus.HttpStatusType) = JsNumber(obj.id)
 
-    def read(json: JsValue) = json match {
-      case JsNumber(num) => HttpStatus(num.toInt)
-      case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
+      def read(json: JsValue) = json match {
+        case JsNumber(num) => HttpStatus(num.toInt)
+        case something =>
+          throw DeserializationException(
+            s"Expected a value from enum $enu instead of $something")
+      }
     }
-  }
 }

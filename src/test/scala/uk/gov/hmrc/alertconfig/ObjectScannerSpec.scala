@@ -18,7 +18,6 @@ package uk.gov.hmrc.alertconfig
 
 import org.scalatest.{Matchers, WordSpec}
 
-
 trait SuperType
 
 case object A extends SuperType
@@ -32,7 +31,7 @@ class ObjectScannerSpec extends WordSpec with Matchers {
   "ClassScanner" should {
     "load all the singleton subtypes of a type in given package" in {
 
-      ObjectScanner.loadAll[SuperType](this.getClass.getPackage.getName) should contain only(A, B)
+      ObjectScanner.loadAll[SuperType](this.getClass.getPackage.getName) should contain only (A, B)
 
     }
 

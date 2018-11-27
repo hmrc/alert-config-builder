@@ -22,7 +22,6 @@ import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
 
-
 object ObjectScanner {
 
   val scanPackage = {
@@ -30,11 +29,14 @@ object ObjectScanner {
     if (pathProp != null) pathProp else "uk.gov.hmrc.alertconfig.configs"
   }
 
-  def loadAll[T](_package: String = scanPackage)(implicit ct: ClassTag[T]): Set[T] = {
+  def loadAll[T](_package: String = scanPackage)(
+      implicit ct: ClassTag[T]): Set[T] = {
 
     val objects =
       new Reflections(_package)
-        .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]]).asScala.toSet
+        .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]])
+        .asScala
+        .toSet
 
     objects.map(x => objectInstance[T](x.getName))
 
@@ -45,6 +47,5 @@ object ObjectScanner {
     val module = mirror.staticModule(name)
     mirror.reflectModule(module).instance.asInstanceOf[T]
   }
-
 
 }
