@@ -39,7 +39,6 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       config("app") shouldBe JsString("service1.domain.zone.1")
       config("handlers") shouldBe JsArray(JsString("h1"), JsString("h2"))
       config("exception-threshold") shouldBe JsNumber(2)
-      config("5xx-threshold") shouldBe JsNumber(Int.MaxValue)
       config("5xx-percent-threshold") shouldBe JsNumber(100)
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
       config("containerKillThreshold") shouldBe JsNumber(56)
@@ -97,6 +96,22 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
         JsObject("httpStatus" -> JsNumber(503),"count" ->  JsNumber(3), "severity" -> JsString("error")),
         JsObject("httpStatus" -> JsNumber(504),"count" ->  JsNumber(4), "severity" -> JsString("critical"))
       )
+    }
+
+    "build/configure http 5xx threshold with given thresholds and severities" in {
+
+      val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxThreshold(2, AlertSeverity.warning).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("5xx-threshold") shouldBe JsObject("count" ->  JsNumber(2), "severity" -> JsString("warning"))
+    }
+
+    "build/configure http 5xx threshold with given thresholds and unspecified severity" in {
+
+      val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxThreshold(2).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("5xx-threshold") shouldBe JsObject("count" ->  JsNumber(2), "severity" -> JsString("critical"))
     }
 
     "build/configure logMessageThresholds with given thresholds" in {
