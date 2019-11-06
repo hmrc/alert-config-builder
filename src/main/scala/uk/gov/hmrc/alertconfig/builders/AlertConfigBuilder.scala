@@ -50,7 +50,7 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withExceptionThreshold(exceptionThreshold: Int) = this.copy(exceptionThreshold = exceptionThreshold)
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+  def withHttp5xxThreshold(http5xxThreshold: Int) = this.copy(http5xxThreshold = http5xxThreshold)
 
   def withHttp5xxThresholdSeverity(http5xxThresholdSeverity: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThresholdSeverity = Http5xxThresholdSeverity(http5xxThresholdSeverity, severity))
 
@@ -64,6 +64,7 @@ case class AlertConfigBuilder(serviceName: String,
 
   def build: Option[String] = {
     import uk.gov.hmrc.alertconfig.HttpStatusThresholdProtocol._
+
 
     val appConfigPath = System.getProperty("app-config-path", "../app-config")
     val appConfigDirectory = new File(appConfigPath)
@@ -143,7 +144,7 @@ case class TeamAlertConfigBuilder(
 
   def withExceptionThreshold(exceptionThreshold: Int) = this.copy(exceptionThreshold = exceptionThreshold)
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+  def withHttp5xxThreshold(http5xxThreshold: Int) = this.copy(http5xxThreshold = http5xxThreshold)
 
   def withHttp5xxThresholdSeverity(http5xxThresholdSeverity: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThresholdSeverity = Http5xxThresholdSeverity(http5xxThresholdSeverity, severity))
 
