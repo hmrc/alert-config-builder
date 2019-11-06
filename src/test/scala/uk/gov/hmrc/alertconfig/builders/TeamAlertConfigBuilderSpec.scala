@@ -17,6 +17,8 @@
 package uk.gov.hmrc.alertconfig.builders
 
 import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import spray.json.{JsArray, JsString}
+import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThresholdSeverity, HttpStatus, HttpStatusThreshold, LogMessageThreshold}
 import spray.json._
 import uk.gov.hmrc.alertconfig.{AlertSeverity, HttpStatus, HttpStatusThreshold}
 
@@ -36,9 +38,36 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
       alertConfigBuilder.http5xxPercentThreshold shouldBe 100
+      alertConfigBuilder.http5xxThreshold shouldBe Int.MaxValue
+      alertConfigBuilder.http5xxThresholdSeverity shouldBe Http5xxThresholdSeverity(Int.MaxValue,AlertSeverity.critical)
       alertConfigBuilder.totalHttpRequestThreshold shouldBe Int.MaxValue
       alertConfigBuilder.exceptionThreshold shouldBe 2
       alertConfigBuilder.containerKillThreshold shouldBe 1
+    }
+
+    "return TeamAlertConfigBuilder with correct http5xxThresholdSeverities" in {
+
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttp5xxThresholdSeverity(19, AlertSeverity.warning)
+
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("5xx-threshold-severity") shouldBe
+        JsObject(
+          "count" -> JsNumber(19),
+          "severity" -> JsString("warning"))
+
+      service2Config("5xx-threshold-severity") shouldBe
+        JsObject(
+          "count" -> JsNumber(19),
+          "severity" -> JsString("warning"))
+
     }
 
 

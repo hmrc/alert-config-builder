@@ -21,7 +21,7 @@ import java.io.{File, FileInputStream, FileNotFoundException}
 import org.yaml.snakeyaml.Yaml
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 import uk.gov.hmrc.alertconfig.logging.Logger
-import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, Http5xxThresholdProtocol, HttpStatusThreshold, LogMessageThreshold}
+import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThresholdSeverity, Http5xxThresholdSeverityProtocol, HttpStatusThreshold, LogMessageThreshold}
 
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.util.{Failure, Success, Try}
@@ -33,7 +33,8 @@ trait Builder[T] {
 case class AlertConfigBuilder(serviceName: String,
                               handlers: Seq[String] = Seq("noop"),
                               exceptionThreshold: Int = 2,
-                              http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
+                              http5xxThreshold: Int = Int.MaxValue,
+                              http5xxThresholdSeverity: Http5xxThresholdSeverity = Http5xxThresholdSeverity(),
                               http5xxPercentThreshold: Double = 100,
                               containerKillThreshold: Int = 1,
                               httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
@@ -50,6 +51,8 @@ case class AlertConfigBuilder(serviceName: String,
   def withExceptionThreshold(exceptionThreshold: Int) = this.copy(exceptionThreshold = exceptionThreshold)
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+
+  def withHttp5xxThresholdSeverity(http5xxThresholdSeverity: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThresholdSeverity = Http5xxThresholdSeverity(http5xxThresholdSeverity, severity))
 
   def withHttp5xxPercentThreshold(http5xxPercentThreshold: Int) = this.copy(http5xxPercentThreshold = http5xxPercentThreshold)
 
@@ -87,7 +90,8 @@ case class AlertConfigBuilder(serviceName: String,
              |"app": "$serviceName.$serviceDomain",
              |"handlers": ${handlers.toJson.compactPrint},
              |"exception-threshold":$exceptionThreshold,
-             |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
+             |"5xx-threshold":$http5xxThreshold,
+             |"5xx-threshold-severity":${http5xxThresholdSeverity.toJson(Http5xxThresholdSeverityProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":$http5xxPercentThreshold,
              |"containerKillThreshold" : $containerKillThreshold,
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
@@ -124,10 +128,10 @@ case class AlertConfigBuilder(serviceName: String,
 }
 
 case class TeamAlertConfigBuilder(
-                                   services: Seq[String],
-                                   handlers: Seq[String] = Seq("noop"),
+                                   services: Seq[String], handlers: Seq[String] = Seq("noop"),
                                    exceptionThreshold: Int = 2,
-                                   http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
+                                   http5xxThreshold: Int = Int.MaxValue,
+                                   http5xxThresholdSeverity: Http5xxThresholdSeverity = Http5xxThresholdSeverity(),
                                    http5xxPercentThreshold: Double = 100,
                                    containerKillThreshold: Int = 1,
                                    httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
@@ -141,6 +145,8 @@ case class TeamAlertConfigBuilder(
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
+  def withHttp5xxThresholdSeverity(http5xxThresholdSeverity: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThresholdSeverity = Http5xxThresholdSeverity(http5xxThresholdSeverity, severity))
+
   def withHttp5xxPercentThreshold(percentThreshold: Double) = this.copy(http5xxPercentThreshold = percentThreshold)
 
   def withContainerKillThreshold(containerKillThreshold: Int) = this.copy(containerKillThreshold = containerKillThreshold)
@@ -152,7 +158,7 @@ case class TeamAlertConfigBuilder(
   def withLogMessageThreshold(message: String, threshold: Int) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold))
 
   override def build: Seq[AlertConfigBuilder] = services.map(service =>
-    AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxPercentThreshold, containerKillThreshold, httpStatusThresholds, logMessageThresholds, totalHttpRequestThreshold)
+    AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxThresholdSeverity, http5xxPercentThreshold, containerKillThreshold, httpStatusThresholds, logMessageThresholds, totalHttpRequestThreshold)
   )
 }
 
