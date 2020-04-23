@@ -57,7 +57,7 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withContainerKillThreshold(containerCrashThreshold: Int) = this.copy(containerKillThreshold = containerCrashThreshold)
 
-  def withLogMessageThreshold(message: String, threshold: Int) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold))
+  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode))
 
   def build: Option[String] = {
     import uk.gov.hmrc.alertconfig.HttpStatusThresholdProtocol._
@@ -149,7 +149,7 @@ case class TeamAlertConfigBuilder(
 
   def withTotalHttpRequestsCountThreshold(threshold: Int) = this.copy(totalHttpRequestThreshold = threshold)
 
-  def withLogMessageThreshold(message: String, threshold: Int) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold))
+  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode))
 
   override def build: Seq[AlertConfigBuilder] = services.map(service =>
     AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxPercentThreshold, containerKillThreshold, httpStatusThresholds, logMessageThresholds, totalHttpRequestThreshold)

@@ -130,8 +130,8 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
     "return TeamAlertConfigBuilder with correct logMessageThresholds" in {
 
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
-        .withLogMessageThreshold("SIMULATED_ERROR1", 19)
-        .withLogMessageThreshold("SIMULATED_ERROR2", 20)
+        .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
+        .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
 
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
@@ -144,16 +144,16 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       service1Config("log-message-thresholds") shouldBe
         JsArray(
           JsObject("message" -> JsString("SIMULATED_ERROR1"),
-            "count" -> JsNumber(19)),
+            "count" -> JsNumber(19), "lessThanMode" -> JsFalse),
           JsObject("message" -> JsString("SIMULATED_ERROR2"),
-            "count" -> JsNumber(20))
+            "count" -> JsNumber(20), "lessThanMode" -> JsTrue)
         )
       service2Config("log-message-thresholds") shouldBe
         JsArray(
           JsObject("message" -> JsString("SIMULATED_ERROR1"),
-            "count" -> JsNumber(19)),
+            "count" -> JsNumber(19), "lessThanMode" -> JsFalse),
           JsObject("message" -> JsString("SIMULATED_ERROR2"),
-            "count" -> JsNumber(20))
+            "count" -> JsNumber(20), "lessThanMode" -> JsTrue)
         )
     }
 

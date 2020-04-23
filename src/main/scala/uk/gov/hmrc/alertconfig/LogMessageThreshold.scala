@@ -18,9 +18,10 @@ package uk.gov.hmrc.alertconfig
 
 import spray.json.DefaultJsonProtocol
 
-case class LogMessageThreshold(message: String, count: Int)
+// By default we alert if the count of messages is >= threshold. If lessThanMode is set we alert if < threshold
+case class LogMessageThreshold(message: String, count: Int, lessThanMode: Boolean = false)
 
 object LogMessageThresholdProtocol extends DefaultJsonProtocol {
 
-  implicit val format = jsonFormat2(LogMessageThreshold)
+  implicit val format = jsonFormat3(LogMessageThreshold)
 }
