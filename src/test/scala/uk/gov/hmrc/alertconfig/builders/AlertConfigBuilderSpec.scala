@@ -130,13 +130,13 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withLogMessageThreshold("SIMUATED_ERROR1", 3)
-        .withLogMessageThreshold("SIMUATED_ERROR2", 4)
-        .withLogMessageThreshold("SIMUATED_ERROR3", 5).build.get.parseJson.asJsObject.fields
+        .withLogMessageThreshold("SIMUATED_ERROR2", 4, lessThanMode = false)
+        .withLogMessageThreshold("SIMUATED_ERROR3", 5, lessThanMode = true).build.get.parseJson.asJsObject.fields
 
       serviceConfig("log-message-thresholds") shouldBe JsArray(
-        JsObject("message" -> JsString("SIMUATED_ERROR1"), "count" -> JsNumber(3)),
-        JsObject("message" -> JsString("SIMUATED_ERROR2"), "count" -> JsNumber(4)),
-        JsObject("message" -> JsString("SIMUATED_ERROR3"), "count" -> JsNumber(5))
+        JsObject("message" -> JsString("SIMUATED_ERROR1"), "count" -> JsNumber(3), "lessThanMode" -> JsFalse),
+        JsObject("message" -> JsString("SIMUATED_ERROR2"), "count" -> JsNumber(4), "lessThanMode" -> JsFalse),
+        JsObject("message" -> JsString("SIMUATED_ERROR3"), "count" -> JsNumber(5), "lessThanMode" -> JsTrue)
       )
     }
 
