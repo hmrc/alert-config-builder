@@ -47,6 +47,17 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
     }
 
+    "build correct config for platform service" in {
+
+      val platformServiceConfig = AlertConfigBuilder("ingress-gateway", handlers = Seq("h1","h2"))
+        .isPlatformService(true)
+        .withContainerKillThreshold(1)
+        .build.get.parseJson.asJsObject.fields
+
+      platformServiceConfig("app") shouldBe JsString("ingress-gateway.")
+      platformServiceConfig("containerKillThreshold") shouldBe JsNumber(1)
+    }
+
     "throw exception and stop processing when app config directory not found" in {
       System.setProperty("app-config-path", "this-directory-does-not-exist")
 
