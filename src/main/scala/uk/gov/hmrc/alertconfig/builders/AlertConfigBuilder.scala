@@ -39,7 +39,8 @@ case class AlertConfigBuilder(serviceName: String,
                               httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
                               logMessageThresholds: Seq[LogMessageThreshold] = Nil,
                               totalHttpRequestThreshold: Int = Int.MaxValue,
-                              averageCPUThreshold: Int = Int.MaxValue
+                              averageCPUThreshold: Int = Int.MaxValue,
+                              platformService: Boolean = false
                              ) extends Builder[Option[String]] {
 
   import spray.json._
@@ -62,6 +63,8 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withAverageCPUThreshold(averageCPUThreshold: Int) = this.copy(averageCPUThreshold = averageCPUThreshold)
 
+  def isPlatformService(platformService: Boolean): AlertConfigBuilder = this.copy(platformService = platformService)
+
   def build: Option[String] = {
     import uk.gov.hmrc.alertconfig.HttpStatusThresholdProtocol._
 
@@ -76,16 +79,16 @@ case class AlertConfigBuilder(serviceName: String,
 
 
     appConfigFile match {
-      case file if !file.exists =>
+      case file if !platformService && !file.exists =>
         logger.info(s"No app-config file found for service: '${serviceName}'. File was expected at: '${file.getAbsolutePath}'")
         None
-      case file if getZone(file).isEmpty =>
+      case file if !platformService && getZone(file).isEmpty =>
         logger.warn(s"app-config file for service: '${serviceName}' does not contain 'zone' key.")
         None
       case file =>
-        val serviceDomain = getZone(file)
+        val serviceDomain = getZone(file, platformService)
 
-        ZoneToServiceDomainMapper.getServiceDomain(serviceDomain).map(serviceDomain =>
+        ZoneToServiceDomainMapper.getServiceDomain(serviceDomain, platformService).map(serviceDomain =>
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
@@ -109,7 +112,9 @@ case class AlertConfigBuilder(serviceName: String,
     logMessageThresholds.toJson.compactPrint
   }
 
-  def getZone(appConfigFile: File): Option[String] = {
+  def getZone(appConfigFile: File, platformService: Boolean = false): Option[String] = {
+    if(platformService) return None
+
     def parseAppConfigFile: Try[Object] = {
       Try(new Yaml().load(new FileInputStream(appConfigFile)))
     }
@@ -183,7 +188,8 @@ object ZoneToServiceDomainMapper {
     new Yaml().load(new FileInputStream(zoneToServiceMappingFile)).asInstanceOf[java.util.Map[String, String]])
     .toMap
 
-  def getServiceDomain(zone: Option[String]): Option[String] = {
+  def getServiceDomain(zone: Option[String], platformService: Boolean = false): Option[String] = {
+    if(platformService) return Option("")
     zone match {
       case Some(_: String) => {
         val mappedServiceDomain = zoneToServiceDomainMappings.get(zone.get)
