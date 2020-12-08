@@ -28,7 +28,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
             "filter" -> JsString("occurrences"))
     }
 
@@ -38,7 +38,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/noop.rb"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
             "filter" -> JsString("occurrences"))
     }
 
@@ -48,7 +48,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_integration"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
             "filter" -> JsString("occurrences"))
     }
 
@@ -58,7 +58,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/dose-pagerduty-high.rb"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
             "filter" -> JsString("occurrences"))
     }
 
@@ -68,17 +68,17 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/noop.rb"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
             "filter" -> JsString("occurrences"))
     }
 
     "create config for txm-infra with integration enabled and custom environment" in {
-      EnvironmentAlertBuilder("txm-infra").inIntegration(customEnv="txm_integration").alertConfigFor(Integration) shouldBe
+      EnvironmentAlertBuilder("txm-infra").inIntegration(customEnv = "txm_integration").alertConfigFor(Integration) shouldBe
         "txm-infra" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team txm-infra -e txm_integration"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
             "filter" -> JsString("occurrences"))
     }
 
@@ -88,7 +88,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/noop.rb"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
             "filter" -> JsString("occurrences"))
     }
 
@@ -98,7 +98,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_integration"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
             "filter" -> JsString("occurrences"))
     }
 
@@ -108,8 +108,59 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_management"),
             "type" -> JsString("pipe"),
-            "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filters" -> JsArray(JsString("occurrences"),JsString("kitchen_filter"),JsString("packer_filter")))
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+            "filters" -> JsArray(JsString("occurrences"), JsString("kitchen_filter"), JsString("packer_filter")))
+    }
+
+
+    "create config with development enabled with custom severities" in {
+      EnvironmentAlertBuilder("team-telemetry").inDevelopment(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Development) shouldBe
+        "team-telemetry" ->
+          JsObject(
+            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_development"),
+            "type" -> JsString("pipe"),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+            "filter" -> JsString("occurrences"))
+    }
+
+    "create config with qa enabled with custom severities" in {
+      EnvironmentAlertBuilder("team-telemetry").inQa(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Qa) shouldBe
+        "team-telemetry" ->
+          JsObject(
+            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_qa"),
+            "type" -> JsString("pipe"),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+            "filter" -> JsString("occurrences"))
+    }
+
+    "create config with staging enabled with custom severities" in {
+      EnvironmentAlertBuilder("team-telemetry").inStaging(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Staging) shouldBe
+        "team-telemetry" ->
+          JsObject(
+            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_staging"),
+            "type" -> JsString("pipe"),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+            "filter" -> JsString("occurrences"))
+    }
+
+    "create config with external test enabled with custom severities" in {
+      EnvironmentAlertBuilder("team-telemetry").inExternalTest(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(ExternalTest) shouldBe
+        "team-telemetry" ->
+          JsObject(
+            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_externaltest"),
+            "type" -> JsString("pipe"),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+            "filter" -> JsString("occurrences"))
+    }
+
+    "create config with production enabled with custom severities" in {
+      EnvironmentAlertBuilder("team-telemetry").inProduction(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Production) shouldBe
+        "team-telemetry" ->
+          JsObject(
+            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),
+            "type" -> JsString("pipe"),
+            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+            "filter" -> JsString("occurrences"))
     }
   }
 }

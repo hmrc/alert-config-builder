@@ -19,7 +19,7 @@ package uk.gov.hmrc.alertconfig
 import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 
-case class HttpAbsolutePercentSplitThreshold(percentThreshold: Int = Int.MaxValue,
+case class HttpAbsolutePercentSplitThreshold(percentThreshold: Double = 100.0,
                                              crossOver: Int = 0,
                                              absoluteThreshold: Int = Int.MaxValue,
                                              hysteresis: Double = 1.0,

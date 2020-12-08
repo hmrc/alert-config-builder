@@ -34,8 +34,8 @@ case class AlertConfigBuilder(serviceName: String,
                               handlers: Seq[String] = Seq("noop"),
                               exceptionThreshold: Int = 2,
                               http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
-                              http5xxPercentThreshold: Double = 100,
-                              httpAbsolutePercentSplitThreshold: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
+                              http5xxPercentThreshold: Double = 100.0,
+                              httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
                               containerKillThreshold: Int = 1,
                               httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
                               logMessageThresholds: Seq[LogMessageThreshold] = Nil,
@@ -54,9 +54,9 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(http5xxPercentThreshold: Int) = this.copy(http5xxPercentThreshold = http5xxPercentThreshold)
+  def withHttp5xxPercentThreshold(http5xxPercentThreshold: Double) = this.copy(http5xxPercentThreshold = http5xxPercentThreshold)
 
-  def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThreshold = httpAbsolutePercentSplitThreshold :+ threshold)
+  def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) = this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
@@ -104,7 +104,7 @@ case class AlertConfigBuilder(serviceName: String,
              |"total-http-request-threshold": $totalHttpRequestThreshold,
              |"log-message-thresholds" : $buildLogMessageThresholdsJson,
              |"average-cpu-threshold" : $averageCPUThreshold,
-             |"absolute-percentage-split-threshold" : ${httpAbsolutePercentSplitThreshold.toJson(seqFormat(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)).compactPrint}
+             |"absolute-percentage-split-threshold" : ${httpAbsolutePercentSplitThresholds.toJson(seqFormat(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)).compactPrint}
              |}
               """.stripMargin
         )
@@ -141,8 +141,8 @@ case class TeamAlertConfigBuilder(
                                    services: Seq[String], handlers: Seq[String] = Seq("noop"),
                                    exceptionThreshold: Int = 2,
                                    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
-                                   http5xxPercentThreshold: Double = 100,
-                                   httpAbsolutePercentSplitThreshold: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
+                                   http5xxPercentThreshold: Double = 100.0,
+                                   httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
                                    containerKillThreshold: Int = 1,
                                    httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
                                    logMessageThresholds: Seq[LogMessageThreshold] = Nil,
@@ -157,7 +157,9 @@ case class TeamAlertConfigBuilder(
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThreshold = httpAbsolutePercentSplitThreshold :+ threshold)
+  def withHttp5xxPercentThreshold(percentThreshold: Double) = this.copy(http5xxPercentThreshold = percentThreshold)
+
+  def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
 
   def withContainerKillThreshold(containerKillThreshold: Int) = this.copy(containerKillThreshold = containerKillThreshold)
 
@@ -172,7 +174,7 @@ case class TeamAlertConfigBuilder(
   def isPlatformService(platformService: Boolean): TeamAlertConfigBuilder = this.copy(platformService = platformService)
 
   override def build: Seq[AlertConfigBuilder] = services.map(service =>
-    AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxPercentThreshold, httpAbsolutePercentSplitThreshold, containerKillThreshold, httpStatusThresholds, logMessageThresholds, totalHttpRequestThreshold, averageCPUThreshold, platformService)
+    AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxPercentThreshold, httpAbsolutePercentSplitThresholds, containerKillThreshold, httpStatusThresholds, logMessageThresholds, totalHttpRequestThreshold, averageCPUThreshold, platformService)
   )
 }
 

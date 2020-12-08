@@ -21,7 +21,7 @@ import java.io.FileNotFoundException
 import org.scalatest._
 import spray.json._
 import uk.gov.hmrc.alertconfig.HttpStatus._
-import uk.gov.hmrc.alertconfig.{AlertSeverity, HttpAbsolutePercentSplitThreshold, HttpStatusThreshold}
+import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, HttpAbsolutePercentSplitThreshold, HttpStatusThreshold}
 
 class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
 
@@ -44,11 +44,12 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
       config("containerKillThreshold") shouldBe JsNumber(56)
       config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
-
+      config("httpStatusThresholds") shouldBe JsArray()
+      config("log-message-thresholds") shouldBe JsArray()
+      config("absolute-percentage-split-threshold") shouldBe JsArray()
     }
 
     "build correct config for platform service" in {
-
       val platformServiceConfig = AlertConfigBuilder("ingress-gateway", handlers = Seq("h1","h2"))
         .isPlatformService(true)
         .withContainerKillThreshold(1)
@@ -98,7 +99,6 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     }
 
     "build/configure http status threshold with given thresholds and severities" in {
-
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_502, 2, AlertSeverity.warning))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_503, 3, AlertSeverity.error))
@@ -112,7 +112,6 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     }
 
     "build/configure http status threshold with given generic threshold" in {
-
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
 
@@ -122,7 +121,6 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     }
 
     "build/configure http 5xx threshold severity with given thresholds and severities" in {
-
       val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxThreshold(2, AlertSeverity.warning).build.get.parseJson.asJsObject.fields
 
@@ -130,7 +128,6 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     }
 
     "build/configure http 5xx threshold severity with given thresholds and unspecified severity" in {
-
       val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxThreshold(2).build.get.parseJson.asJsObject.fields
 
@@ -139,7 +136,6 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
 
     "build/configure logMessageThresholds with given thresholds" in {
-
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 3)
         .withLogMessageThreshold("SIMULATED_ERROR2", 4, lessThanMode = false)
@@ -153,14 +149,12 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     }
 
     "build/configure any empty http status threshold" in {
-
       val serviceConfig = AlertConfigBuilder("service1").build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray()
     }
 
     "build/configure HttpAbsolutePercentSplitThreshold with default parameters" in {
-
       val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold()).build.get.parseJson.asJsObject.fields
 
@@ -169,7 +163,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
         "crossOver" -> JsNumber(0),
         "excludeSpikes" -> JsNumber(0),
         "hysteresis" -> JsNumber(1.0),
-        "percentThreshold" -> JsNumber(Int.MaxValue),
+        "percentThreshold" -> JsNumber(100.0),
         "severity" -> JsString("critical")))
 
       serviceConfig("absolute-percentage-split-threshold") shouldBe expected
@@ -177,7 +171,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
   }
 
   "build/configure HttpAbsolutePercentSplitThreshold with required parameters" in {
-    val percent = 10
+    val percent = 10.2
     val crossOver = 20
     val absolute = 30
     val hysteresis = 1.2
@@ -198,5 +192,38 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       "severity" -> JsString(severity.toString)))
 
     serviceConfig("absolute-percentage-split-threshold") shouldBe expected
+  }
+
+  "return config with correct handlers" in {
+    val handlers = Seq("a", "b")
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withHandlers(handlers:_*).build.get.parseJson.asJsObject.fields
+
+    val expected = JsArray(handlers.map(JsString(_)).toVector)
+    serviceConfig("handlers") shouldBe expected
+  }
+
+  "build/configure ExceptionThreshold with required parameters" in {
+    val threshold = 12
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withExceptionThreshold(threshold).build.get.parseJson.asJsObject.fields
+
+    serviceConfig("exception-threshold") shouldBe JsNumber(threshold)
+  }
+
+  "build/configure http5xxPercentThreshold with required parameters" in {
+    val threshold = 13.3
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withHttp5xxPercentThreshold(threshold).build.get.parseJson.asJsObject.fields
+
+    serviceConfig("5xx-percent-threshold") shouldBe JsNumber(threshold)
+  }
+
+  "build/configure averageCPUThreshold with required parameters" in {
+    val threshold = 15
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withAverageCPUThreshold(threshold).build.get.parseJson.asJsObject.fields
+
+    serviceConfig("average-cpu-threshold") shouldBe JsNumber(threshold)
   }
 }
