@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.io.FileNotFoundException
 import org.scalatest._
 import spray.json._
 import uk.gov.hmrc.alertconfig.HttpStatus._
-import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, HttpAbsolutePercentSplitThreshold, HttpStatusThreshold}
+import uk.gov.hmrc.alertconfig.{AlertSeverity, HttpAbsolutePercentSplitThreshold, HttpStatusThreshold}
 
 class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
 

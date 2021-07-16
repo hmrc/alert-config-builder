@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 package uk.gov.hmrc.alertconfig.builders
 
 import java.io.{File, FileInputStream, FileNotFoundException}
-
 import org.yaml.snakeyaml.Yaml
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 import uk.gov.hmrc.alertconfig.logging.Logger
-import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, Http5xxThresholdProtocol, HttpAbsolutePercentSplitThreshold, HttpAbsolutePercentSplitThresholdProtocol, HttpStatusThreshold, HttpStatusThresholdProtocol, LogMessageThreshold}
+import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, Http5xxThresholdProtocol, HttpAbsolutePercentSplitThreshold, HttpAbsolutePercentSplitThresholdProtocol, HttpStatusThreshold, LogMessageThreshold}
 
-import scala.collection.JavaConversions.mapAsScalaMap
+import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 trait Builder[T] {
@@ -120,7 +119,7 @@ case class AlertConfigBuilder(serviceName: String,
     if(platformService) return None
 
     def parseAppConfigFile: Try[Object] = {
-      Try(new Yaml().load(new FileInputStream(appConfigFile)))
+      Try(new Yaml().loadAs(new FileInputStream(appConfigFile), classOf[java.util.Map[String, Object]]))
     }
 
     parseAppConfigFile match {
@@ -130,8 +129,8 @@ case class AlertConfigBuilder(serviceName: String,
       }
       case Success(appConfigYamlMap) => {
         val appConfig = appConfigYamlMap.asInstanceOf[java.util.Map[String, java.util.Map[String, String]]]
-        val versionObject = appConfig.toMap.mapValues(_.toMap)("0.0.0")
-        versionObject.get("zone")
+        val versionObject = appConfig.asScala.toMap
+        versionObject("0.0.0").asScala.toMap.get("zone")
       }
     }
   }
@@ -194,9 +193,9 @@ object ZoneToServiceDomainMapper {
   if (!zoneToServiceMappingFile.exists()) {
     throw new FileNotFoundException(s"Could not find zone to service domain mapping file: ${zoneToServiceMappingFilePath}")
   }
-  val zoneToServiceDomainMappings: Map[String, String] = mapAsScalaMap[String, String](
-    new Yaml().load(new FileInputStream(zoneToServiceMappingFile)).asInstanceOf[java.util.Map[String, String]])
-    .toMap
+  val zoneToServiceDomainMappings: Map[String, String] =
+    new Yaml().loadAs(new FileInputStream(zoneToServiceMappingFile), classOf[java.util.Map[String, String]])
+    .asScala.toMap
 
   def getServiceDomain(zone: Option[String], platformService: Boolean = false): Option[String] = {
     if(platformService) return Option("")

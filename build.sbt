@@ -1,11 +1,10 @@
 val libName = "alert-config-builder"
 
 lazy val library = Project(libName, file("."))
-  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
     majorVersion := 0,
-    makePublicallyAvailableOnBintray := true,
-    scalaVersion := "2.11.6",
+    isPublicArtefact := true,
+    scalaVersion := "2.12.14",
     scalacOptions ++= Seq(
       "-Xlint",
       "-target:jvm-1.8",
