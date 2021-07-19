@@ -17,11 +17,10 @@
 package uk.gov.hmrc.alertconfig.builders
 
 import java.io.FileNotFoundException
-
 import org.scalatest._
 import spray.json._
 import uk.gov.hmrc.alertconfig.HttpStatus._
-import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, HttpAbsolutePercentSplitThreshold, HttpStatusThreshold}
+import uk.gov.hmrc.alertconfig._
 
 class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
 
@@ -192,6 +191,58 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       "severity" -> JsString(severity.toString)))
 
     serviceConfig("absolute-percentage-split-threshold") shouldBe expected
+  }
+
+  "build/configure HttpAbsolutePercentSplitDownstreamServiceThreshold with required parameters" in {
+    val percent = 10.2
+    val crossOver = 20
+    val absolute = 30
+    val hysteresis = 1.2
+    val excludeSpikes = 2
+    val filter = "Some error"
+    val target = "service.invalid"
+    val severity = AlertSeverity.warning
+
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(
+        percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, severity)).build.get.parseJson.asJsObject.fields
+
+    val expected = JsArray(JsObject("errorFilter" -> JsString(filter),
+      "target" -> JsString(target),
+      "absoluteThreshold" -> JsNumber(absolute),
+      "crossOver" -> JsNumber(crossOver),
+      "excludeSpikes" -> JsNumber(excludeSpikes),
+      "hysteresis" -> JsNumber(hysteresis),
+      "percentThreshold" -> JsNumber(percent),
+      "severity" -> JsString(severity.toString)))
+
+    serviceConfig("absolute-percentage-split-downstream-service-threshold") shouldBe expected
+  }
+
+  "build/configure HttpAbsolutePercentSplitDownstreamHodThreshold with required parameters" in {
+    val percent = 10.2
+    val crossOver = 20
+    val absolute = 30
+    val hysteresis = 1.2
+    val excludeSpikes = 2
+    val filter = "Some error"
+    val target = "hod-endpoint"
+    val severity = AlertSeverity.warning
+
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(
+        percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, severity)).build.get.parseJson.asJsObject.fields
+
+    val expected = JsArray(JsObject("errorFilter" -> JsString(filter),
+      "target" -> JsString(target),
+      "absoluteThreshold" -> JsNumber(absolute),
+      "crossOver" -> JsNumber(crossOver),
+      "excludeSpikes" -> JsNumber(excludeSpikes),
+      "hysteresis" -> JsNumber(hysteresis),
+      "percentThreshold" -> JsNumber(percent),
+      "severity" -> JsString(severity.toString)))
+
+    serviceConfig("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
   }
 
   "return config with correct handlers" in {
