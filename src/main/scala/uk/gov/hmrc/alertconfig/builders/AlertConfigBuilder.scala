@@ -17,11 +17,10 @@
 package uk.gov.hmrc.alertconfig.builders
 
 import java.io.{File, FileInputStream, FileNotFoundException}
-
 import org.yaml.snakeyaml.Yaml
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 import uk.gov.hmrc.alertconfig.logging.Logger
-import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, Http5xxThresholdProtocol, HttpAbsolutePercentSplitThreshold, HttpAbsolutePercentSplitThresholdProtocol, HttpStatusThreshold, HttpStatusThresholdProtocol, LogMessageThreshold}
+import uk.gov.hmrc.alertconfig._
 
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.util.{Failure, Success, Try}
@@ -36,6 +35,8 @@ case class AlertConfigBuilder(serviceName: String,
                               http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
                               http5xxPercentThreshold: Double = 100.0,
                               httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
+                              httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
+                              httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
                               containerKillThreshold: Int = 1,
                               httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
                               logMessageThresholds: Seq[LogMessageThreshold] = Nil,
@@ -57,6 +58,10 @@ case class AlertConfigBuilder(serviceName: String,
   def withHttp5xxPercentThreshold(http5xxPercentThreshold: Double) = this.copy(http5xxPercentThreshold = http5xxPercentThreshold)
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
+
+  def withHttpAbsolutePercentSplitDownstreamServiceThreshold(threshold: HttpAbsolutePercentSplitDownstreamServiceThreshold) = this.copy(httpAbsolutePercentSplitDownstreamServiceThresholds = httpAbsolutePercentSplitDownstreamServiceThresholds :+ threshold)
+
+  def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) = this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) = this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
@@ -104,7 +109,9 @@ case class AlertConfigBuilder(serviceName: String,
              |"total-http-request-threshold": $totalHttpRequestThreshold,
              |"log-message-thresholds" : $buildLogMessageThresholdsJson,
              |"average-cpu-threshold" : $averageCPUThreshold,
-             |"absolute-percentage-split-threshold" : ${httpAbsolutePercentSplitThresholds.toJson(seqFormat(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)).compactPrint}
+             |"absolute-percentage-split-threshold" : ${httpAbsolutePercentSplitThresholds.toJson(seqFormat(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)).compactPrint},
+             |"absolute-percentage-split-downstream-service-threshold" : ${httpAbsolutePercentSplitDownstreamServiceThresholds.toJson(seqFormat(HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)).compactPrint},
+             |"absolute-percentage-split-downstream-hod-threshold" : ${httpAbsolutePercentSplitDownstreamHodThresholds.toJson(seqFormat(HttpAbsolutePercentSplitDownstreamHodThresholdProtocol.thresholdFormat)).compactPrint}
              |}
               """.stripMargin
         )
@@ -143,6 +150,8 @@ case class TeamAlertConfigBuilder(
                                    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
                                    http5xxPercentThreshold: Double = 100.0,
                                    httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
+                                   httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
+                                   httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
                                    containerKillThreshold: Int = 1,
                                    httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
                                    logMessageThresholds: Seq[LogMessageThreshold] = Nil,
@@ -161,6 +170,10 @@ case class TeamAlertConfigBuilder(
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
 
+  def withHttpAbsolutePercentSplitDownstreamServiceThreshold(threshold: HttpAbsolutePercentSplitDownstreamServiceThreshold) = this.copy(httpAbsolutePercentSplitDownstreamServiceThresholds = httpAbsolutePercentSplitDownstreamServiceThresholds :+ threshold)
+
+  def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) = this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
+
   def withContainerKillThreshold(containerKillThreshold: Int) = this.copy(containerKillThreshold = containerKillThreshold)
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) = this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
@@ -174,7 +187,20 @@ case class TeamAlertConfigBuilder(
   def isPlatformService(platformService: Boolean): TeamAlertConfigBuilder = this.copy(platformService = platformService)
 
   override def build: Seq[AlertConfigBuilder] = services.map(service =>
-    AlertConfigBuilder(service, handlers, exceptionThreshold, http5xxThreshold, http5xxPercentThreshold, httpAbsolutePercentSplitThresholds, containerKillThreshold, httpStatusThresholds, logMessageThresholds, totalHttpRequestThreshold, averageCPUThreshold, platformService)
+    AlertConfigBuilder(service,
+      handlers,
+      exceptionThreshold,
+      http5xxThreshold,
+      http5xxPercentThreshold,
+      httpAbsolutePercentSplitThresholds,
+      httpAbsolutePercentSplitDownstreamServiceThresholds,
+      httpAbsolutePercentSplitDownstreamHodThresholds,
+      containerKillThreshold,
+      httpStatusThresholds,
+      logMessageThresholds,
+      totalHttpRequestThreshold,
+      averageCPUThreshold,
+      platformService)
   )
 }
 

@@ -18,7 +18,7 @@ package uk.gov.hmrc.alertconfig.builders
 
 import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
 import spray.json.{JsArray, JsString}
-import uk.gov.hmrc.alertconfig.{AlertSeverity, Http5xxThreshold, HttpAbsolutePercentSplitThreshold, HttpStatus, HttpStatusThreshold, LogMessageThreshold}
+import uk.gov.hmrc.alertconfig._
 import spray.json._
 import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
@@ -84,6 +84,72 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
 
       service1Config("absolute-percentage-split-threshold") shouldBe expected
       service2Config("absolute-percentage-split-threshold") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with correct AbsolutePercentSplitDownstreamServiceThresholds" in {
+      val percent = 15.5
+      val crossover = 50
+      val absolute = 20
+      val hysteresis = 1.2
+      val spikes = 2
+      val filter = "status:200"
+      val target = "something.invalid"
+      val severity = AlertSeverity.info
+
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(percent, crossover, absolute, hysteresis, spikes, filter, target, severity))
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray(JsObject("absoluteThreshold" -> JsNumber(absolute),
+        "crossOver" -> JsNumber(crossover),
+        "errorFilter" -> JsString(filter),
+        "target" -> JsString(target),
+        "excludeSpikes" -> JsNumber(spikes),
+        "hysteresis" -> JsNumber(hysteresis),
+        "percentThreshold" -> JsNumber(percent),
+        "severity" -> JsString(severity.toString)))
+
+      service1Config("absolute-percentage-split-downstream-service-threshold") shouldBe expected
+      service2Config("absolute-percentage-split-downstream-service-threshold") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with correct AbsolutePercentSplitDownstreamHodThresholds" in {
+      val percent = 15.5
+      val crossover = 50
+      val absolute = 20
+      val hysteresis = 1.2
+      val spikes = 2
+      val filter = "status:200"
+      val target = "hod-endpoint"
+      val severity = AlertSeverity.info
+
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(percent, crossover, absolute, hysteresis, spikes, filter, target, severity))
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray(JsObject("absoluteThreshold" -> JsNumber(absolute),
+        "crossOver" -> JsNumber(crossover),
+        "errorFilter" -> JsString(filter),
+        "target" -> JsString(target),
+        "excludeSpikes" -> JsNumber(spikes),
+        "hysteresis" -> JsNumber(hysteresis),
+        "percentThreshold" -> JsNumber(percent),
+        "severity" -> JsString(severity.toString)))
+
+      service1Config("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
+      service2Config("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
     }
 
     "return TeamAlertConfigBuilder with correct Http5xxPercentThreshold" in {
