@@ -28,4 +28,13 @@ package object alertconfig {
       case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
     }
   }
+  
+  def jsonHttpMethodEnum(enu: HttpMethod.type) = new JsonFormat[HttpMethod.Value] {
+    def write(obj: HttpMethod.HttpMethodType) = JsString(obj.toString)
+
+    def read(json: JsValue) = json match {
+      case JsNumber(num) => HttpMethod(num.toInt)
+      case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
+    }
+  }
 }

@@ -221,7 +221,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {
-      val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.warning)
+      val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.warning, HttpMethod.post)
       val threshold2 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_501, 20)
       val threshold3 = HttpStatusThreshold(HTTP_STATUS(555), 55)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
@@ -239,13 +239,16 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val expected = JsArray(
         JsObject("httpStatus" -> JsNumber(500),
           "count" -> JsNumber(19),
-          "severity" -> JsString("warning")),
+          "severity" -> JsString("warning"),
+          "httpMethod" -> JsString("POST")),
         JsObject("httpStatus" -> JsNumber(501),
           "count" -> JsNumber(20),
-          "severity" -> JsString("critical")),
+          "severity" -> JsString("critical"),
+          "httpMethod" -> JsString("ALL_METHODS")),
         JsObject("httpStatus" -> JsNumber(555),
           "count" -> JsNumber(55),
-          "severity" -> JsString("critical"))
+          "severity" -> JsString("critical"),
+          "httpMethod" -> JsString("ALL_METHODS"))
       )
 
       service1Config("httpStatusThresholds") shouldBe expected
