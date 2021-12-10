@@ -106,7 +106,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(502), "count" -> JsNumber(2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
         JsObject("httpStatus" -> JsNumber(503), "count" -> JsNumber(3), "severity" -> JsString("error"), "httpMethod" -> JsString("GET")),
-        JsObject("httpStatus" -> JsNumber(504), "count" -> JsNumber(4), "severity" -> JsString("critical"), "httpMethod" -> JsString("*"))
+        JsObject("httpStatus" -> JsNumber(504), "count" -> JsNumber(4), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
       )
     }
 
@@ -115,7 +115,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
-        JsObject("httpStatus" -> JsNumber(404), "count" -> JsNumber(1), "severity" -> JsString("critical"), "httpMethod" -> JsString("*"))
+        JsObject("httpStatus" -> JsNumber(404), "count" -> JsNumber(1), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
       )
     }
 

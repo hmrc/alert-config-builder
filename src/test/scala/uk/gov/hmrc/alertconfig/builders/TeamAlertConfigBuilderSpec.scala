@@ -244,11 +244,11 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
         JsObject("httpStatus" -> JsNumber(501),
           "count" -> JsNumber(20),
           "severity" -> JsString("critical"),
-          "httpMethod" -> JsString("*")),
+          "httpMethod" -> JsString("ALL_METHODS")),
         JsObject("httpStatus" -> JsNumber(555),
           "count" -> JsNumber(55),
           "severity" -> JsString("critical"),
-          "httpMethod" -> JsString("*"))
+          "httpMethod" -> JsString("ALL_METHODS"))
       )
 
       service1Config("httpStatusThresholds") shouldBe expected

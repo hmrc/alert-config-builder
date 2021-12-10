@@ -18,7 +18,7 @@ package uk.gov.hmrc.alertconfig
 
 object HttpMethod extends Enumeration {
   type HttpMethodType = Value
-  val all = Value("*")
+  val all = Value("ALL_METHODS")
   val post = Value("POST")
   val get = Value("GET")
   val put = Value("PUT")
