@@ -12,7 +12,7 @@ object LibDependencies {
 
   val test = Seq(
     "org.json4s" %% "json4s-jackson" % "3.6.4" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test",
     "org.pegdown" % "pegdown" % "1.6.0" % "test"
   )
 

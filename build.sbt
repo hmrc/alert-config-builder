@@ -4,7 +4,7 @@ lazy val library = Project(libName, file("."))
   .settings(
     majorVersion := 0,
     isPublicArtefact := true,
-    scalaVersion := "2.11.6",
+    scalaVersion := "2.12.16",
     scalacOptions ++= Seq(
       "-Xlint",
       "-target:jvm-1.8",
