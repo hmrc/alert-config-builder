@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.alertconfig.builders
 
-import spray.json.{JsArray, JsNull, JsObject, JsString, JsValue}
+import spray.json.{JsArray, JsObject, JsString, JsValue}
 
 sealed trait Severity {
   override def toString: String = this.getClass.getSimpleName.toLowerCase.replace("$", "")

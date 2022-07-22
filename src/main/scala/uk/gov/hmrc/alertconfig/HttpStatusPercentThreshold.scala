@@ -15,21 +15,22 @@
  */
 
 package uk.gov.hmrc.alertconfig
+
 import spray.json.{DefaultJsonProtocol, JsNumber, JsValue, JsonFormat}
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 import uk.gov.hmrc.alertconfig.HttpMethod.HttpMethodType
 import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
-case class HttpStatusThreshold(httpStatus: HTTP_STATUS, count: Int = 1, severity: AlertSeverityType = AlertSeverity.critical, httpMethod: HttpMethodType = HttpMethod.all)
+case class HttpStatusPercentThreshold(httpStatus: HTTP_STATUS, percentage: Double = 100.0, severity: AlertSeverityType = AlertSeverity.critical, httpMethod: HttpMethodType = HttpMethod.all)
 
-object HttpStatusThresholdProtocol extends DefaultJsonProtocol {
+object HttpStatusPercentThresholdProtocol extends DefaultJsonProtocol {
 
-  implicit object httpStatusFormat extends JsonFormat[HTTP_STATUS] {
+  implicit object httpStatusPercentFormat extends JsonFormat[HTTP_STATUS] {
     override def read(json: JsValue): HTTP_STATUS = HTTP_STATUS(IntJsonFormat.read(json))
     override def write(obj: HTTP_STATUS): JsValue = JsNumber(obj.status)
   }
 
-  implicit val severityFormat = jsonSeverityEnum(AlertSeverity)
-  implicit val methodFormat = jsonHttpMethodEnum(HttpMethod)
-  implicit val thresholdFormat = jsonFormat4(HttpStatusThreshold)
+  implicit val severityPercentFormat = jsonSeverityEnum(AlertSeverity)
+  implicit val methodPercentFormat = jsonHttpMethodEnum(HttpMethod)
+  implicit val thresholdPercentFormat = jsonFormat4(HttpStatusPercentThreshold)
 }
