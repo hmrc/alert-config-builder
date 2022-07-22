@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.alertconfig.builders
 
+import uk.gov.hmrc.alertconfig.HttpStatusPercentThresholdProtocol._
 import java.io.{File, FileInputStream, FileNotFoundException}
 import org.yaml.snakeyaml.Yaml
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
@@ -40,6 +41,7 @@ case class AlertConfigBuilder(serviceName: String,
                               httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
                               containerKillThreshold: Int = 1,
                               httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
+                              httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
                               logMessageThresholds: Seq[LogMessageThreshold] = Nil,
                               totalHttpRequestThreshold: Int = Int.MaxValue,
                               averageCPUThreshold: Int = Int.MaxValue,
@@ -68,6 +70,8 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) = this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
+  def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) = this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
+
   def withContainerKillThreshold(containerCrashThreshold: Int) = this.copy(containerKillThreshold = containerCrashThreshold)
 
   def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode))
@@ -78,7 +82,6 @@ case class AlertConfigBuilder(serviceName: String,
 
   def build: Option[String] = {
     import uk.gov.hmrc.alertconfig.HttpStatusThresholdProtocol._
-
 
     val appConfigPath = System.getProperty("app-config-path", "../app-config")
     val appConfigDirectory = new File(appConfigPath)
@@ -110,6 +113,7 @@ case class AlertConfigBuilder(serviceName: String,
              |"5xx-percent-threshold":$http5xxPercentThreshold,
              |"containerKillThreshold" : $containerKillThreshold,
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
+             |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
              |"total-http-request-threshold": $totalHttpRequestThreshold,
              |"log-message-thresholds" : $buildLogMessageThresholdsJson,
              |"average-cpu-threshold" : $averageCPUThreshold,
@@ -159,6 +163,7 @@ case class TeamAlertConfigBuilder(
                                    httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
                                    containerKillThreshold: Int = 1,
                                    httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
+                                   httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
                                    logMessageThresholds: Seq[LogMessageThreshold] = Nil,
                                    totalHttpRequestThreshold: Int = Int.MaxValue,
                                    averageCPUThreshold: Int = Int.MaxValue,
@@ -185,6 +190,8 @@ case class TeamAlertConfigBuilder(
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) = this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
+  def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) = this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
+
   def withTotalHttpRequestsCountThreshold(threshold: Int) = this.copy(totalHttpRequestThreshold = threshold)
 
   def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode))
@@ -205,6 +212,7 @@ case class TeamAlertConfigBuilder(
       httpAbsolutePercentSplitDownstreamHodThresholds,
       containerKillThreshold,
       httpStatusThresholds,
+      httpStatusPercentThresholds,
       logMessageThresholds,
       totalHttpRequestThreshold,
       averageCPUThreshold,

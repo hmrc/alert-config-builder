@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       config("containerKillThreshold") shouldBe JsNumber(56)
       config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
       config("httpStatusThresholds") shouldBe JsArray()
+      config("httpStatusPercentThresholds") shouldBe JsArray()
       config("log-message-thresholds") shouldBe JsArray()
       config("absolute-percentage-split-threshold") shouldBe JsArray()
     }
@@ -116,6 +117,28 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(404), "count" -> JsNumber(1), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
+      )
+    }
+
+    "build/configure http status percent threshold with given thresholds and severities" in {
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_502, 2.2, AlertSeverity.warning, HttpMethod.post))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_503, 3.3, AlertSeverity.error, HttpMethod.get))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
+        JsObject("httpStatus" -> JsNumber(502), "percentage" -> JsNumber(2.2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
+        JsObject("httpStatus" -> JsNumber(503), "percentage" -> JsNumber(3.3), "severity" -> JsString("error"), "httpMethod" -> JsString("GET")),
+        JsObject("httpStatus" -> JsNumber(504), "percentage" -> JsNumber(4.4), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
+      )
+    }
+
+    "build/configure http status percent threshold with given generic threshold" in {
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
+        JsObject("httpStatus" -> JsNumber(404), "percentage" -> JsNumber(100.0), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
       )
     }
 

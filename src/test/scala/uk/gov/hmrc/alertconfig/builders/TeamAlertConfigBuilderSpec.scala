@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -255,6 +255,40 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       service2Config("httpStatusThresholds") shouldBe expected
     }
 
+    "return TeamAlertConfigBuilder with correct httpStatusPercentThresholds" in {
+      val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.warning, HttpMethod.post)
+      val threshold2 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_501, 20)
+      val threshold3 = HttpStatusPercentThreshold(HTTP_STATUS(555), 55.5)
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttpStatusPercentThreshold(threshold1)
+        .withHttpStatusPercentThreshold(threshold2)
+        .withHttpStatusPercentThreshold(threshold3)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray(
+        JsObject("httpStatus" -> JsNumber(500),
+          "percentage" -> JsNumber(19.1),
+          "severity" -> JsString("warning"),
+          "httpMethod" -> JsString("POST")),
+        JsObject("httpStatus" -> JsNumber(501),
+          "percentage" -> JsNumber(20),
+          "severity" -> JsString("critical"),
+          "httpMethod" -> JsString("ALL_METHODS")),
+        JsObject("httpStatus" -> JsNumber(555),
+          "percentage" -> JsNumber(55.5),
+          "severity" -> JsString("critical"),
+          "httpMethod" -> JsString("ALL_METHODS"))
+      )
+
+      service1Config("httpStatusPercentThresholds") shouldBe expected
+      service2Config("httpStatusPercentThresholds") shouldBe expected
+    }
 
     "build alert-config with correct allRequestThreshold" in {
       val requestThreshold = 35
