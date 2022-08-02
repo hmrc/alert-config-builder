@@ -18,12 +18,15 @@ package uk.gov.hmrc.alertconfig
 
 import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
+import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
-case class Http5xxThreshold(count: Int = Int.MaxValue, severity: AlertSeverityType = AlertSeverity.critical)
+case class MetricsThreshold(name: String,
+                            query: String,
+                            threshold:Double = 80,
+                            invert:Boolean = false,
+                            severity: AlertSeverityType = AlertSeverity.critical)
 
-object Http5xxThresholdProtocol extends DefaultJsonProtocol {
-
+object MetricsThresholdProtocol extends DefaultJsonProtocol {
   implicit val severityFormat: JsonFormat[AlertSeverity.Value] = jsonSeverityEnum(AlertSeverity)
-
-  implicit val thresholdFormat: RootJsonFormat[Http5xxThreshold] = jsonFormat2(Http5xxThreshold)
+  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat5(MetricsThreshold)
 }

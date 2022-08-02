@@ -45,6 +45,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
       config("httpStatusThresholds") shouldBe JsArray()
       config("httpStatusPercentThresholds") shouldBe JsArray()
+      config("metricsThresholds") shouldBe JsArray()
       config("log-message-thresholds") shouldBe JsArray()
       config("absolute-percentage-split-threshold") shouldBe JsArray()
     }
@@ -284,7 +285,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
     serviceConfig("exception-threshold") shouldBe JsNumber(threshold)
   }
-  
+
   "build/configure ErrorsLoggedThreshold with required parameters" in {
     val threshold = 12
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
