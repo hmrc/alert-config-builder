@@ -199,8 +199,6 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
         .withMetricsThreshold(MetricsThreshold(name = "alert2", query = query, warning = 30.03, critical = 12.21, invert = true))
         .build.get.parseJson.asJsObject.fields
 
-      Console.print(serviceConfig)
-
       serviceConfig("metricsThresholds") shouldBe JsArray(
         JsObject("name" -> JsString("alert1"), "query" -> JsString(query), "warning" -> JsNumber(65.0), "critical" -> JsNumber(88.0), "invert" ->JsBoolean(false)),
         JsObject("name" -> JsString("alert2"), "query" -> JsString(query), "warning" -> JsNumber(30.03), "critical" -> JsNumber(12.21), "invert" ->JsBoolean(true))
