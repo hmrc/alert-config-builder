@@ -8,9 +8,9 @@ The artifact produced by this project is used in the `alert-config` project. The
 # Dependencies
 
 **Java** : 11\
-**Scala** : 2.11.6\
+**Scala** : 2.11.*\
 **SBT** : 1.5.1\
-**app-config** : Depends on the **app-config** Git repository for the environment for which the alert config is being generated e.g. **app-config-qa**.
+**app-config** : Depends on the **app-config** Git repository for the environment for which the alert config is being generated e.g. **app-config-qa**.\
 For local testing, you will need an empty **app-config** folder outside the **alert-config-builder** i.e. `mkdir -p ../app-config`
 
 # Parameters
