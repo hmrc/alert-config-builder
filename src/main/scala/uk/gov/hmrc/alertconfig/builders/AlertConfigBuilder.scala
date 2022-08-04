@@ -42,6 +42,7 @@ case class AlertConfigBuilder(serviceName: String,
                               containerKillThreshold: Int = 1,
                               httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
                               httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
+                              metricsThresholds: Seq[MetricsThreshold] = Nil,
                               logMessageThresholds: Seq[LogMessageThreshold] = Nil,
                               totalHttpRequestThreshold: Int = Int.MaxValue,
                               averageCPUThreshold: Int = Int.MaxValue,
@@ -55,7 +56,7 @@ case class AlertConfigBuilder(serviceName: String,
   def withHandlers(handlers: String*) = this.copy(handlers = handlers)
 
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) = this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
-  
+
   def withExceptionThreshold(exceptionThreshold: Int) = this.copy(exceptionThreshold = exceptionThreshold)
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
@@ -71,6 +72,8 @@ case class AlertConfigBuilder(serviceName: String,
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) = this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) = this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
+
+  def withMetricsThreshold(threshold: MetricsThreshold) = this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
   def withContainerKillThreshold(containerCrashThreshold: Int) = this.copy(containerKillThreshold = containerCrashThreshold)
 
@@ -114,6 +117,7 @@ case class AlertConfigBuilder(serviceName: String,
              |"containerKillThreshold" : $containerKillThreshold,
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
+             |"metricsThresholds" : ${metricsThresholds.toJson(seqFormat(MetricsThresholdProtocol.thresholdFormat)).compactPrint},
              |"total-http-request-threshold": $totalHttpRequestThreshold,
              |"log-message-thresholds" : $buildLogMessageThresholdsJson,
              |"average-cpu-threshold" : $averageCPUThreshold,
@@ -164,6 +168,7 @@ case class TeamAlertConfigBuilder(
                                    containerKillThreshold: Int = 1,
                                    httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
                                    httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
+                                   metricsThresholds: Seq[MetricsThreshold] = Nil,
                                    logMessageThresholds: Seq[LogMessageThreshold] = Nil,
                                    totalHttpRequestThreshold: Int = Int.MaxValue,
                                    averageCPUThreshold: Int = Int.MaxValue,
@@ -192,6 +197,8 @@ case class TeamAlertConfigBuilder(
 
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) = this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
 
+  def withMetricsThreshold(threshold: MetricsThreshold) = this.copy(metricsThresholds = metricsThresholds :+ threshold)
+
   def withTotalHttpRequestsCountThreshold(threshold: Int) = this.copy(totalHttpRequestThreshold = threshold)
 
   def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false) = this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode))
@@ -213,6 +220,7 @@ case class TeamAlertConfigBuilder(
       containerKillThreshold,
       httpStatusThresholds,
       httpStatusPercentThresholds,
+      metricsThresholds,
       logMessageThresholds,
       totalHttpRequestThreshold,
       averageCPUThreshold,
