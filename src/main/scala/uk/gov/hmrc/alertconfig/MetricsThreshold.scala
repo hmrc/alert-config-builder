@@ -20,8 +20,8 @@ import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class MetricsThreshold(name: String,
                             query: String,
-                            warning:Double = 0,
-                            critical:Double = 0,
+                            warning:Option[Double] = None,
+                            critical:Option[Double] = None,
                             invert:Boolean = false)
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {
