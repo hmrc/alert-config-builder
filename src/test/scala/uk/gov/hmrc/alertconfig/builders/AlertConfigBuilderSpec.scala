@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
       config("app") shouldBe JsString("service1.domain.zone.1")
       config("handlers") shouldBe JsArray(JsString("h1"), JsString("h2"))
-      config("exception-threshold") shouldBe JsNumber(2)
+      config("exception-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("critical"))
       config("5xx-threshold") shouldBe JsObject("count" -> JsNumber(Int.MaxValue), "severity" -> JsString("critical"))
       config("5xx-percent-threshold") shouldBe JsNumber(100)
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
@@ -301,7 +301,25 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withExceptionThreshold(threshold).build.get.parseJson.asJsObject.fields
 
-    serviceConfig("exception-threshold") shouldBe JsNumber(threshold)
+    val expected = JsObject(
+      "severity" -> JsString("critical"),
+      "count" -> JsNumber(12)
+    )
+
+    serviceConfig("exception-threshold") shouldBe expected
+  }
+
+  "build/configure ExceptionThreshold with optional parameter severity" in {
+    val threshold = 12
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withExceptionThreshold(threshold, AlertSeverity.warning).build.get.parseJson.asJsObject.fields
+
+    val expected = JsObject(
+      "severity" -> JsString("warning"),
+      "count" -> JsNumber(12)
+    )
+
+    serviceConfig("exception-threshold") shouldBe expected
   }
 
   "build/configure ErrorsLoggedThreshold with required parameters" in {

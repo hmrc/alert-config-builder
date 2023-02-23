@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package uk.gov.hmrc.alertconfig.builders
 
 import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
-import spray.json.{JsArray, JsString}
+import spray.json.{JsArray, JsString, JsObject}
 import uk.gov.hmrc.alertconfig._
 import spray.json._
 import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
@@ -39,7 +39,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       alertConfigBuilder.http5xxPercentThreshold shouldBe 100
       alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue,AlertSeverity.critical)
       alertConfigBuilder.totalHttpRequestThreshold shouldBe Int.MaxValue
-      alertConfigBuilder.exceptionThreshold shouldBe 2
+      alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.critical)
       alertConfigBuilder.containerKillThreshold shouldBe 1
       alertConfigBuilder.averageCPUThreshold shouldBe Int.MaxValue
       alertConfigBuilder.httpStatusThresholds shouldBe List()
@@ -171,7 +171,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
     "return TeamAlertConfigBuilder with correct ExceptionThreshold" in {
       val threshold = 13
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
-        .withExceptionThreshold(threshold)
+        .withExceptionThreshold(threshold, AlertSeverity.warning)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -180,8 +180,14 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("exception-threshold") shouldBe JsNumber(threshold)
-      service2Config("exception-threshold") shouldBe JsNumber(threshold)
+      service1Config("exception-threshold") shouldBe JsObject(
+        "count" -> JsNumber(threshold),
+        "severity" -> JsString("warning")
+      )
+      service2Config("exception-threshold") shouldBe JsObject(
+        "count" -> JsNumber(threshold),
+        "severity" -> JsString("warning")
+      )
     }
 
     "return TeamAlertConfigBuilder with correct AverageCPUThreshold" in {
