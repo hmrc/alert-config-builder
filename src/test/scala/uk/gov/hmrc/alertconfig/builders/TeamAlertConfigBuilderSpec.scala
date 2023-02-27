@@ -36,7 +36,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
-      alertConfigBuilder.http5xxPercentThreshold shouldBe 100
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, AlertSeverity.critical)
       alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue,AlertSeverity.critical)
       alertConfigBuilder.totalHttpRequestThreshold shouldBe Int.MaxValue
       alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.critical)
@@ -45,6 +45,13 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       alertConfigBuilder.httpStatusThresholds shouldBe List()
       alertConfigBuilder.logMessageThresholds shouldBe List()
       alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
+    }
+
+    "return TeamAlertConfigBuilder with correct 5xxPercentThreshold" in {
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttp5xxPercentThreshold(19.2, AlertSeverity.warning)
+
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(19.2, AlertSeverity.warning)
     }
 
     "return TeamAlertConfigBuilder with correct handlers" in {
@@ -164,8 +171,14 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("5xx-percent-threshold") shouldBe JsNumber(threshold)
-      service2Config("5xx-percent-threshold") shouldBe JsNumber(threshold)
+      service1Config("5xx-percent-threshold") shouldBe JsObject(
+        "severity" -> JsString("critical"),
+        "percentage" -> JsNumber(threshold)
+      )
+      service2Config("5xx-percent-threshold") shouldBe JsObject(
+        "severity" -> JsString("critical"),
+        "percentage" -> JsNumber(threshold)
+      )
     }
 
     "return TeamAlertConfigBuilder with correct ExceptionThreshold" in {
@@ -310,6 +323,22 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
 
       service1Config("total-http-request-threshold") shouldBe JsNumber(requestThreshold)
       service2Config("total-http-request-threshold") shouldBe JsNumber(requestThreshold)
+    }
+
+    "return TeamAlertConfigBuilder with correct withHttp5xxPercentThreshold" in {
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"))
+        .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
+        .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
+        .withHttp5xxPercentThreshold(12.2, AlertSeverity.warning)
+
+      alertConfigBuilder.services shouldBe Seq("service1")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val service1Config: Map[String, JsValue] = configs(0)
+
+      service1Config("5xx-percent-threshold") shouldBe JsObject(
+        "percentage" -> JsNumber(12.2),
+        "severity" -> JsString("warning")
+      )
     }
 
     "return TeamAlertConfigBuilder with correct logMessageThresholds" in {
