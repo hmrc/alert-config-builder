@@ -39,7 +39,10 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       config("handlers") shouldBe JsArray(JsString("h1"), JsString("h2"))
       config("exception-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("critical"))
       config("5xx-threshold") shouldBe JsObject("count" -> JsNumber(Int.MaxValue), "severity" -> JsString("critical"))
-      config("5xx-percent-threshold") shouldBe JsNumber(100)
+      config("5xx-percent-threshold") shouldBe JsObject(
+        "severity" -> JsString("critical"),
+        "percentage" -> JsNumber(100)
+      )
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
       config("containerKillThreshold") shouldBe JsNumber(56)
       config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
@@ -335,7 +338,10 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttp5xxPercentThreshold(threshold).build.get.parseJson.asJsObject.fields
 
-    serviceConfig("5xx-percent-threshold") shouldBe JsNumber(threshold)
+    serviceConfig("5xx-percent-threshold") shouldBe JsObject(
+      "severity" -> JsString("critical"),
+      "percentage" -> JsNumber(threshold)
+    )
   }
 
   "build/configure averageCPUThreshold with required parameters" in {

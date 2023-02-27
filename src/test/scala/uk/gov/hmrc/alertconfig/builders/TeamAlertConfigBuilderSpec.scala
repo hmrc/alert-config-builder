@@ -36,7 +36,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
-      alertConfigBuilder.http5xxPercentThreshold shouldBe 100
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, AlertSeverity.critical)
       alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue,AlertSeverity.critical)
       alertConfigBuilder.totalHttpRequestThreshold shouldBe Int.MaxValue
       alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.critical)
@@ -164,8 +164,14 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("5xx-percent-threshold") shouldBe JsNumber(threshold)
-      service2Config("5xx-percent-threshold") shouldBe JsNumber(threshold)
+      service1Config("5xx-percent-threshold") shouldBe JsObject(
+        "severity" -> JsString("critical"),
+        "percentage" -> JsNumber(threshold)
+      )
+      service2Config("5xx-percent-threshold") shouldBe JsObject(
+        "severity" -> JsString("critical"),
+        "percentage" -> JsNumber(threshold)
+      )
     }
 
     "return TeamAlertConfigBuilder with correct ExceptionThreshold" in {

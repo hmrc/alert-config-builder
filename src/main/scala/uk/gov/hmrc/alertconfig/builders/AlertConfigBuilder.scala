@@ -35,7 +35,7 @@ case class AlertConfigBuilder(serviceName: String,
                               errorsLoggedThreshold: Int = Int.MaxValue,
                               exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
                               http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
-                              http5xxPercentThreshold: Double = 100.0,
+                              http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
                               httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
                               httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
                               httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
@@ -61,7 +61,7 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(http5xxPercentThreshold: Double) = this.copy(http5xxPercentThreshold = http5xxPercentThreshold)
+  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
 
@@ -113,7 +113,7 @@ case class AlertConfigBuilder(serviceName: String,
              |"errors-logged-threshold":$errorsLoggedThreshold,
              |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
-             |"5xx-percent-threshold":$http5xxPercentThreshold,
+             |"5xx-percent-threshold":${http5xxPercentThreshold.toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
              |"containerKillThreshold" : $containerKillThreshold,
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
@@ -161,7 +161,7 @@ case class TeamAlertConfigBuilder(
                                    errorsLoggedThreshold: Int = Int.MaxValue,
                                    exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
                                    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
-                                   http5xxPercentThreshold: Double = 100.0,
+                                   http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
                                    httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
                                    httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
                                    httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
@@ -183,7 +183,7 @@ case class TeamAlertConfigBuilder(
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(percentThreshold: Double) = this.copy(http5xxPercentThreshold = percentThreshold)
+  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) = this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
 
