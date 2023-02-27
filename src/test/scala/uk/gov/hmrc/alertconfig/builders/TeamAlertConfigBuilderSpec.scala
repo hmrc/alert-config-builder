@@ -340,6 +340,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
         "severity" -> JsString("warning")
       )
     }
+
     "return TeamAlertConfigBuilder with correct logMessageThresholds" in {
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
