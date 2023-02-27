@@ -20,4 +20,4 @@ dist
 .cache
 .sbt
 .ivy2
-    
+.bsp
