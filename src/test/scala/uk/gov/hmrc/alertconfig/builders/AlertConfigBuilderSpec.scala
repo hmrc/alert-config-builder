@@ -32,7 +32,10 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
   "AlertConfigBuilder" should {
     "build correct config" in {
 
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder(
+          "service1",
+          handlers = Seq("h1", "h2")
+        )
         .withContainerKillThreshold(56).build.get.parseJson.asJsObject.fields
 
       config("app") shouldBe JsString("service1.domain.zone.1")
@@ -48,6 +51,17 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       config("metricsThresholds") shouldBe JsArray()
       config("log-message-thresholds") shouldBe JsArray()
       config("absolute-percentage-split-threshold") shouldBe JsArray()
+    }
+
+    "build config overriding http5xxThreshold" in {
+      val config = AlertConfigBuilder(
+        "service1",
+        handlers = Seq("h1", "h2")
+      )
+        .withHttp5xxThreshold(42, AlertSeverity.warning)
+        .withContainerKillThreshold(56).build.get.parseJson.asJsObject.fields
+
+      config("5xx-threshold") shouldBe JsObject("count" -> JsNumber(42), "severity" -> JsString("warning"))
     }
 
     "build correct config for platform service" in {

@@ -37,9 +37,9 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
       alertConfigBuilder.http5xxPercentThreshold shouldBe 100
-      alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue,AlertSeverity.critical)
+      alertConfigBuilder.http5xxThreshold shouldBe SeverityThreshold(Int.MaxValue, AlertSeverity.critical)
       alertConfigBuilder.totalHttpRequestThreshold shouldBe Int.MaxValue
-      alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.critical)
+      alertConfigBuilder.exceptionThreshold shouldBe SeverityThreshold(2, AlertSeverity.critical)
       alertConfigBuilder.containerKillThreshold shouldBe 1
       alertConfigBuilder.averageCPUThreshold shouldBe Int.MaxValue
       alertConfigBuilder.httpStatusThresholds shouldBe List()

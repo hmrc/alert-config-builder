@@ -33,8 +33,8 @@ trait Builder[T] {
 case class AlertConfigBuilder(serviceName: String,
                               handlers: Seq[String] = Seq("noop"),
                               errorsLoggedThreshold: Int = Int.MaxValue,
-                              exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
-                              http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
+                              exceptionThreshold: SeverityThreshold = SeverityThreshold(),
+                              http5xxThreshold: SeverityThreshold = SeverityThreshold(Int.MaxValue),
                               http5xxPercentThreshold: Double = 100.0,
                               httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
                               httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
@@ -57,9 +57,9 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) = this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(exceptionThreshold = SeverityThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = SeverityThreshold(http5xxThreshold, severity))
 
   def withHttp5xxPercentThreshold(http5xxPercentThreshold: Double) = this.copy(http5xxPercentThreshold = http5xxPercentThreshold)
 
@@ -111,8 +111,8 @@ case class AlertConfigBuilder(serviceName: String,
              |"app": "$serviceName.$serviceDomain",
              |"handlers": ${handlers.toJson.compactPrint},
              |"errors-logged-threshold":$errorsLoggedThreshold,
-             |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
-             |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
+             |"exception-threshold":${exceptionThreshold.toJson(SeverityThresholdProtocol.thresholdFormat).compactPrint},
+             |"5xx-threshold":${http5xxThreshold.toJson(SeverityThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":$http5xxPercentThreshold,
              |"containerKillThreshold" : $containerKillThreshold,
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
@@ -159,8 +159,8 @@ case class AlertConfigBuilder(serviceName: String,
 case class TeamAlertConfigBuilder(
                                    services: Seq[String], handlers: Seq[String] = Seq("noop"),
                                    errorsLoggedThreshold: Int = Int.MaxValue,
-                                   exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
-                                   http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
+                                   exceptionThreshold: SeverityThreshold = SeverityThreshold(),
+                                   http5xxThreshold: SeverityThreshold = SeverityThreshold(Int.MaxValue),
                                    http5xxPercentThreshold: Double = 100.0,
                                    httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
                                    httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
@@ -179,9 +179,9 @@ case class TeamAlertConfigBuilder(
 
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) = this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(exceptionThreshold = SeverityThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = SeverityThreshold(http5xxThreshold, severity))
 
   def withHttp5xxPercentThreshold(percentThreshold: Double) = this.copy(http5xxPercentThreshold = percentThreshold)
 
