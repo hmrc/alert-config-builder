@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ trait Builder[T] {
 case class AlertConfigBuilder(serviceName: String,
                               handlers: Seq[String] = Seq("noop"),
                               errorsLoggedThreshold: Int = Int.MaxValue,
-                              exceptionThreshold: Int = 2,
+                              exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
                               http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
                               http5xxPercentThreshold: Double = 100.0,
                               httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
@@ -57,7 +57,7 @@ case class AlertConfigBuilder(serviceName: String,
 
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) = this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int) = this.copy(exceptionThreshold = exceptionThreshold)
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
@@ -111,7 +111,7 @@ case class AlertConfigBuilder(serviceName: String,
              |"app": "$serviceName.$serviceDomain",
              |"handlers": ${handlers.toJson.compactPrint},
              |"errors-logged-threshold":$errorsLoggedThreshold,
-             |"exception-threshold":$exceptionThreshold,
+             |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":$http5xxPercentThreshold,
              |"containerKillThreshold" : $containerKillThreshold,
@@ -159,7 +159,7 @@ case class AlertConfigBuilder(serviceName: String,
 case class TeamAlertConfigBuilder(
                                    services: Seq[String], handlers: Seq[String] = Seq("noop"),
                                    errorsLoggedThreshold: Int = Int.MaxValue,
-                                   exceptionThreshold: Int = 2,
+                                   exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
                                    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
                                    http5xxPercentThreshold: Double = 100.0,
                                    httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
@@ -179,7 +179,7 @@ case class TeamAlertConfigBuilder(
 
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) = this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int) = this.copy(exceptionThreshold = exceptionThreshold)
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) = this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
