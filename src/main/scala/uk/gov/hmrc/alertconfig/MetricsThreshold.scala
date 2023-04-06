@@ -18,11 +18,13 @@ package uk.gov.hmrc.alertconfig
 
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
-case class MetricsThreshold(name: String,
-                            query: String,
-                            warning:Option[Double] = None,
-                            critical:Option[Double] = None,
-                            invert:Boolean = false)
+case class MetricsThreshold(
+  name    : String,
+  query   : String,
+  warning : Option[Double] = None,
+  critical: Option[Double] = None,
+  invert  : Boolean        = false
+)
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {
   implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat5(MetricsThreshold)

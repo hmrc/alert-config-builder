@@ -19,7 +19,10 @@ package uk.gov.hmrc.alertconfig
 import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 
-case class Http5xxThreshold(count: Int = Int.MaxValue, severity: AlertSeverityType = AlertSeverity.critical)
+case class Http5xxThreshold(
+  count   : Int               = Int.MaxValue,
+  severity: AlertSeverityType = AlertSeverity.critical
+)
 
 object Http5xxThresholdProtocol extends DefaultJsonProtocol {
 

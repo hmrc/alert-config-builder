@@ -20,7 +20,12 @@ import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 import uk.gov.hmrc.alertconfig.HttpMethod.HttpMethodType
 import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
-case class HttpStatusThreshold(httpStatus: HTTP_STATUS, count: Int = 1, severity: AlertSeverityType = AlertSeverity.critical, httpMethod: HttpMethodType = HttpMethod.all)
+case class HttpStatusThreshold(
+  httpStatus: HTTP_STATUS,
+  count     : Int               = 1,
+  severity  : AlertSeverityType = AlertSeverity.critical,
+  httpMethod: HttpMethodType    = HttpMethod.all
+)
 
 object HttpStatusThresholdProtocol extends DefaultJsonProtocol {
 

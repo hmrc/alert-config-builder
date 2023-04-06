@@ -31,13 +31,13 @@ object ObjectScanner {
   }
 
   def loadAll[T](_package: String = scanPackage)(implicit ct: ClassTag[T]): Set[T] = {
-
     val objects =
       new Reflections(_package)
-        .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]]).asScala.toSet
+        .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]])
+        .asScala
+        .toSet
 
     objects.map(x => objectInstance[T](x.getName))
-
   }
 
   def objectInstance[T](name: String) = {
@@ -45,6 +45,4 @@ object ObjectScanner {
     val module = mirror.staticModule(name)
     mirror.reflectModule(module).instance.asInstanceOf[T]
   }
-
-
 }

@@ -19,7 +19,10 @@ package uk.gov.hmrc.alertconfig
 import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 
-case class ExceptionThreshold(count: Int = 2, severity: AlertSeverityType = AlertSeverity.critical)
+case class ExceptionThreshold(
+  count   : Int               = 2,
+  severity: AlertSeverityType = AlertSeverity.critical
+)
 
 object ExceptionThresholdProtocol extends DefaultJsonProtocol {
 
