@@ -17,14 +17,16 @@
 package uk.gov.hmrc.alertconfig.builders
 
 import java.io.FileNotFoundException
-import org.scalatest._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import spray.json._
 import uk.gov.hmrc.alertconfig.HttpStatus._
 import uk.gov.hmrc.alertconfig._
 
-class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
+class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
     System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
   }

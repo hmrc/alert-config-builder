@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.alertconfig
 
-import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
+import spray.json.DefaultJsonProtocol
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 
 case class Http5xxPercentThreshold(

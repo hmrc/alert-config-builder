@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.alertconfig.builders
 
-import uk.gov.hmrc.alertconfig.HttpStatusPercentThresholdProtocol._
-import java.io.{File, FileInputStream, FileNotFoundException}
 import org.yaml.snakeyaml.Yaml
+import uk.gov.hmrc.alertconfig.HttpStatusPercentThresholdProtocol._
 import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 import uk.gov.hmrc.alertconfig.logging.Logger
 import uk.gov.hmrc.alertconfig._
 
-import scala.collection.JavaConversions.mapAsScalaMap
+import java.io.{File, FileInputStream, FileNotFoundException}
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 trait Builder[T] {
@@ -120,7 +120,10 @@ case class AlertConfigBuilder(
       case file =>
         val serviceDomain = getZone(file, platformService)
 
-        ZoneToServiceDomainMapper.getServiceDomain(serviceDomain, platformService).map(serviceDomain =>
+        def printSeq[A](a: Seq[A])(implicit writer: JsonFormat[A]): String =
+          a.toJson.compactPrint
+
+        ZoneToServiceDomainMapper.getServiceDomain(serviceDomain, platformService).map { serviceDomain =>
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
@@ -132,16 +135,16 @@ case class AlertConfigBuilder(
              |"containerKillThreshold" : $containerKillThreshold,
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
-             |"metricsThresholds" : ${metricsThresholds.toJson(seqFormat(MetricsThresholdProtocol.thresholdFormat)).compactPrint},
+             |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $totalHttpRequestThreshold,
              |"log-message-thresholds" : $buildLogMessageThresholdsJson,
              |"average-cpu-threshold" : $averageCPUThreshold,
-             |"absolute-percentage-split-threshold" : ${httpAbsolutePercentSplitThresholds.toJson(seqFormat(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)).compactPrint},
-             |"absolute-percentage-split-downstream-service-threshold" : ${httpAbsolutePercentSplitDownstreamServiceThresholds.toJson(seqFormat(HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)).compactPrint},
-             |"absolute-percentage-split-downstream-hod-threshold" : ${httpAbsolutePercentSplitDownstreamHodThresholds.toJson(seqFormat(HttpAbsolutePercentSplitDownstreamHodThresholdProtocol.thresholdFormat)).compactPrint}
+             |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
+             |"absolute-percentage-split-downstream-service-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamServiceThresholds)(HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)},
+             |"absolute-percentage-split-downstream-hod-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamHodThresholds)(HttpAbsolutePercentSplitDownstreamHodThresholdProtocol.thresholdFormat)}
              |}
               """.stripMargin
-        )
+        }
     }
   }
 
@@ -154,16 +157,15 @@ case class AlertConfigBuilder(
     if (platformService)
       None
     else {
-      def parseAppConfigFile: Try[Object] =
-        Try(new Yaml().load(new FileInputStream(appConfigFile)))
+      def parseAppConfigFile: Try[java.util.Map[String, java.util.Map[String, String]]] =
+        Try(new Yaml().load(new FileInputStream(appConfigFile)).asInstanceOf[java.util.Map[String, java.util.Map[String, String]]])
 
       parseAppConfigFile match {
         case Failure(exception) =>
           logger.warn(s"app-config file ${appConfigFile} for service: '${serviceName}' is not valid YAML and could not be parsed. Parsing Exception: ${exception.getMessage}")
           None
-        case Success(appConfigYamlMap) =>
-          val appConfig = appConfigYamlMap.asInstanceOf[java.util.Map[String, java.util.Map[String, String]]]
-          val versionObject = appConfig.toMap.mapValues(_.toMap)("0.0.0")
+        case Success(appConfig) =>
+          val versionObject = appConfig.asScala.toMap.view.mapValues(_.asScala.toMap)("0.0.0")
           versionObject.get("zone")
       }
     }
@@ -274,10 +276,10 @@ object ZoneToServiceDomainMapper {
     throw new FileNotFoundException(s"Could not find zone to service domain mapping file: ${zoneToServiceMappingFilePath}")
 
   val zoneToServiceDomainMappings: Map[String, String] =
-    mapAsScalaMap[String, String](
-      new Yaml().load(new FileInputStream(zoneToServiceMappingFile)).asInstanceOf[java.util.Map[String, String]]
-    )
-    .toMap
+    new Yaml()
+      .load(new FileInputStream(zoneToServiceMappingFile)).asInstanceOf[java.util.Map[String, String]]
+      .asScala
+      .toMap
 
   def getServiceDomain(zone: Option[String], platformService: Boolean = false): Option[String] =
     if (platformService)

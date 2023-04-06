@@ -16,16 +16,18 @@
 
 package uk.gov.hmrc.alertconfig.builders
 
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import spray.json.{JsArray, JsString, JsObject}
 import uk.gov.hmrc.alertconfig._
 import spray.json._
 import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
 
-class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
+class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
     System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
   }

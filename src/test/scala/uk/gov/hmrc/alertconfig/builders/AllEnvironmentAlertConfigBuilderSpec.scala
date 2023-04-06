@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.alertconfig.builders
 
-import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import spray.json.{JsArray, JsObject, JsString}
 
-class AllEnvironmentAlertConfigBuilderSpec extends FunSuite with Matchers with BeforeAndAfterEach {
+class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers with BeforeAndAfterEach {
 
   def defaultNoopHandlerConfig: JsObject =
     JsObject(

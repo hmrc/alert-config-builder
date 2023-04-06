@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.alertconfig.builders
 
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import spray.json._
 
-class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAndAfterEach {
+class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   "EnvironmentAlertBuilder" should {
     "create config with production enabled by default" in {
