@@ -26,9 +26,9 @@ package object builder {
       ???
   }
 
-  def jsonHttpMethodEnum(enu: HttpMethod.type) = new JsonFormat[HttpMethod.Value] {
-    override def write(obj: HttpMethod.HttpMethodType): JsValue = JsString(obj.toString)
-    override def read(json: JsValue): HttpMethod.Value =
+  def jsonHttpMethod = new JsonFormat[HttpMethod] {
+    override def write(obj: HttpMethod): JsValue = JsString(obj.toString)
+    override def read(json: JsValue): HttpMethod =
       ???
   }
 }

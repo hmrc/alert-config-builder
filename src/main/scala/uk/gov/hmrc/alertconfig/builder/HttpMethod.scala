@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-object HttpMethod extends Enumeration {
-  type HttpMethodType = Value
-  val all = Value("ALL_METHODS")
-  val post = Value("POST")
-  val get = Value("GET")
-  val put = Value("PUT")
-  val delete = Value("DELETE")
+sealed trait HttpMethod
+
+object HttpMethod {
+  object All    extends HttpMethod { override def toString: String = "ALL_METHODS" }
+  object Post   extends HttpMethod { override def toString: String = "POST"        }
+  object Get    extends HttpMethod { override def toString: String = "GET"         }
+  object Put    extends HttpMethod { override def toString: String = "PUT"         }
+  object Delete extends HttpMethod { override def toString: String = "DELETE"      }
 }

@@ -240,7 +240,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {
-      val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.Warning, HttpMethod.post)
+      val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.Warning, HttpMethod.Post)
       val threshold2 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_501, 20)
       val threshold3 = HttpStatusThreshold(HttpStatus.HTTP_STATUS(555), 55)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
@@ -275,7 +275,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusPercentThresholds" in {
-      val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.Warning, HttpMethod.post)
+      val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.Warning, HttpMethod.Post)
       val threshold2 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_501, 20)
       val threshold3 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(555), 55.5)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))

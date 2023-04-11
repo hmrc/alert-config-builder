@@ -19,9 +19,9 @@ import spray.json.{DefaultJsonProtocol, JsNumber, JsValue, JsonFormat}
 
 case class HttpStatusThreshold(
   httpStatus: HttpStatus.HTTP_STATUS,
-  count     : Int                       = 1,
-  severity  : AlertSeverity             = AlertSeverity.Critical,
-  httpMethod: HttpMethod.HttpMethodType = HttpMethod.all
+  count     : Int           = 1,
+  severity  : AlertSeverity = AlertSeverity.Critical,
+  httpMethod: HttpMethod    = HttpMethod.All
 )
 
 object HttpStatusThresholdProtocol {
@@ -33,6 +33,6 @@ object HttpStatusThresholdProtocol {
   }
 
   private implicit val severityFormat = jsonAlertSeverity
-  private implicit val methodFormat = jsonHttpMethodEnum(HttpMethod)
+  private implicit val methodFormat = jsonHttpMethod
   implicit val thresholdFormat = jsonFormat4(HttpStatusThreshold)
 }

@@ -104,8 +104,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.Warning, HttpMethod.post))
-        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_503, 3, AlertSeverity.Error, HttpMethod.get))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.Warning, HttpMethod.Post))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_503, 3, AlertSeverity.Error, HttpMethod.Get))
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
@@ -126,8 +126,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status percent threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.post))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_503, 3.3, AlertSeverity.Error, HttpMethod.get))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_503, 3.3, AlertSeverity.Error, HttpMethod.Get))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
