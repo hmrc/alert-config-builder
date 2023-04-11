@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc
+package uk.gov.hmrc.alertconfig
 
 import spray.json.{DeserializationException, JsNumber, JsString, JsValue, JsonFormat}
 
-package object alertconfig {
+package object builder {
 
   def jsonSeverityEnum(enu: AlertSeverity.type) = new JsonFormat[AlertSeverity.Value] {
     def write(obj: AlertSeverity.AlertSeverityType) = JsString(obj.toString)
@@ -28,7 +28,7 @@ package object alertconfig {
       case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
     }
   }
-  
+
   def jsonHttpMethodEnum(enu: HttpMethod.type) = new JsonFormat[HttpMethod.Value] {
     def write(obj: HttpMethod.HttpMethodType) = JsString(obj.toString)
 

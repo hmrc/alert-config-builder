@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.logging
+package uk.gov.hmrc.alertconfig.builder
 
 class Logger {
   def info(st: String) = println("[INFO] " + st)

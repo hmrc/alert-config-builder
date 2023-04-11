@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-
-trait SuperType
-
-case object A extends SuperType
-
-object B extends SuperType
-
-object C
-
-class ObjectScannerSpec extends AnyWordSpec with Matchers {
-  "ClassScanner" should {
-    "load all the singleton subtypes of a type in given package" in {
-      ObjectScanner.loadAll[SuperType](this.getClass.getPackage.getName) should contain only(A, B)
-    }
-  }
+object HttpMethod extends Enumeration {
+  type HttpMethodType = Value
+  val all = Value("ALL_METHODS")
+  val post = Value("POST")
+  val get = Value("GET")
+  val put = Value("PUT")
+  val delete = Value("DELETE")
 }

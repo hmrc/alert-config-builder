@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json.{JsArray, JsString, JsObject}
-import uk.gov.hmrc.alertconfig._
 import spray.json._
-import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
 
 class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
@@ -244,7 +242,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {
       val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.warning, HttpMethod.post)
       val threshold2 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_501, 20)
-      val threshold3 = HttpStatusThreshold(HTTP_STATUS(555), 55)
+      val threshold3 = HttpStatusThreshold(HttpStatus.HTTP_STATUS(555), 55)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpStatusThreshold(threshold1)
         .withHttpStatusThreshold(threshold2)
@@ -279,7 +277,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     "return TeamAlertConfigBuilder with correct httpStatusPercentThresholds" in {
       val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.warning, HttpMethod.post)
       val threshold2 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_501, 20)
-      val threshold3 = HttpStatusPercentThreshold(HTTP_STATUS(555), 55.5)
+      val threshold3 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(555), 55.5)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpStatusPercentThreshold(threshold1)
         .withHttpStatusPercentThreshold(threshold2)

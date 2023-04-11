@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-object HttpStatus {
-  case class HTTP_STATUS(status: Int)
-  val HTTP_STATUS_429: HTTP_STATUS = HTTP_STATUS(429)
-  val HTTP_STATUS_499: HTTP_STATUS = HTTP_STATUS(499)
-  val HTTP_STATUS_500: HTTP_STATUS = HTTP_STATUS(500)
-  val HTTP_STATUS_501: HTTP_STATUS = HTTP_STATUS(501)
-  val HTTP_STATUS_502: HTTP_STATUS = HTTP_STATUS(502)
-  val HTTP_STATUS_503: HTTP_STATUS = HTTP_STATUS(503)
-  val HTTP_STATUS_504: HTTP_STATUS = HTTP_STATUS(504)
+trait AlertConfig {
+  def alertConfig: Seq[AlertConfigBuilder]
+  def environmentConfig: Seq[EnvironmentAlertBuilder] =
+    alertConfig.flatMap(_.handlers).toSet.map((h:String) => EnvironmentAlertBuilder(h)).toSeq
+
+  implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
 }
-

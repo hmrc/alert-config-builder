@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
-trait AlertConfig {
-  def alertConfig: Seq[AlertConfigBuilder]
-  def environmentConfig: Seq[EnvironmentAlertBuilder] =
-    alertConfig.flatMap(_.handlers).toSet.map((h:String) => EnvironmentAlertBuilder(h)).toSeq
+import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 
-  implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
+case class Http5xxThreshold(
+  count   : Int                             = Int.MaxValue,
+  severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical
+)
+
+object Http5xxThresholdProtocol extends DefaultJsonProtocol {
+
+  implicit val severityFormat: JsonFormat[AlertSeverity.Value] = jsonSeverityEnum(AlertSeverity)
+
+  implicit val thresholdFormat: RootJsonFormat[Http5xxThreshold] = jsonFormat2(Http5xxThreshold)
 }

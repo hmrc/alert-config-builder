@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
-import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
 
 case class HttpAbsolutePercentSplitThreshold(
-  percentThreshold : Double            = 100.0,
-  crossOver        : Int               = 0,
-  absoluteThreshold: Int               = Int.MaxValue,
-  hysteresis       : Double            = 1.0,
-  excludeSpikes    : Int               = 0,
-  errorFilter      : String            = "status:>498",
-  severity         : AlertSeverityType = AlertSeverity.critical
+  percentThreshold : Double                          = 100.0,
+  crossOver        : Int                             = 0,
+  absoluteThreshold: Int                             = Int.MaxValue,
+  hysteresis       : Double                          = 1.0,
+  excludeSpikes    : Int                             = 0,
+  errorFilter      : String                          = "status:>498",
+  severity         : AlertSeverity.AlertSeverityType = AlertSeverity.critical
 )
 
 object HttpAbsolutePercentSplitThresholdProtocol extends DefaultJsonProtocol {

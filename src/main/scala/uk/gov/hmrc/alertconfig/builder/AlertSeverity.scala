@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.DefaultJsonProtocol
-import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
-
-case class Http5xxPercentThreshold(
-  percentage: Double            = 100.0,
-  severity  : AlertSeverityType = AlertSeverity.critical
-)
-
-object Http5xxPercentThresholdProtocol extends DefaultJsonProtocol {
-  implicit val severityFormat = jsonSeverityEnum(AlertSeverity)
-  implicit val thresholdFormat = jsonFormat2(Http5xxPercentThreshold)
+object AlertSeverity extends Enumeration {
+  type AlertSeverityType = Value
+  val info = Value("info")
+  val warning = Value("warning")
+  val error = Value("error")
+  val critical = Value("critical")
 }

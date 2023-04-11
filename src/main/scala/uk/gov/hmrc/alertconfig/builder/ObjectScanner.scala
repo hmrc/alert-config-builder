@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
 import org.reflections.Reflections
 
@@ -40,7 +40,7 @@ object ObjectScanner {
     objects.map(x => objectInstance[T](x.getName))
   }
 
-  def objectInstance[T](name: String) = {
+  private def objectInstance[T](name: String): T = {
     val mirror = runtimeMirror(getClass.getClassLoader)
     val module = mirror.staticModule(name)
     mirror.reflectModule(module).instance.asInstanceOf[T]

@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsNumber, JsValue, JsonFormat}
-import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
-import uk.gov.hmrc.alertconfig.HttpMethod.HttpMethodType
-import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
 case class HttpStatusPercentThreshold(
-  httpStatus: HTTP_STATUS,
-  percentage: Double            = 100.0,
-  severity  : AlertSeverityType = AlertSeverity.critical,
-  httpMethod: HttpMethodType    = HttpMethod.all
+  httpStatus: HttpStatus.HTTP_STATUS,
+  percentage: Double                          = 100.0,
+  severity  : AlertSeverity.AlertSeverityType = AlertSeverity.critical,
+  httpMethod: HttpMethod.HttpMethodType       = HttpMethod.all
 )
 
-object HttpStatusPercentThresholdProtocol extends DefaultJsonProtocol {
+object HttpStatusPercentThresholdProtocol {
+  import DefaultJsonProtocol._
 
-  implicit object httpStatusPercentFormat extends JsonFormat[HTTP_STATUS] {
-    override def read(json: JsValue): HTTP_STATUS = HTTP_STATUS(IntJsonFormat.read(json))
-    override def write(obj: HTTP_STATUS): JsValue = JsNumber(obj.status)
+  implicit object httpStatusPercentFormat extends JsonFormat[HttpStatus.HTTP_STATUS] {
+    override def read(json: JsValue): HttpStatus.HTTP_STATUS = HttpStatus.HTTP_STATUS(IntJsonFormat.read(json))
+    override def write(obj: HttpStatus.HTTP_STATUS): JsValue = JsNumber(obj.status)
   }
 
   implicit val severityPercentFormat = jsonSeverityEnum(AlertSeverity)

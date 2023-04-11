@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
 import org.yaml.snakeyaml.Yaml
-import uk.gov.hmrc.alertconfig.HttpStatusPercentThresholdProtocol._
-import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
-import uk.gov.hmrc.alertconfig.logging.Logger
-import uk.gov.hmrc.alertconfig._
 
 import java.io.{File, FileInputStream, FileNotFoundException}
 import scala.jdk.CollectionConverters._
@@ -60,13 +56,13 @@ case class AlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) =
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) =
@@ -100,7 +96,10 @@ case class AlertConfigBuilder(
     this.copy(platformService = platformService)
 
   def build: Option[String] = {
-    import uk.gov.hmrc.alertconfig.HttpStatusThresholdProtocol._
+    import HttpStatusThresholdProtocol._
+    import HttpStatusPercentThresholdProtocol._
+    import DefaultJsonProtocol._
+
 
     val appConfigPath = System.getProperty("app-config-path", "../app-config")
     val appConfigDirectory = new File(appConfigPath)
@@ -149,7 +148,7 @@ case class AlertConfigBuilder(
   }
 
   def buildLogMessageThresholdsJson = {
-    import uk.gov.hmrc.alertconfig.LogMessageThresholdProtocol._
+    import LogMessageThresholdProtocol._
     logMessageThresholds.toJson.compactPrint
   }
 
@@ -197,13 +196,13 @@ case class TeamAlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) =
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) =

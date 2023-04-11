@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
 import java.io.FileNotFoundException
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json._
-import uk.gov.hmrc.alertconfig.HttpStatus._
-import uk.gov.hmrc.alertconfig._
 
 class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -106,9 +104,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_502, 2, AlertSeverity.warning, HttpMethod.post))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_503, 3, AlertSeverity.error, HttpMethod.get))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.warning, HttpMethod.post))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_503, 3, AlertSeverity.error, HttpMethod.get))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(502), "count" -> JsNumber(2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
@@ -119,7 +117,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status threshold with given generic threshold" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(404), "count" -> JsNumber(1), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
@@ -128,9 +126,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status percent threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_502, 2.2, AlertSeverity.warning, HttpMethod.post))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_503, 3.3, AlertSeverity.error, HttpMethod.get))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.warning, HttpMethod.post))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_503, 3.3, AlertSeverity.error, HttpMethod.get))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(502), "percentage" -> JsNumber(2.2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
@@ -141,7 +139,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status percent threshold with given generic threshold" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(404), "percentage" -> JsNumber(100.0), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
