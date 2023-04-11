@@ -20,8 +20,7 @@ import org.reflections.Reflections
 
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
-import scala.reflect.runtime.universe._
-
+import scala.reflect.runtime.universe.runtimeMirror
 
 object ObjectScanner {
 

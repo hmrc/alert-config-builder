@@ -16,25 +16,19 @@
 
 package uk.gov.hmrc.alertconfig
 
-import spray.json.{DeserializationException, JsNumber, JsString, JsValue, JsonFormat}
+import spray.json.{JsString, JsValue, JsonFormat}
 
 package object builder {
 
-  def jsonSeverityEnum(enu: AlertSeverity.type) = new JsonFormat[AlertSeverity.Value] {
-    def write(obj: AlertSeverity.AlertSeverityType) = JsString(obj.toString)
-
-    def read(json: JsValue) = json match {
-      case JsNumber(num) => AlertSeverity(num.toInt)
-      case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
-    }
+  def jsonAlertSeverity = new JsonFormat[AlertSeverity] {
+    override def write(obj: AlertSeverity): JsValue = JsString(obj.toString)
+    override def read(json: JsValue): AlertSeverity =
+      ???
   }
 
   def jsonHttpMethodEnum(enu: HttpMethod.type) = new JsonFormat[HttpMethod.Value] {
-    def write(obj: HttpMethod.HttpMethodType) = JsString(obj.toString)
-
-    def read(json: JsValue) = json match {
-      case JsNumber(num) => HttpMethod(num.toInt)
-      case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
-    }
+    override def write(obj: HttpMethod.HttpMethodType): JsValue = JsString(obj.toString)
+    override def read(json: JsValue): HttpMethod.Value =
+      ???
   }
 }

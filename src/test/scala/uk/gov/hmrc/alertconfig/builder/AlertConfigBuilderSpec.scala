@@ -104,8 +104,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.warning, HttpMethod.post))
-        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_503, 3, AlertSeverity.error, HttpMethod.get))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.Warning, HttpMethod.post))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_503, 3, AlertSeverity.Error, HttpMethod.get))
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
@@ -126,8 +126,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http status percent threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.warning, HttpMethod.post))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_503, 3.3, AlertSeverity.error, HttpMethod.get))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.post))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_503, 3.3, AlertSeverity.Error, HttpMethod.get))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
@@ -148,7 +148,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "build/configure http 5xx threshold severity with given thresholds and severities" in {
       val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttp5xxThreshold(2, AlertSeverity.warning).build.get.parseJson.asJsObject.fields
+        .withHttp5xxThreshold(2, AlertSeverity.Warning).build.get.parseJson.asJsObject.fields
 
       serviceConfig("5xx-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("warning"))
     }
@@ -221,7 +221,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val hysteresis = 1.2
     val excludeSpikes = 2
     val filter = "Some error"
-    val severity = AlertSeverity.warning
+    val severity = AlertSeverity.Warning
 
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(
@@ -233,7 +233,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       "excludeSpikes" -> JsNumber(excludeSpikes),
       "hysteresis" -> JsNumber(hysteresis),
       "percentThreshold" -> JsNumber(percent),
-      "severity" -> JsString(severity.toString)))
+      "severity" -> JsString("warning")))
 
     serviceConfig("absolute-percentage-split-threshold") shouldBe expected
   }
@@ -246,7 +246,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val excludeSpikes = 2
     val filter = "Some error"
     val target = "service.invalid"
-    val severity = AlertSeverity.warning
+    val severity = AlertSeverity.Warning
 
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(
@@ -259,7 +259,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       "excludeSpikes" -> JsNumber(excludeSpikes),
       "hysteresis" -> JsNumber(hysteresis),
       "percentThreshold" -> JsNumber(percent),
-      "severity" -> JsString(severity.toString)))
+      "severity" -> JsString("warning")))
 
     serviceConfig("absolute-percentage-split-downstream-service-threshold") shouldBe expected
   }
@@ -272,7 +272,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val excludeSpikes = 2
     val filter = "Some error"
     val target = "hod-endpoint"
-    val severity = AlertSeverity.warning
+    val severity = AlertSeverity.Warning
 
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(
@@ -285,7 +285,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       "excludeSpikes" -> JsNumber(excludeSpikes),
       "hysteresis" -> JsNumber(hysteresis),
       "percentThreshold" -> JsNumber(percent),
-      "severity" -> JsString(severity.toString)))
+      "severity" -> JsString("warning")))
 
     serviceConfig("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
   }
@@ -315,7 +315,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
   "build/configure ExceptionThreshold with optional parameter severity" in {
     val threshold = 12
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-      .withExceptionThreshold(threshold, AlertSeverity.warning).build.get.parseJson.asJsObject.fields
+      .withExceptionThreshold(threshold, AlertSeverity.Warning).build.get.parseJson.asJsObject.fields
 
     val expected = JsObject(
       "severity" -> JsString("warning"),

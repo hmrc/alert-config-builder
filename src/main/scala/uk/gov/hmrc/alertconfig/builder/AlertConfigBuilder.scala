@@ -56,13 +56,13 @@ case class AlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) =
@@ -196,13 +196,13 @@ case class TeamAlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity.AlertSeverityType = AlertSeverity.critical) =
+  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold) =

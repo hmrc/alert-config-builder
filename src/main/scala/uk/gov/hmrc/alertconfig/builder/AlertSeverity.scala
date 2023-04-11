@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-object AlertSeverity extends Enumeration {
-  type AlertSeverityType = Value
-  val info = Value("info")
-  val warning = Value("warning")
-  val error = Value("error")
-  val critical = Value("critical")
+sealed trait AlertSeverity
+object AlertSeverity {
+  object Info     extends AlertSeverity { override def toString: String = "info"     }
+  object Warning  extends AlertSeverity { override def toString: String = "warning"  }
+  object Error    extends AlertSeverity { override def toString: String = "error"    }
+  object Critical extends AlertSeverity { override def toString: String = "critical" }
 }

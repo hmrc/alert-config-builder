@@ -19,11 +19,12 @@ package uk.gov.hmrc.alertconfig.builder
 import spray.json.DefaultJsonProtocol
 
 case class Http5xxPercentThreshold(
-  percentage: Double                          = 100.0,
-  severity  : AlertSeverity.AlertSeverityType = AlertSeverity.critical
+  percentage: Double        = 100.0,
+  severity  : AlertSeverity = AlertSeverity.Critical
 )
 
-object Http5xxPercentThresholdProtocol extends DefaultJsonProtocol {
-  implicit val severityFormat = jsonSeverityEnum(AlertSeverity)
+object Http5xxPercentThresholdProtocol {
+  import DefaultJsonProtocol._
+  private implicit val severityFormat = jsonAlertSeverity
   implicit val thresholdFormat = jsonFormat2(Http5xxPercentThreshold)
 }
