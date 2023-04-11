@@ -37,7 +37,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
       "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
       "filter" -> JsString("occurrences"))
 
-    Seq(Integration, Development, Staging, Qa, ExternalTest, Management).foreach{
+    Seq(Environment.Integration, Environment.Development, Environment.Staging, Environment.Qa, Environment.ExternalTest, Environment.Management).foreach {
     e =>
       test(s"create config for $e") {
         val environmentConfigMap = AllEnvironmentAlertConfigBuilder.build(
@@ -47,8 +47,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
           JsObject("handlers" -> JsObject(
             "infra" -> defaultNoopHandlerConfig,
             "team-telemetry" -> defaultNoopHandlerConfig
-          )
-          )
+          ))
       }
     }
 
@@ -56,12 +55,10 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
       val environmentConfigMap = AllEnvironmentAlertConfigBuilder.build(
         Set(EnvironmentAlertBuilder("team-telemetry"), EnvironmentAlertBuilder("infra")))
 
-      environmentConfigMap(Production) shouldBe
+      environmentConfigMap(Environment.Production) shouldBe
         JsObject("handlers" -> JsObject(
-          "infra" -> defaultEnabledHandlerConfig("infra", Production),
-          "team-telemetry" -> defaultEnabledHandlerConfig("team-telemetry", Production)
-        )
-        )
+          "infra" -> defaultEnabledHandlerConfig("infra", Environment.Production),
+          "team-telemetry" -> defaultEnabledHandlerConfig("team-telemetry", Environment.Production)
+        ))
     }
-
 }
