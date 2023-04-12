@@ -16,19 +16,36 @@
 
 package uk.gov.hmrc.alertconfig
 
-import spray.json.{JsString, JsValue, JsonFormat}
+import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
 package object builder {
 
-  def jsonAlertSeverity = new JsonFormat[AlertSeverity] {
-    override def write(obj: AlertSeverity): JsValue = JsString(obj.toString)
+  val alertSeverityFormat = new JsonFormat[AlertSeverity] {
+    override def write(obj: AlertSeverity): JsValue =
+      JsString(obj.toString)
+
     override def read(json: JsValue): AlertSeverity =
-      ???
+      Seq(AlertSeverity.Info, AlertSeverity.Warning, AlertSeverity.Error, AlertSeverity.Critical)
+        .find(_.toString == json.toString)
+        .getOrElse(deserializationError("Invalid AlertSeverity"))
   }
 
-  def jsonHttpMethod = new JsonFormat[HttpMethod] {
-    override def write(obj: HttpMethod): JsValue = JsString(obj.toString)
+  val httpMethodFormat = new JsonFormat[HttpMethod] {
+    override def write(obj: HttpMethod): JsValue =
+      JsString(obj.toString)
+
     override def read(json: JsValue): HttpMethod =
-      ???
+      Seq(HttpMethod.All, HttpMethod.Post, HttpMethod.Get, HttpMethod.Put, HttpMethod.Delete)
+        .find(_.toString == json.toString)
+        .getOrElse(deserializationError("Invalid HttpMethod"))
+  }
+
+  val httpStatusFormat = new JsonFormat[HttpStatus.HTTP_STATUS] {
+    import DefaultJsonProtocol._
+    override def read(json: JsValue): HttpStatus.HTTP_STATUS =
+      HttpStatus.HTTP_STATUS(IntJsonFormat.read(json))
+
+    override def write(obj: HttpStatus.HTTP_STATUS): JsValue =
+      JsNumber(obj.status)
   }
 }

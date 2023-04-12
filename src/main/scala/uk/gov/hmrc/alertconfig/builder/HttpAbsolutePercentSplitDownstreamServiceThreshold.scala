@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
+import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class HttpAbsolutePercentSplitDownstreamServiceThreshold(
   percentThreshold : Double        = 100.0,
@@ -32,7 +32,8 @@ case class HttpAbsolutePercentSplitDownstreamServiceThreshold(
 object HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol {
   import DefaultJsonProtocol._
 
-  private implicit val severityFormat: JsonFormat[AlertSeverity] = jsonAlertSeverity
-  implicit val thresholdFormat: RootJsonFormat[HttpAbsolutePercentSplitDownstreamServiceThreshold] = jsonFormat8(HttpAbsolutePercentSplitDownstreamServiceThreshold)
-
+  implicit val thresholdFormat: JsonFormat[HttpAbsolutePercentSplitDownstreamServiceThreshold] = {
+    implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+    jsonFormat8(HttpAbsolutePercentSplitDownstreamServiceThreshold)
+  }
 }

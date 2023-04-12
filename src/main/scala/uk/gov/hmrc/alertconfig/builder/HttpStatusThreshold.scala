@@ -15,7 +15,7 @@
  */
 
 package uk.gov.hmrc.alertconfig.builder
-import spray.json.{DefaultJsonProtocol, JsNumber, JsValue, JsonFormat}
+import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class HttpStatusThreshold(
   httpStatus: HttpStatus.HTTP_STATUS,
@@ -27,12 +27,10 @@ case class HttpStatusThreshold(
 object HttpStatusThresholdProtocol {
   import DefaultJsonProtocol._
 
-  implicit object httpStatusFormat extends JsonFormat[HttpStatus.HTTP_STATUS] {
-    override def read(json: JsValue): HttpStatus.HTTP_STATUS = HttpStatus.HTTP_STATUS(IntJsonFormat.read(json))
-    override def write(obj: HttpStatus.HTTP_STATUS): JsValue = JsNumber(obj.status)
+  implicit val thresholdFormat: JsonFormat[HttpStatusThreshold] = {
+    implicit val hsf: JsonFormat[HttpStatus.HTTP_STATUS] = httpStatusFormat
+    implicit val asf: JsonFormat[AlertSeverity]          = alertSeverityFormat
+    implicit val hmf: JsonFormat[HttpMethod]             = httpMethodFormat
+    jsonFormat4(HttpStatusThreshold)
   }
-
-  private implicit val severityFormat = jsonAlertSeverity
-  private implicit val methodFormat = jsonHttpMethod
-  implicit val thresholdFormat = jsonFormat4(HttpStatusThreshold)
 }
