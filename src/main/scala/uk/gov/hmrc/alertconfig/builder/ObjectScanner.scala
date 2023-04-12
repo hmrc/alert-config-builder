@@ -20,7 +20,6 @@ import org.reflections.Reflections
 
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
-import scala.reflect.runtime.universe.runtimeMirror
 
 object ObjectScanner {
 
@@ -39,9 +38,6 @@ object ObjectScanner {
     objects.map(x => objectInstance[T](x.getName))
   }
 
-  private def objectInstance[T](name: String): T = {
-    val mirror = runtimeMirror(getClass.getClassLoader)
-    val module = mirror.staticModule(name)
-    mirror.reflectModule(module).instance.asInstanceOf[T]
-  }
+  private def objectInstance[T](name: String)(implicit ct: ClassTag[T]): T =
+    Class.forName(name).getField("MODULE$").get(ct.runtimeClass).asInstanceOf[T]
 }

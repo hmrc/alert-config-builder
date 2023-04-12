@@ -3,7 +3,6 @@ import sbt._
 object LibDependencies {
 
   val compile = Seq(
-    "org.scala-lang"  %  "scala-reflect" % "2.13.8",
     "org.reflections" %  "reflections"   % "0.10.2",
     "io.spray"        %% "spray-json"    % "1.3.6",
     "org.yaml"        %  "snakeyaml"     % "1.33"
