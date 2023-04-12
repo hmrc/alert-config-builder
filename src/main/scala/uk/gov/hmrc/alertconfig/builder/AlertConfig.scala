@@ -19,7 +19,7 @@ package uk.gov.hmrc.alertconfig.builder
 trait AlertConfig {
   def alertConfig: Seq[AlertConfigBuilder]
   def environmentConfig: Seq[EnvironmentAlertBuilder] =
-    alertConfig.flatMap(_.handlers).toSet.map((h:String) => EnvironmentAlertBuilder(h)).toSeq
+    alertConfig.flatMap(_.handlers).map(EnvironmentAlertBuilder(_))
 
   implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
 }

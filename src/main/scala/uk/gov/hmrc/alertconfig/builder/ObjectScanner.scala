@@ -28,15 +28,13 @@ object ObjectScanner {
     if (pathProp != null) pathProp else "uk.gov.hmrc.alertconfig.configs"
   }
 
-  def loadAll[T](_package: String = scanPackage)(implicit ct: ClassTag[T]): Set[T] = {
-    val objects =
-      new Reflections(_package)
-        .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]])
-        .asScala
-        .toSet
-
-    objects.map(x => objectInstance[T](x.getName))
-  }
+  def loadAll[T](_package: String = scanPackage)(implicit ct: ClassTag[T]): Seq[T] =
+    new Reflections(_package)
+      .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]])
+      .asScala
+      .toSeq
+      .sortBy(_.getName)
+      .map(x => objectInstance[T](x.getName))
 
   private def objectInstance[T](name: String)(implicit ct: ClassTag[T]): T =
     Class.forName(name).getField("MODULE$").get(ct.runtimeClass).asInstanceOf[T]
