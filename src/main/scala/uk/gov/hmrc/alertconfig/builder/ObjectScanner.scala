@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
 import org.reflections.Reflections
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
-import scala.reflect.runtime.universe._
-
 
 object ObjectScanner {
 
@@ -30,21 +28,14 @@ object ObjectScanner {
     if (pathProp != null) pathProp else "uk.gov.hmrc.alertconfig.configs"
   }
 
-  def loadAll[T](_package: String = scanPackage)(implicit ct: ClassTag[T]): Set[T] = {
+  def loadAll[T](_package: String = scanPackage)(implicit ct: ClassTag[T]): Seq[T] =
+    new Reflections(_package)
+      .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]])
+      .asScala
+      .toSeq
+      .sortBy(_.getName)
+      .map(x => objectInstance[T](x.getName))
 
-    val objects =
-      new Reflections(_package)
-        .getSubTypesOf[T](ct.runtimeClass.asInstanceOf[Class[T]]).asScala.toSet
-
-    objects.map(x => objectInstance[T](x.getName))
-
-  }
-
-  def objectInstance[T](name: String) = {
-    val mirror = runtimeMirror(getClass.getClassLoader)
-    val module = mirror.staticModule(name)
-    mirror.reflectModule(module).instance.asInstanceOf[T]
-  }
-
-
+  private def objectInstance[T](name: String)(implicit ct: ClassTag[T]): T =
+    Class.forName(name).getField("MODULE$").get(ct.runtimeClass).asInstanceOf[T]
 }

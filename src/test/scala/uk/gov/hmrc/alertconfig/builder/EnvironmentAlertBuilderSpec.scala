@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import spray.json._
 
-class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAndAfterEach {
+class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   "EnvironmentAlertBuilder" should {
     "create config with production enabled by default" in {
-      EnvironmentAlertBuilder("team-telemetry").alertConfigFor(Production) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").alertConfigFor(Environment.Production) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),
@@ -33,7 +35,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with production disabled" in {
-      EnvironmentAlertBuilder("team-telemetry").disableProduction().alertConfigFor(Production) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").disableProduction().alertConfigFor(Environment.Production) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/noop.rb"),
@@ -43,7 +45,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with integration enabled with default severities" in {
-      EnvironmentAlertBuilder("infra").inIntegration().alertConfigFor(Integration) shouldBe
+      EnvironmentAlertBuilder("infra").inIntegration().alertConfigFor(Environment.Integration) shouldBe
         "infra" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_integration"),
@@ -53,7 +55,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with integration enabled with custom command" in {
-      EnvironmentAlertBuilder("infra").withCommand("/etc/sensu/handlers/dose-pagerduty-high.rb").inIntegration().alertConfigFor(Integration) shouldBe
+      EnvironmentAlertBuilder("infra").withCommand("/etc/sensu/handlers/dose-pagerduty-high.rb").inIntegration().alertConfigFor(Environment.Integration) shouldBe
         "infra" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/dose-pagerduty-high.rb"),
@@ -63,7 +65,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with integration disabled with custom command" in {
-      EnvironmentAlertBuilder("infra").withCommand("/etc/sensu/handlers/dose-pagerduty-high.rb").alertConfigFor(Integration) shouldBe
+      EnvironmentAlertBuilder("infra").withCommand("/etc/sensu/handlers/dose-pagerduty-high.rb").alertConfigFor(Environment.Integration) shouldBe
         "infra" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/noop.rb"),
@@ -73,7 +75,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config for txm-infra with integration enabled and custom environment" in {
-      EnvironmentAlertBuilder("txm-infra").inIntegration(customEnv = "txm_integration").alertConfigFor(Integration) shouldBe
+      EnvironmentAlertBuilder("txm-infra").inIntegration(customEnv = "txm_integration").alertConfigFor(Environment.Integration) shouldBe
         "txm-infra" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team txm-infra -e txm_integration"),
@@ -83,7 +85,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with integration disabled" in {
-      EnvironmentAlertBuilder("labs-team-telemetry").alertConfigFor(Integration) shouldBe
+      EnvironmentAlertBuilder("labs-team-telemetry").alertConfigFor(Environment.Integration) shouldBe
         "labs-team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/noop.rb"),
@@ -93,7 +95,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with integration enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inIntegration(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Integration) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").inIntegration(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Integration) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_integration"),
@@ -103,7 +105,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with management enabled should filter kitchen & packer" in {
-      EnvironmentAlertBuilder("infra").inManagement().alertConfigFor(Management) shouldBe
+      EnvironmentAlertBuilder("infra").inManagement().alertConfigFor(Environment.Management) shouldBe
         "infra" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_management"),
@@ -114,7 +116,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
 
 
     "create config with development enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inDevelopment(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Development) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").inDevelopment(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Development) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_development"),
@@ -124,7 +126,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with qa enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inQa(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Qa) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").inQa(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Qa) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_qa"),
@@ -134,7 +136,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with staging enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inStaging(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Staging) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").inStaging(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Staging) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_staging"),
@@ -144,7 +146,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with external test enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inExternalTest(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(ExternalTest) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").inExternalTest(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.ExternalTest) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_externaltest"),
@@ -154,7 +156,7 @@ class EnvironmentAlertBuilderSpec  extends WordSpec with Matchers with BeforeAnd
     }
 
     "create config with production enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inProduction(Set(Ok, Warning, Critical, Unknown)).alertConfigFor(Production) shouldBe
+      EnvironmentAlertBuilder("team-telemetry").inProduction(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Production) shouldBe
         "team-telemetry" ->
           JsObject(
             "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),

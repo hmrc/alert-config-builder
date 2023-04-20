@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
-import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
+import spray.json.{DefaultJsonProtocol, JsonFormat}
 
-case class ExceptionThreshold(count: Int = 2, severity: AlertSeverityType = AlertSeverity.critical)
+case class ExceptionThreshold(
+  count   : Int           = 2,
+  severity: AlertSeverity = AlertSeverity.Critical
+)
 
-object ExceptionThresholdProtocol extends DefaultJsonProtocol {
+object ExceptionThresholdProtocol {
+  import DefaultJsonProtocol._
 
-  implicit val severityFormat: JsonFormat[AlertSeverity.Value] = jsonSeverityEnum(AlertSeverity)
-
-  implicit val thresholdFormat: RootJsonFormat[ExceptionThreshold] = jsonFormat2(ExceptionThreshold)
+  implicit val thresholdFormat: JsonFormat[ExceptionThreshold] = {
+    implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+    jsonFormat2(ExceptionThreshold)
+  }
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
 import java.io.FileNotFoundException
-import org.scalatest._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import spray.json._
-import uk.gov.hmrc.alertconfig.HttpStatus._
-import uk.gov.hmrc.alertconfig._
 
-class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
+class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
     System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
   }
@@ -104,9 +104,9 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
     "build/configure http status threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_502, 2, AlertSeverity.warning, HttpMethod.post))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_503, 3, AlertSeverity.error, HttpMethod.get))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.Warning, HttpMethod.Post))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_503, 3, AlertSeverity.Error, HttpMethod.Get))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(502), "count" -> JsNumber(2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
@@ -117,7 +117,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
     "build/configure http status threshold with given generic threshold" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(404), "count" -> JsNumber(1), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
@@ -126,9 +126,9 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
     "build/configure http status percent threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_502, 2.2, AlertSeverity.warning, HttpMethod.post))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_503, 3.3, AlertSeverity.error, HttpMethod.get))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_503, 3.3, AlertSeverity.Error, HttpMethod.Get))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(502), "percentage" -> JsNumber(2.2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
@@ -139,7 +139,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
     "build/configure http status percent threshold with given generic threshold" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(404), "percentage" -> JsNumber(100.0), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
@@ -148,7 +148,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
 
     "build/configure http 5xx threshold severity with given thresholds and severities" in {
       val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttp5xxThreshold(2, AlertSeverity.warning).build.get.parseJson.asJsObject.fields
+        .withHttp5xxThreshold(2, AlertSeverity.Warning).build.get.parseJson.asJsObject.fields
 
       serviceConfig("5xx-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("warning"))
     }
@@ -221,7 +221,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     val hysteresis = 1.2
     val excludeSpikes = 2
     val filter = "Some error"
-    val severity = AlertSeverity.warning
+    val severity = AlertSeverity.Warning
 
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(
@@ -233,7 +233,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       "excludeSpikes" -> JsNumber(excludeSpikes),
       "hysteresis" -> JsNumber(hysteresis),
       "percentThreshold" -> JsNumber(percent),
-      "severity" -> JsString(severity.toString)))
+      "severity" -> JsString("warning")))
 
     serviceConfig("absolute-percentage-split-threshold") shouldBe expected
   }
@@ -246,7 +246,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     val excludeSpikes = 2
     val filter = "Some error"
     val target = "service.invalid"
-    val severity = AlertSeverity.warning
+    val severity = AlertSeverity.Warning
 
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(
@@ -259,7 +259,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       "excludeSpikes" -> JsNumber(excludeSpikes),
       "hysteresis" -> JsNumber(hysteresis),
       "percentThreshold" -> JsNumber(percent),
-      "severity" -> JsString(severity.toString)))
+      "severity" -> JsString("warning")))
 
     serviceConfig("absolute-percentage-split-downstream-service-threshold") shouldBe expected
   }
@@ -272,7 +272,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
     val excludeSpikes = 2
     val filter = "Some error"
     val target = "hod-endpoint"
-    val severity = AlertSeverity.warning
+    val severity = AlertSeverity.Warning
 
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(
@@ -285,7 +285,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
       "excludeSpikes" -> JsNumber(excludeSpikes),
       "hysteresis" -> JsNumber(hysteresis),
       "percentThreshold" -> JsNumber(percent),
-      "severity" -> JsString(severity.toString)))
+      "severity" -> JsString("warning")))
 
     serviceConfig("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
   }
@@ -315,7 +315,7 @@ class AlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterE
   "build/configure ExceptionThreshold with optional parameter severity" in {
     val threshold = 12
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-      .withExceptionThreshold(threshold, AlertSeverity.warning).build.get.parseJson.asJsObject.fields
+      .withExceptionThreshold(threshold, AlertSeverity.Warning).build.get.parseJson.asJsObject.fields
 
     val expected = JsObject(
       "severity" -> JsString("warning"),

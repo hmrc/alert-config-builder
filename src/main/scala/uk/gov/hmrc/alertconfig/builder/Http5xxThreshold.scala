@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-object AlertSeverity extends Enumeration {
-  type AlertSeverityType = Value
-  val info = Value("info")
-  val warning = Value("warning")
-  val error = Value("error")
-  val critical = Value("critical")
+import spray.json.{DefaultJsonProtocol, JsonFormat}
+
+case class Http5xxThreshold(
+  count   : Int           = Int.MaxValue,
+  severity: AlertSeverity = AlertSeverity.Critical
+)
+
+object Http5xxThresholdProtocol {
+  import DefaultJsonProtocol._
+
+  implicit val thresholdFormat: JsonFormat[Http5xxThreshold] = {
+    implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+    jsonFormat2(Http5xxThreshold)
+  }
 }
-

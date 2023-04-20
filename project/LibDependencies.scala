@@ -3,17 +3,15 @@ import sbt._
 object LibDependencies {
 
   val compile = Seq(
-    "org.scala-lang" % "scala-reflect" % "2.11.7",
-    "org.reflections" % "reflections" % "0.9.9-RC1",
-    "io.spray" %% "spray-json" % "1.3.5",
-    "org.yaml" % "snakeyaml" % "1.17"
+    "org.reflections" %  "reflections"   % "0.10.2",
+    "io.spray"        %% "spray-json"    % "1.3.6",
+    "org.yaml"        %  "snakeyaml"     % "1.33"
   )
 
 
   val test = Seq(
-    "org.json4s" %% "json4s-jackson" % "3.6.4" % "test",
-    "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-    "org.pegdown" % "pegdown" % "1.6.0" % "test"
+    "org.json4s"           %% "json4s-jackson" % "4.0.6"    % Test,
+    "org.scalatest"        %% "scalatest"      % "3.2.3"    % Test,
+    "com.vladsch.flexmark" %  "flexmark-all"   % "0.35.10"  % Test
   )
-
 }

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
-import org.scalatest.{BeforeAndAfterEach, FunSuite, Matchers}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 import spray.json.{JsArray, JsObject, JsString}
 
-class AllEnvironmentAlertConfigBuilderSpec extends FunSuite with Matchers with BeforeAndAfterEach {
+class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers with BeforeAndAfterEach {
 
   def defaultNoopHandlerConfig: JsObject =
     JsObject(
@@ -35,7 +37,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends FunSuite with Matchers with B
       "severities" ->  JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
       "filter" -> JsString("occurrences"))
 
-    Seq(Integration, Development, Staging, Qa, ExternalTest, Management).foreach{
+    Seq(Environment.Integration, Environment.Development, Environment.Staging, Environment.Qa, Environment.ExternalTest, Environment.Management).foreach {
     e =>
       test(s"create config for $e") {
         val environmentConfigMap = AllEnvironmentAlertConfigBuilder.build(
@@ -45,8 +47,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends FunSuite with Matchers with B
           JsObject("handlers" -> JsObject(
             "infra" -> defaultNoopHandlerConfig,
             "team-telemetry" -> defaultNoopHandlerConfig
-          )
-          )
+          ))
       }
     }
 
@@ -54,12 +55,10 @@ class AllEnvironmentAlertConfigBuilderSpec extends FunSuite with Matchers with B
       val environmentConfigMap = AllEnvironmentAlertConfigBuilder.build(
         Set(EnvironmentAlertBuilder("team-telemetry"), EnvironmentAlertBuilder("infra")))
 
-      environmentConfigMap(Production) shouldBe
+      environmentConfigMap(Environment.Production) shouldBe
         JsObject("handlers" -> JsObject(
-          "infra" -> defaultEnabledHandlerConfig("infra", Production),
-          "team-telemetry" -> defaultEnabledHandlerConfig("team-telemetry", Production)
-        )
-        )
+          "infra" -> defaultEnabledHandlerConfig("infra", Environment.Production),
+          "team-telemetry" -> defaultEnabledHandlerConfig("team-telemetry", Environment.Production)
+        ))
     }
-
 }

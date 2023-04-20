@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.logging
+package uk.gov.hmrc.alertconfig.builder
 
-class Logger {
-  def info(st: String) = println("[INFO] " + st)
+trait AlertConfig {
+  def alertConfig: Seq[AlertConfigBuilder]
+  def environmentConfig: Seq[EnvironmentAlertBuilder] =
+    alertConfig.flatMap(_.handlers).map(EnvironmentAlertBuilder(_))
 
-  def debug(st: String) = println("[DEBUG] " + st)
-
-  def error(st: String) = println("[ERROR] " + st)
-
-  def warn(st: String) = println("[WARN] " + st)
+  implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
 }

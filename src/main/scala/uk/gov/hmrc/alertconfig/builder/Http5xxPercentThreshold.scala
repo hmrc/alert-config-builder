@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-object HttpMethod extends Enumeration {
-  type HttpMethodType = Value
-  val all = Value("ALL_METHODS")
-  val post = Value("POST")
-  val get = Value("GET")
-  val put = Value("PUT")
-  val delete = Value("DELETE")
+import spray.json.{DefaultJsonProtocol, JsonFormat}
+
+case class Http5xxPercentThreshold(
+  percentage: Double        = 100.0,
+  severity  : AlertSeverity = AlertSeverity.Critical
+)
+
+object Http5xxPercentThresholdProtocol {
+  import DefaultJsonProtocol._
+
+  implicit val thresholdFormat: JsonFormat[Http5xxPercentThreshold] = {
+    implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+    jsonFormat2(Http5xxPercentThreshold)
+  }
 }
-

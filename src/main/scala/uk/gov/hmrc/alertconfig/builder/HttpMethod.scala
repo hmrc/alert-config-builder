@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, RootJsonFormat}
+sealed trait HttpMethod
 
-case class MetricsThreshold(name: String,
-                            query: String,
-                            warning:Option[Double] = None,
-                            critical:Option[Double] = None,
-                            invert:Boolean = false)
-
-object MetricsThresholdProtocol extends DefaultJsonProtocol {
-  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat5(MetricsThreshold)
+object HttpMethod {
+  object All    extends HttpMethod { override def toString: String = "ALL_METHODS" }
+  object Post   extends HttpMethod { override def toString: String = "POST"        }
+  object Get    extends HttpMethod { override def toString: String = "GET"         }
+  object Put    extends HttpMethod { override def toString: String = "PUT"         }
+  object Delete extends HttpMethod { override def toString: String = "DELETE"      }
 }

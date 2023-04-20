@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
-import org.scalatest.{BeforeAndAfterEach, Matchers, WordSpec}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import spray.json.{JsArray, JsString, JsObject}
-import uk.gov.hmrc.alertconfig._
 import spray.json._
-import uk.gov.hmrc.alertconfig.HttpStatus.HTTP_STATUS
 
 
-class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAfterEach {
+class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
     System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
   }
@@ -36,10 +36,10 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
-      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, AlertSeverity.critical)
-      alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue,AlertSeverity.critical)
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, AlertSeverity.Critical)
+      alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue,AlertSeverity.Critical)
       alertConfigBuilder.totalHttpRequestThreshold shouldBe Int.MaxValue
-      alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.critical)
+      alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
       alertConfigBuilder.containerKillThreshold shouldBe 1
       alertConfigBuilder.averageCPUThreshold shouldBe Int.MaxValue
       alertConfigBuilder.httpStatusThresholds shouldBe List()
@@ -49,9 +49,9 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
 
     "return TeamAlertConfigBuilder with correct 5xxPercentThreshold" in {
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
-        .withHttp5xxPercentThreshold(19.2, AlertSeverity.warning)
+        .withHttp5xxPercentThreshold(19.2, AlertSeverity.Warning)
 
-      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(19.2, AlertSeverity.warning)
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(19.2, AlertSeverity.Warning)
     }
 
     "return TeamAlertConfigBuilder with correct handlers" in {
@@ -69,7 +69,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val hysteresis = 1.2
       val spikes = 2
       val filter = "status:200"
-      val severity = AlertSeverity.info
+      val severity = AlertSeverity.Info
 
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(percent, crossover, absolute, hysteresis, spikes, filter, severity))
@@ -101,7 +101,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val spikes = 2
       val filter = "status:200"
       val target = "something.invalid"
-      val severity = AlertSeverity.info
+      val severity = AlertSeverity.Info
 
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(percent, crossover, absolute, hysteresis, spikes, filter, target, severity))
@@ -134,7 +134,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val spikes = 2
       val filter = "status:200"
       val target = "hod-endpoint"
-      val severity = AlertSeverity.info
+      val severity = AlertSeverity.Info
 
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(percent, crossover, absolute, hysteresis, spikes, filter, target, severity))
@@ -184,7 +184,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
     "return TeamAlertConfigBuilder with correct ExceptionThreshold" in {
       val threshold = 13
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
-        .withExceptionThreshold(threshold, AlertSeverity.warning)
+        .withExceptionThreshold(threshold, AlertSeverity.Warning)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -222,7 +222,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
     "return TeamAlertConfigBuilder with correct http5xxThresholdSeverities" in {
       val threshold = 19
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
-        .withHttp5xxThreshold(threshold, AlertSeverity.warning)
+        .withHttp5xxThreshold(threshold, AlertSeverity.Warning)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -240,9 +240,9 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {
-      val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.warning, HttpMethod.post)
+      val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.Warning, HttpMethod.Post)
       val threshold2 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_501, 20)
-      val threshold3 = HttpStatusThreshold(HTTP_STATUS(555), 55)
+      val threshold3 = HttpStatusThreshold(HttpStatus.HTTP_STATUS(555), 55)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpStatusThreshold(threshold1)
         .withHttpStatusThreshold(threshold2)
@@ -275,9 +275,9 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusPercentThresholds" in {
-      val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.warning, HttpMethod.post)
+      val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.Warning, HttpMethod.Post)
       val threshold2 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_501, 20)
-      val threshold3 = HttpStatusPercentThreshold(HTTP_STATUS(555), 55.5)
+      val threshold3 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(555), 55.5)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpStatusPercentThreshold(threshold1)
         .withHttpStatusPercentThreshold(threshold2)
@@ -329,7 +329,7 @@ class TeamAlertConfigBuilderSpec extends WordSpec with Matchers with BeforeAndAf
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
-        .withHttp5xxPercentThreshold(12.2, AlertSeverity.warning)
+        .withHttp5xxPercentThreshold(12.2, AlertSeverity.Warning)
 
       alertConfigBuilder.services shouldBe Seq("service1")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)

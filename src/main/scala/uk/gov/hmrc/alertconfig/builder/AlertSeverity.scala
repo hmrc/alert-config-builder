@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builders
+package uk.gov.hmrc.alertconfig.builder
 
-trait AlertConfig {
-  def alertConfig: Seq[AlertConfigBuilder]
-  def environmentConfig: Seq[EnvironmentAlertBuilder] =
-    alertConfig.flatMap(_.handlers).toSet.map((h:String) => EnvironmentAlertBuilder(h)).toSeq
-
-  implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
+sealed trait AlertSeverity
+object AlertSeverity {
+  object Info     extends AlertSeverity { override def toString: String = "info"     }
+  object Warning  extends AlertSeverity { override def toString: String = "warning"  }
+  object Error    extends AlertSeverity { override def toString: String = "error"    }
+  object Critical extends AlertSeverity { override def toString: String = "critical" }
 }

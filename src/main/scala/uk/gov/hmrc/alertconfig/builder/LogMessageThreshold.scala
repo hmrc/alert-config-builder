@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig
+package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
-import uk.gov.hmrc.alertconfig.AlertSeverity.AlertSeverityType
+import spray.json.{DefaultJsonProtocol, JsonFormat}
 
-case class Http5xxThreshold(count: Int = Int.MaxValue, severity: AlertSeverityType = AlertSeverity.critical)
+// By default we alert if the count of messages is >= threshold. If lessThanMode is set we alert if < threshold
+case class LogMessageThreshold(
+  message     : String,
+  count       : Int,
+  lessThanMode: Boolean = false
+)
 
-object Http5xxThresholdProtocol extends DefaultJsonProtocol {
+object LogMessageThresholdProtocol extends DefaultJsonProtocol {
 
-  implicit val severityFormat: JsonFormat[AlertSeverity.Value] = jsonSeverityEnum(AlertSeverity)
-
-  implicit val thresholdFormat: RootJsonFormat[Http5xxThreshold] = jsonFormat2(Http5xxThreshold)
+  implicit val format: JsonFormat[LogMessageThreshold] = jsonFormat3(LogMessageThreshold)
 }

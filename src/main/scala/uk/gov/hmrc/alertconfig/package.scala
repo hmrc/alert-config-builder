@@ -14,27 +14,38 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc
+package uk.gov.hmrc.alertconfig
 
-import spray.json.{DeserializationException, JsNumber, JsString, JsValue, JsonFormat}
+import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat, deserializationError}
 
-package object alertconfig {
+package object builder {
 
-  def jsonSeverityEnum(enu: AlertSeverity.type) = new JsonFormat[AlertSeverity.Value] {
-    def write(obj: AlertSeverity.AlertSeverityType) = JsString(obj.toString)
+  val alertSeverityFormat = new JsonFormat[AlertSeverity] {
+    override def write(obj: AlertSeverity): JsValue =
+      JsString(obj.toString)
 
-    def read(json: JsValue) = json match {
-      case JsNumber(num) => AlertSeverity(num.toInt)
-      case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
-    }
+    override def read(json: JsValue): AlertSeverity =
+      Seq(AlertSeverity.Info, AlertSeverity.Warning, AlertSeverity.Error, AlertSeverity.Critical)
+        .find(_.toString == json.toString)
+        .getOrElse(deserializationError("Invalid AlertSeverity"))
   }
-  
-  def jsonHttpMethodEnum(enu: HttpMethod.type) = new JsonFormat[HttpMethod.Value] {
-    def write(obj: HttpMethod.HttpMethodType) = JsString(obj.toString)
 
-    def read(json: JsValue) = json match {
-      case JsNumber(num) => HttpMethod(num.toInt)
-      case something => throw DeserializationException(s"Expected a value from enum $enu instead of $something")
-    }
+  val httpMethodFormat = new JsonFormat[HttpMethod] {
+    override def write(obj: HttpMethod): JsValue =
+      JsString(obj.toString)
+
+    override def read(json: JsValue): HttpMethod =
+      Seq(HttpMethod.All, HttpMethod.Post, HttpMethod.Get, HttpMethod.Put, HttpMethod.Delete)
+        .find(_.toString == json.toString)
+        .getOrElse(deserializationError("Invalid HttpMethod"))
+  }
+
+  val httpStatusFormat = new JsonFormat[HttpStatus.HTTP_STATUS] {
+    import DefaultJsonProtocol._
+    override def read(json: JsValue): HttpStatus.HTTP_STATUS =
+      HttpStatus.HTTP_STATUS(IntJsonFormat.read(json))
+
+    override def write(obj: HttpStatus.HTTP_STATUS): JsValue =
+      JsNumber(obj.status)
   }
 }
