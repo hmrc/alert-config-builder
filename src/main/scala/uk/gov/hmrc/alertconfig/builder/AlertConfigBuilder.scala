@@ -86,8 +86,8 @@ case class AlertConfigBuilder(
   def withContainerKillThreshold(containerCrashThreshold: Int) =
     this.copy(containerKillThreshold = containerCrashThreshold)
 
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false) =
-    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode))
+  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false,  severity: AlertSeverity = AlertSeverity.Critical) =
+    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
     this.copy(averageCPUThreshold = averageCPUThreshold)

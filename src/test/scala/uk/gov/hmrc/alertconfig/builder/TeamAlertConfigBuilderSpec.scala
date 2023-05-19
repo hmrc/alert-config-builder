@@ -354,10 +354,18 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       val expected = JsArray(
-        JsObject("message" -> JsString("SIMULATED_ERROR1"),
-          "count" -> JsNumber(19), "lessThanMode" -> JsFalse),
-        JsObject("message" -> JsString("SIMULATED_ERROR2"),
-          "count" -> JsNumber(20), "lessThanMode" -> JsTrue)
+        JsObject(
+          "message" -> JsString("SIMULATED_ERROR1"),
+          "count" -> JsNumber(19),
+          "lessThanMode" -> JsFalse,
+          "severity" -> JsString("critical")
+        ),
+        JsObject(
+          "message" -> JsString("SIMULATED_ERROR2"),
+          "count" -> JsNumber(20),
+          "lessThanMode" -> JsTrue,
+          "severity" -> JsString("critical")
+        )
       )
 
       service1Config("log-message-thresholds") shouldBe expected

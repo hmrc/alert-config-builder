@@ -22,10 +22,11 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 case class LogMessageThreshold(
   message     : String,
   count       : Int,
-  lessThanMode: Boolean = false
+  lessThanMode: Boolean = false,
+  severity: AlertSeverity = AlertSeverity.Critical
 )
 
 object LogMessageThresholdProtocol extends DefaultJsonProtocol {
-
-  implicit val format: JsonFormat[LogMessageThreshold] = jsonFormat3(LogMessageThreshold)
+  implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+  implicit val format: JsonFormat[LogMessageThreshold] = jsonFormat4(LogMessageThreshold)
 }
