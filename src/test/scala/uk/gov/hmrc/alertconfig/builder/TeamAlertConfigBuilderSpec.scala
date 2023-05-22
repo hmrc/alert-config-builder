@@ -345,6 +345,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
+        .withLogMessageThreshold("SIMULATED_ERROR3", 21, lessThanMode = true, AlertSeverity.Warning)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -365,6 +366,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "count" -> JsNumber(20),
           "lessThanMode" -> JsTrue,
           "severity" -> JsString("critical")
+        ),
+        JsObject(
+          "message" -> JsString("SIMULATED_ERROR3"),
+          "count" -> JsNumber(21),
+          "lessThanMode" -> JsTrue,
+          "severity" -> JsString("warning")
         )
       )
 
