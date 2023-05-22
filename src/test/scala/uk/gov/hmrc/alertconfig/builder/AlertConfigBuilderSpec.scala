@@ -165,12 +165,14 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 3)
         .withLogMessageThreshold("SIMULATED_ERROR2", 4, lessThanMode = false)
-        .withLogMessageThreshold("SIMULATED_ERROR3", 5, lessThanMode = true).build.get.parseJson.asJsObject.fields
+        .withLogMessageThreshold("SIMULATED_ERROR3", 5, lessThanMode = true)
+        .withLogMessageThreshold("SIMULATED_ERROR4", 6, lessThanMode = true, AlertSeverity.Warning).build.get.parseJson.asJsObject.fields
 
       serviceConfig("log-message-thresholds") shouldBe JsArray(
-        JsObject("message" -> JsString("SIMULATED_ERROR1"), "count" -> JsNumber(3), "lessThanMode" -> JsFalse),
-        JsObject("message" -> JsString("SIMULATED_ERROR2"), "count" -> JsNumber(4), "lessThanMode" -> JsFalse),
-        JsObject("message" -> JsString("SIMULATED_ERROR3"), "count" -> JsNumber(5), "lessThanMode" -> JsTrue)
+        JsObject("message" -> JsString("SIMULATED_ERROR1"), "count" -> JsNumber(3), "lessThanMode" -> JsFalse, "severity" -> JsString("critical")),
+        JsObject("message" -> JsString("SIMULATED_ERROR2"), "count" -> JsNumber(4), "lessThanMode" -> JsFalse, "severity" -> JsString("critical")),
+        JsObject("message" -> JsString("SIMULATED_ERROR3"), "count" -> JsNumber(5), "lessThanMode" -> JsTrue, "severity" -> JsString("critical")),
+        JsObject("message" -> JsString("SIMULATED_ERROR4"), "count" -> JsNumber(6), "lessThanMode" -> JsTrue, "severity" -> JsString("warning"))
       )
     }
 
