@@ -229,8 +229,8 @@ case class TeamAlertConfigBuilder(
   def withTotalHttpRequestsCountThreshold(threshold: Int) =
     this.copy(totalHttpRequestThreshold = threshold)
 
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false) =
-    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode))
+  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false,  severity: AlertSeverity = AlertSeverity.Critical) =
+    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
     this.copy(averageCPUThreshold = averageCPUThreshold)
