@@ -37,6 +37,7 @@ case class AlertConfigBuilder(
   httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
   httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
   containerKillThreshold                             : Int                                                     = 1,
+  httpStatusFloorThresholds                          : Seq[HttpStatusFloorThreshold]                           = Nil,
   httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
   httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
   metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
@@ -77,6 +78,9 @@ case class AlertConfigBuilder(
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
+  def withHttpStatusFloorThreshold(threshold: HttpStatusFloorThreshold) =
+    this.copy(httpStatusFloorThresholds = httpStatusFloorThresholds :+ threshold)
+
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
 
@@ -96,6 +100,7 @@ case class AlertConfigBuilder(
     this.copy(platformService = platformService)
 
   def build: Option[String] = {
+    import HttpStatusFloorThresholdProtocol._
     import HttpStatusThresholdProtocol._
     import HttpStatusPercentThresholdProtocol._
     import DefaultJsonProtocol._
@@ -132,6 +137,7 @@ case class AlertConfigBuilder(
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":${http5xxPercentThreshold.toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
              |"containerKillThreshold" : $containerKillThreshold,
+             |"httpStatusFloorThresholds" : ${httpStatusFloorThresholds.toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
              |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
@@ -181,6 +187,7 @@ case class TeamAlertConfigBuilder(
   httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
   httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
   containerKillThreshold                             : Int                                                     = 1,
+  httpStatusFloorThresholds                          : Seq[HttpStatusFloorThreshold]                           = Nil,
   httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
   httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
   metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
@@ -217,6 +224,9 @@ case class TeamAlertConfigBuilder(
   def withContainerKillThreshold(containerKillThreshold: Int) =
     this.copy(containerKillThreshold = containerKillThreshold)
 
+  def withHttpStatusFloorThreshold(threshold: HttpStatusFloorThreshold) =
+    this.copy(httpStatusFloorThresholds = httpStatusFloorThresholds :+ threshold)
+
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
@@ -250,6 +260,7 @@ case class TeamAlertConfigBuilder(
         httpAbsolutePercentSplitDownstreamServiceThresholds,
         httpAbsolutePercentSplitDownstreamHodThresholds,
         containerKillThreshold,
+        httpStatusFloorThresholds,
         httpStatusThresholds,
         httpStatusPercentThresholds,
         metricsThresholds,

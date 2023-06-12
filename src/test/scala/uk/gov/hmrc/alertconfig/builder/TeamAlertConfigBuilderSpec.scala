@@ -43,6 +43,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.containerKillThreshold shouldBe 1
       alertConfigBuilder.averageCPUThreshold shouldBe Int.MaxValue
       alertConfigBuilder.httpStatusThresholds shouldBe List()
+      alertConfigBuilder.httpStatusFloorThresholds shouldBe List()
       alertConfigBuilder.logMessageThresholds shouldBe List()
       alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
     }
@@ -237,6 +238,41 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-threshold") shouldBe expected
       service2Config("5xx-threshold") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with correct httpStatusFloorThreshold" in {
+      val threshold1 = HttpStatusFloorThreshold(HttpStatus.HTTP_STATUS_500, 5, AlertSeverity.Warning, HttpMethod.Post)
+      val threshold2 = HttpStatusFloorThreshold(HttpStatus.HTTP_STATUS_501, 20)
+      val threshold3 = HttpStatusFloorThreshold(HttpStatus.HTTP_STATUS(555), 35)
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttpStatusFloorThreshold(threshold1)
+        .withHttpStatusFloorThreshold(threshold2)
+        .withHttpStatusFloorThreshold(threshold3)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray(
+        JsObject("httpStatus" -> JsNumber(500),
+          "count" -> JsNumber(5),
+          "severity" -> JsString("warning"),
+          "httpMethod" -> JsString("POST")),
+        JsObject("httpStatus" -> JsNumber(501),
+          "count" -> JsNumber(20),
+          "severity" -> JsString("critical"),
+          "httpMethod" -> JsString("ALL_METHODS")),
+        JsObject("httpStatus" -> JsNumber(555),
+          "count" -> JsNumber(35),
+          "severity" -> JsString("critical"),
+          "httpMethod" -> JsString("ALL_METHODS"))
+      )
+
+      service1Config("httpStatusFloorThresholds") shouldBe expected
+      service2Config("httpStatusFloorThresholds") shouldBe expected
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {
