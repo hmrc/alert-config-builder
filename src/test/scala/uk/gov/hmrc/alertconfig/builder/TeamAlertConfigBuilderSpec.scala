@@ -43,6 +43,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.containerKillThreshold shouldBe 1
       alertConfigBuilder.averageCPUThreshold shouldBe Int.MaxValue
       alertConfigBuilder.httpStatusThresholds shouldBe List()
+      alertConfigBuilder.httpTrafficThresholds shouldBe List()
       alertConfigBuilder.logMessageThresholds shouldBe List()
       alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
     }
@@ -237,6 +238,32 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-threshold") shouldBe expected
       service2Config("5xx-threshold") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with correct httpTrafficThreshold" in {
+      val threshold1 = HttpTrafficThreshold(5)
+      val threshold2 = HttpTrafficThreshold(20)
+      val threshold3 = HttpTrafficThreshold(35)
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttpTrafficThreshold(threshold1)
+        .withHttpTrafficThreshold(threshold2)
+        .withHttpTrafficThreshold(threshold3)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray(
+        JsObject("minRequestCount" -> JsNumber(5)),
+        JsObject("minRequestCount" -> JsNumber(20)),
+        JsObject("minRequestCount" -> JsNumber(35))
+      )
+
+      service1Config("httpTrafficThresholds") shouldBe expected
+      service2Config("httpTrafficThresholds") shouldBe expected
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {

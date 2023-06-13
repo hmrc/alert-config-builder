@@ -37,6 +37,7 @@ case class AlertConfigBuilder(
   httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
   httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
   containerKillThreshold                             : Int                                                     = 1,
+  httpTrafficThresholds                              : Seq[HttpTrafficThreshold]                               = Nil,
   httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
   httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
   metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
@@ -77,6 +78,9 @@ case class AlertConfigBuilder(
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
+  def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) =
+    this.copy(httpTrafficThresholds = httpTrafficThresholds :+ threshold)
+
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
 
@@ -96,6 +100,7 @@ case class AlertConfigBuilder(
     this.copy(platformService = platformService)
 
   def build: Option[String] = {
+    import HttpTrafficThresholdProtocol._
     import HttpStatusThresholdProtocol._
     import HttpStatusPercentThresholdProtocol._
     import DefaultJsonProtocol._
@@ -132,6 +137,7 @@ case class AlertConfigBuilder(
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":${http5xxPercentThreshold.toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
              |"containerKillThreshold" : $containerKillThreshold,
+             |"httpTrafficThresholds" : ${httpTrafficThresholds.toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
              |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
@@ -171,23 +177,24 @@ case class AlertConfigBuilder(
 }
 
 case class TeamAlertConfigBuilder(
-  services                                           : Seq[String],
-  handlers                                           : Seq[String]                                             = Seq("noop"),
-  errorsLoggedThreshold                              : Int                                                     = Int.MaxValue,
-  exceptionThreshold                                 : ExceptionThreshold                                      = ExceptionThreshold(),
-  http5xxThreshold                                   : Http5xxThreshold                                        = Http5xxThreshold(),
-  http5xxPercentThreshold                            : Http5xxPercentThreshold                                 = Http5xxPercentThreshold(100.0),
-  httpAbsolutePercentSplitThresholds                 : Seq[HttpAbsolutePercentSplitThreshold]                  = Nil,
-  httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
-  httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
-  containerKillThreshold                             : Int                                                     = 1,
-  httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
-  httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
-  metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
-  logMessageThresholds                               : Seq[LogMessageThreshold]                                = Nil,
-  totalHttpRequestThreshold                          : Int                                                     = Int.MaxValue,
-  averageCPUThreshold                                : Int                                                     = Int.MaxValue,
-  platformService                                    : Boolean                                                 = false
+                                   services                                           : Seq[String],
+                                   handlers                                           : Seq[String]                                             = Seq("noop"),
+                                   errorsLoggedThreshold                              : Int                                                     = Int.MaxValue,
+                                   exceptionThreshold                                 : ExceptionThreshold                                      = ExceptionThreshold(),
+                                   http5xxThreshold                                   : Http5xxThreshold                                        = Http5xxThreshold(),
+                                   http5xxPercentThreshold                            : Http5xxPercentThreshold                                 = Http5xxPercentThreshold(100.0),
+                                   httpAbsolutePercentSplitThresholds                 : Seq[HttpAbsolutePercentSplitThreshold]                  = Nil,
+                                   httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
+                                   httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
+                                   containerKillThreshold                             : Int                                                     = 1,
+                                   httpTrafficThresholds                              : Seq[HttpTrafficThreshold]                           = Nil,
+                                   httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
+                                   httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
+                                   metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
+                                   logMessageThresholds                               : Seq[LogMessageThreshold]                                = Nil,
+                                   totalHttpRequestThreshold                          : Int                                                     = Int.MaxValue,
+                                   averageCPUThreshold                                : Int                                                     = Int.MaxValue,
+                                   platformService                                    : Boolean                                                 = false
 ) extends Builder[Seq[AlertConfigBuilder]] {
 
   def withHandlers(handlers: String*) =
@@ -216,6 +223,9 @@ case class TeamAlertConfigBuilder(
 
   def withContainerKillThreshold(containerKillThreshold: Int) =
     this.copy(containerKillThreshold = containerKillThreshold)
+
+  def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) =
+    this.copy(httpTrafficThresholds = httpTrafficThresholds :+ threshold)
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
@@ -250,6 +260,7 @@ case class TeamAlertConfigBuilder(
         httpAbsolutePercentSplitDownstreamServiceThresholds,
         httpAbsolutePercentSplitDownstreamHodThresholds,
         containerKillThreshold,
+        httpTrafficThresholds,
         httpStatusThresholds,
         httpStatusPercentThresholds,
         metricsThresholds,
