@@ -18,14 +18,17 @@ package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
-case class HttpTrafficThreshold(minRequestCount: Int = 1)
+case class HttpTrafficThreshold(
+                                 warning: Option[Int],
+                                 critical: Option[Int],
+                                 maxMinutesBelowThreshold: Int = 5
+                               )
 
 object HttpTrafficThresholdProtocol {
 
   import DefaultJsonProtocol._
 
   implicit val thresholdFloorFormat: JsonFormat[HttpTrafficThreshold] = {
-    jsonFormat1(HttpTrafficThreshold)
+    jsonFormat3(HttpTrafficThreshold)
   }
-
 }
