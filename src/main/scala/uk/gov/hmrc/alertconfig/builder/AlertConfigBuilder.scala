@@ -31,6 +31,7 @@ case class AlertConfigBuilder(
   handlers                                           : Seq[String]                                             = Seq("noop"),
   errorsLoggedThreshold                              : Int                                                     = Int.MaxValue,
   exceptionThreshold                                 : ExceptionThreshold                                      = ExceptionThreshold(),
+  http5xxRateIncrease                                : Seq[Http5xxRateIncrease]                                = Nil,
   http5xxThreshold                                   : Http5xxThreshold                                        = Http5xxThreshold(),
   http5xxPercentThreshold                            : Http5xxPercentThreshold                                 = Http5xxPercentThreshold(100.0),
   httpAbsolutePercentSplitThresholds                 : Seq[HttpAbsolutePercentSplitThreshold]                  = Nil,
@@ -83,6 +84,9 @@ case class AlertConfigBuilder(
 
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
+
+  def withHttp5xxRateIncrease(rateIncrease: Http5xxRateIncrease) =
+    this.copy(http5xxRateIncrease = http5xxRateIncrease :+ rateIncrease)
 
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
@@ -140,6 +144,7 @@ case class AlertConfigBuilder(
              |"httpTrafficThresholds" : ${httpTrafficThresholds.toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
+             |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
              |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $totalHttpRequestThreshold,
              |"log-message-thresholds" : $buildLogMessageThresholdsJson,
@@ -187,9 +192,10 @@ case class TeamAlertConfigBuilder(
                                    httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
                                    httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
                                    containerKillThreshold                             : Int                                                     = 1,
-                                   httpTrafficThresholds                              : Seq[HttpTrafficThreshold]                           = Nil,
+                                   httpTrafficThresholds                              : Seq[HttpTrafficThreshold]                               = Nil,
                                    httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
                                    httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
+                                   http5xxRateIncrease                                : Seq[Http5xxRateIncrease]                                = Nil,
                                    metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
                                    logMessageThresholds                               : Seq[LogMessageThreshold]                                = Nil,
                                    totalHttpRequestThreshold                          : Int                                                     = Int.MaxValue,
@@ -233,6 +239,9 @@ case class TeamAlertConfigBuilder(
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
 
+  def withHttp5xxRateIncrease(rateIncrease: Http5xxRateIncrease) =
+    this.copy(http5xxRateIncrease = http5xxRateIncrease :+ rateIncrease)
+
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
@@ -254,6 +263,7 @@ case class TeamAlertConfigBuilder(
         handlers,
         errorsLoggedThreshold,
         exceptionThreshold,
+        http5xxRateIncrease,
         http5xxThreshold,
         http5xxPercentThreshold,
         httpAbsolutePercentSplitThresholds,
