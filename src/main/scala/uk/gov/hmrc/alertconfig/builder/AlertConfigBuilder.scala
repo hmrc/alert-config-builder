@@ -80,7 +80,7 @@ case class AlertConfigBuilder(
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) =
-    this.copy(httpTrafficThresholds = httpTrafficThresholds :+ threshold)
+    this.copy(httpTrafficThresholds = Seq(threshold))
 
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
