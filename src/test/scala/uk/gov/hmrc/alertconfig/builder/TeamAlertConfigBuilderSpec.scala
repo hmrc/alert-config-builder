@@ -70,7 +70,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val hysteresis = 1.2
       val spikes = 2
       val filter = "status:200"
-      val severity = AlertSeverity.Info
+      val severity = AlertSeverity.Warning
 
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(percent, crossover, absolute, hysteresis, spikes, filter, severity))
@@ -102,7 +102,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val spikes = 2
       val filter = "status:200"
       val target = "something.invalid"
-      val severity = AlertSeverity.Info
+      val severity = AlertSeverity.Warning
 
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(percent, crossover, absolute, hysteresis, spikes, filter, target, severity))
@@ -135,7 +135,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val spikes = 2
       val filter = "status:200"
       val target = "hod-endpoint"
-      val severity = AlertSeverity.Info
+      val severity = AlertSeverity.Warning
 
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(percent, crossover, absolute, hysteresis, spikes, filter, target, severity))

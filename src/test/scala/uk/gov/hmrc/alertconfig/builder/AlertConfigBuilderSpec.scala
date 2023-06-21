@@ -105,12 +105,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     "build/configure http status threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.Warning, HttpMethod.Post))
-        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_503, 3, AlertSeverity.Error, HttpMethod.Get))
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(502), "count" -> JsNumber(2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
-        JsObject("httpStatus" -> JsNumber(503), "count" -> JsNumber(3), "severity" -> JsString("error"), "httpMethod" -> JsString("GET")),
         JsObject("httpStatus" -> JsNumber(504), "count" -> JsNumber(4), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
       )
     }
@@ -127,12 +125,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     "build/configure http status percent threshold with given thresholds and severities" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_503, 3.3, AlertSeverity.Error, HttpMethod.Get))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
         JsObject("httpStatus" -> JsNumber(502), "percentage" -> JsNumber(2.2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
-        JsObject("httpStatus" -> JsNumber(503), "percentage" -> JsNumber(3.3), "severity" -> JsString("error"), "httpMethod" -> JsString("GET")),
         JsObject("httpStatus" -> JsNumber(504), "percentage" -> JsNumber(4.4), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
       )
     }
