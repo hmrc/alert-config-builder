@@ -25,7 +25,7 @@ package object builder {
       JsString(obj.toString)
 
     override def read(json: JsValue): AlertSeverity =
-      Seq(AlertSeverity.Info, AlertSeverity.Warning, AlertSeverity.Error, AlertSeverity.Critical)
+      Seq(AlertSeverity.Warning, AlertSeverity.Critical)
         .find(_.toString == json.toString)
         .getOrElse(deserializationError("Invalid AlertSeverity"))
   }
