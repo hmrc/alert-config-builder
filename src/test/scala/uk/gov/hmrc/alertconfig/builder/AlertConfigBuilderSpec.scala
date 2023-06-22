@@ -172,6 +172,22 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     }
 
+    "return AlertConfigBuilder with correct httpTrafficThreshold" in {
+      val threshold = HttpTrafficThreshold(Some(10), Some(5), 35)
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpTrafficThreshold(threshold).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("httpTrafficThresholds") shouldBe JsArray(
+        JsObject("warning" -> JsNumber(10), "critical" -> JsNumber(5), "maxMinutesBelowThreshold" -> JsNumber(35))
+      )
+    }
+
+    "throw exception if httpTrafficThreshold is defined multiple times" in {
+      an[Exception] should be thrownBy AlertConfigBuilder("service1")
+        .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))
+    }
+
     "build/configure any empty http status threshold" in {
       val serviceConfig = AlertConfigBuilder("service1").build.get.parseJson.asJsObject.fields
 

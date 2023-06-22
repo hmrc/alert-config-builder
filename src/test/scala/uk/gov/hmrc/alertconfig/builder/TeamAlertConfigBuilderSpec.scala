@@ -261,7 +261,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     }
 
     "throw exception if httpTrafficThreshold is defined multiple times" in {
-      an[RuntimeException] should be thrownBy TeamAlertConfigBuilder.teamAlerts(Seq())
+      an[Exception] should be thrownBy TeamAlertConfigBuilder.teamAlerts(Seq())
         .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))
         .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))
     }
