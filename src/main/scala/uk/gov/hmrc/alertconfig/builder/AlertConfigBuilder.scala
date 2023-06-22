@@ -79,8 +79,14 @@ case class AlertConfigBuilder(
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
-  def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) =
-    this.copy(httpTrafficThresholds = Seq(threshold))
+  def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) = {
+    if(!httpTrafficThresholds.isEmpty) {
+      throw new Exception("withHttpTrafficThreshold has already been defined for this microservice")
+    }
+    else {
+      this.copy(httpTrafficThresholds = Seq(threshold))
+    }
+  }
 
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
@@ -230,8 +236,14 @@ case class TeamAlertConfigBuilder(
   def withContainerKillThreshold(containerKillThreshold: Int) =
     this.copy(containerKillThreshold = containerKillThreshold)
 
-  def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) =
-    this.copy(httpTrafficThresholds = Seq(threshold))
+  def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) = {
+    if (!httpTrafficThresholds.isEmpty) {
+      throw new Exception("withHttpTrafficThreshold has already been defined for this microservice")
+    }
+    else {
+      this.copy(httpTrafficThresholds = Seq(threshold))
+    }
+  }
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
