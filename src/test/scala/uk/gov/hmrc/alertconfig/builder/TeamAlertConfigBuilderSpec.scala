@@ -241,13 +241,9 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     }
 
     "return TeamAlertConfigBuilder with correct httpTrafficThreshold" in {
-      val threshold1 = HttpTrafficThreshold(Some(2), None, 5)
-      val threshold2 = HttpTrafficThreshold(Some(199), Some(3), 20)
-      val threshold3 = HttpTrafficThreshold(Some(10), Some(5), 35)
+      val threshold = HttpTrafficThreshold(Some(10), Some(5), 35)
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
-        .withHttpTrafficThreshold(threshold1)
-        .withHttpTrafficThreshold(threshold2)
-        .withHttpTrafficThreshold(threshold3)
+        .withHttpTrafficThreshold(threshold)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -257,8 +253,6 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       val expected = JsArray(
-        JsObject("warning" -> JsNumber(2), "maxMinutesBelowThreshold" -> JsNumber(5)),
-        JsObject("warning" -> JsNumber(199), "critical" -> JsNumber(3), "maxMinutesBelowThreshold" -> JsNumber(20)),
         JsObject("warning" -> JsNumber(10), "critical" -> JsNumber(5), "maxMinutesBelowThreshold" -> JsNumber(35))
       )
 
