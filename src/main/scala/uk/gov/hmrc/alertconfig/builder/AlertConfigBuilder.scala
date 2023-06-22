@@ -231,7 +231,7 @@ case class TeamAlertConfigBuilder(
     this.copy(containerKillThreshold = containerKillThreshold)
 
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) =
-    this.copy(httpTrafficThresholds = httpTrafficThresholds :+ threshold)
+    this.copy(httpTrafficThresholds = Seq(threshold))
 
   def withHttpStatusThreshold(threshold: HttpStatusThreshold) =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
