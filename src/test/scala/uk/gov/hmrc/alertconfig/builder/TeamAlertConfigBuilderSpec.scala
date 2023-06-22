@@ -260,6 +260,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service2Config("httpTrafficThresholds") shouldBe expected
     }
 
+    "throw exception if httpTrafficThreshold is defined multiple times" in {
+      an[Exception] should be thrownBy TeamAlertConfigBuilder.teamAlerts(Seq())
+        .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))
+    }
+
     "return TeamAlertConfigBuilder with correct httpStatusThresholds" in {
       val threshold1 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_500, 19, AlertSeverity.Warning, HttpMethod.Post)
       val threshold2 = HttpStatusThreshold(HttpStatus.HTTP_STATUS_501, 20)
