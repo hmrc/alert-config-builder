@@ -55,13 +55,17 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
     }
 
     "create config with integration enabled with custom command" in {
-      EnvironmentAlertBuilder("infra").withCommand("/etc/sensu/handlers/dose-pagerduty-high.rb").inIntegration().alertConfigFor(Environment.Integration) shouldBe
+      EnvironmentAlertBuilder("infra")
+        .withCommand("/etc/sensu/handlers/some-custom-ruby-handler.rb")
+        .inIntegration()
+        .alertConfigFor(Environment.Integration) shouldBe
         "infra" ->
           JsObject(
-            "command" -> JsString("/etc/sensu/handlers/dose-pagerduty-high.rb"),
+            "command" -> JsString("/etc/sensu/handlers/some-custom-ruby-handler.rb"),
             "type" -> JsString("pipe"),
             "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences"))
+            "filter" -> JsString("occurrences")
+          )
     }
 
     "create config with integration disabled with custom command" in {
