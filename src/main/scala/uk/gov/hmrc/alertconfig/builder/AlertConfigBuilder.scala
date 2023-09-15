@@ -34,7 +34,7 @@ case class AlertConfigBuilder(
   http5xxRateIncrease                                : Seq[Http5xxRateIncrease]                                = Nil,
   http5xxThreshold                                   : Http5xxThreshold                                        = Http5xxThreshold(),
   http5xxPercentThreshold                            : Http5xxPercentThreshold                                 = Http5xxPercentThreshold(100.0),
-  http90PercentileThresholds                         : Seq[Http90PercentileThreshold]                          = Nil,
+  http90PercentileResponseTimeThresholds                         : Seq[Http90PercentileResponseTimeThreshold]                          = Nil,
   httpAbsolutePercentSplitThresholds                 : Seq[HttpAbsolutePercentSplitThreshold]                  = Nil,
   httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
   httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
@@ -68,12 +68,12 @@ case class AlertConfigBuilder(
   def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
-  def withHttp90PercentileThreshold(threshold: Http90PercentileThreshold) = {
-    if (http90PercentileThresholds.nonEmpty) {
-      throw new Exception("withHttp90PercentileThreshold has already been defined for this microservice")
+  def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
+    if (http90PercentileResponseTimeThresholds.nonEmpty) {
+      throw new Exception("withHttp90PercentileResponseTimeThreshold has already been defined for this microservice")
     }
     else {
-      this.copy(http90PercentileThresholds = Seq(threshold))
+      this.copy(http90PercentileResponseTimeThresholds = Seq(threshold))
     }
   }
 
@@ -120,7 +120,7 @@ case class AlertConfigBuilder(
     this.copy(platformService = platformService)
 
   def build: Option[String] = {
-    import Http90PercentileThresholdProtocol._
+    import Http90PercentileResponseTimeThresholdProtocol._
     import HttpTrafficThresholdProtocol._
     import HttpStatusThresholdProtocol._
     import HttpStatusPercentThresholdProtocol._
@@ -158,7 +158,7 @@ case class AlertConfigBuilder(
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":${http5xxPercentThreshold.toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
              |"containerKillThreshold" : $containerKillThreshold,
-             |"http90PercentileThresholds" : ${http90PercentileThresholds.toJson.compactPrint},
+             |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.toJson.compactPrint},
              |"httpTrafficThresholds" : ${httpTrafficThresholds.toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
@@ -206,7 +206,7 @@ case class TeamAlertConfigBuilder(
                                    exceptionThreshold                                 : ExceptionThreshold                                      = ExceptionThreshold(),
                                    http5xxThreshold                                   : Http5xxThreshold                                        = Http5xxThreshold(),
                                    http5xxPercentThreshold                            : Http5xxPercentThreshold                                 = Http5xxPercentThreshold(100.0),
-                                   http90PercentileThresholds                         : Seq[Http90PercentileThreshold]                          = Nil,
+                                   http90PercentileResponseTimeThresholds                         : Seq[Http90PercentileResponseTimeThreshold]                          = Nil,
                                    httpAbsolutePercentSplitThresholds                 : Seq[HttpAbsolutePercentSplitThreshold]                  = Nil,
                                    httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
                                    httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
@@ -237,12 +237,12 @@ case class TeamAlertConfigBuilder(
   def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
 
-  def withHttp90PercentileThreshold(threshold: Http90PercentileThreshold) = {
-    if (http90PercentileThresholds.nonEmpty) {
-      throw new Exception("withHttp90PercentileThreshold has already been defined for this microservice")
+  def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
+    if (http90PercentileResponseTimeThresholds.nonEmpty) {
+      throw new Exception("withHttp90PercentileResponseTimeThreshold has already been defined for this microservice")
     }
     else {
-      this.copy(http90PercentileThresholds = Seq(threshold))
+      this.copy(http90PercentileResponseTimeThresholds = Seq(threshold))
     }
   }
 
@@ -300,7 +300,7 @@ case class TeamAlertConfigBuilder(
         http5xxRateIncrease,
         http5xxThreshold,
         http5xxPercentThreshold,
-        http90PercentileThresholds,
+        http90PercentileResponseTimeThresholds,
         httpAbsolutePercentSplitThresholds,
         httpAbsolutePercentSplitDownstreamServiceThresholds,
         httpAbsolutePercentSplitDownstreamHodThresholds,
