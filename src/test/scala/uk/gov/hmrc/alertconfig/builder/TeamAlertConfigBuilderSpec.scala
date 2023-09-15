@@ -43,6 +43,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.containerKillThreshold shouldBe 1
       alertConfigBuilder.averageCPUThreshold shouldBe Int.MaxValue
       alertConfigBuilder.httpStatusThresholds shouldBe List()
+      alertConfigBuilder.http90PercentileResponseTimeThresholds shouldBe List()
       alertConfigBuilder.httpTrafficThresholds shouldBe List()
       alertConfigBuilder.logMessageThresholds shouldBe List()
       alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
@@ -238,6 +239,26 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-threshold") shouldBe expected
       service2Config("5xx-threshold") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with correct http90PercentileResponseTimeThreshold" in {
+      val threshold = Http90PercentileResponseTimeThreshold(Some(10), Some(5))
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttp90PercentileResponseTimeThreshold(threshold)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray(
+        JsObject("warning" -> JsNumber(10), "critical" -> JsNumber(5))
+      )
+
+      service1Config("http90PercentileResponseTimeThresholds") shouldBe expected
+      service2Config("http90PercentileResponseTimeThresholds") shouldBe expected
     }
 
     "return TeamAlertConfigBuilder with correct httpTrafficThreshold" in {
