@@ -158,7 +158,7 @@ case class AlertConfigBuilder(
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":${http5xxPercentThreshold.toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
              |"containerKillThreshold" : $containerKillThreshold,
-             |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.toJson.compactPrint},
+             |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption.map(_.toJson.compactPrint).getOrElse(JsNull)},
              |"httpTrafficThresholds" : ${httpTrafficThresholds.toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
