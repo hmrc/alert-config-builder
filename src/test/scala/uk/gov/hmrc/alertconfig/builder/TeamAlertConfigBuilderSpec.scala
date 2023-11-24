@@ -280,7 +280,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       val expected = JsArray(
-        JsObject("warning" -> JsNumber(10), "critical" -> JsNumber(5), "maxMinutesBelowThreshold" -> JsNumber(35))
+        JsObject(
+          "warning" -> JsNumber(10),
+          "critical" -> JsNumber(5),
+          "maxMinutesBelowThreshold" -> JsNumber(35),
+          "alertingPlatform" -> JsString("Sensu")
+        )
       )
 
       service1Config("httpTrafficThresholds") shouldBe expected
@@ -454,6 +459,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     "throw exception if no service provided" in {
       an[RuntimeException] should be thrownBy TeamAlertConfigBuilder.teamAlerts(Seq())
     }
+
   }
 
 

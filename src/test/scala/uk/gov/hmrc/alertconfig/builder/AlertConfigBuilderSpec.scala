@@ -178,7 +178,12 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .withHttpTrafficThreshold(threshold).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpTrafficThresholds") shouldBe JsArray(
-        JsObject("warning" -> JsNumber(10), "critical" -> JsNumber(5), "maxMinutesBelowThreshold" -> JsNumber(35))
+        JsObject(
+          "warning" -> JsNumber(10),
+          "critical" -> JsNumber(5),
+          "maxMinutesBelowThreshold" -> JsNumber(35),
+          "alertingPlatform" -> JsString("Sensu")
+        )
       )
     }
 
