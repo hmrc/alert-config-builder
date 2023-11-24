@@ -16,21 +16,15 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, JsonFormat}
+sealed trait AlertingPlatform
 
-case class HttpTrafficThreshold(
-                                 warning: Option[Int],
-                                 critical: Option[Int],
-                                 maxMinutesBelowThreshold: Int = 5,
-                                 alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
-                               )
+object AlertingPlatform {
+  object Grafana extends AlertingPlatform {
+    override def toString: String = "Grafana"
+  }
 
-object HttpTrafficThresholdProtocol {
-
-  import DefaultJsonProtocol._
-
-  implicit val thresholdFloorFormat: JsonFormat[HttpTrafficThreshold] = {
-    jsonFormat4(HttpTrafficThreshold)
+  object Sensu extends AlertingPlatform {
+    override def toString: String = "Sensu"
   }
 
 }

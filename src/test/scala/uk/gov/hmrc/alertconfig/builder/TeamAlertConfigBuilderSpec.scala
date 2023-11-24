@@ -280,8 +280,31 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       val expected = JsArray(
-        JsObject("warning" -> JsNumber(10), "critical" -> JsNumber(5), "maxMinutesBelowThreshold" -> JsNumber(35))
+        JsObject(
+          "warning" -> JsNumber(10),
+          "critical" -> JsNumber(5),
+          "maxMinutesBelowThreshold" -> JsNumber(35),
+          "alertingPlatform" -> JsString("Sensu")
+        )
       )
+
+      service1Config("httpTrafficThresholds") shouldBe expected
+      service2Config("httpTrafficThresholds") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with empty httpTrafficThreshold when Grafana alerting is used" in {
+      val threshold = HttpTrafficThreshold(Some(10), Some(5), 35, AlertingPlatform.Grafana)
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttpTrafficThreshold(threshold)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray() // Should be no alert config for Sensu generated
 
       service1Config("httpTrafficThresholds") shouldBe expected
       service2Config("httpTrafficThresholds") shouldBe expected
@@ -454,6 +477,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     "throw exception if no service provided" in {
       an[RuntimeException] should be thrownBy TeamAlertConfigBuilder.teamAlerts(Seq())
     }
+
   }
 
 

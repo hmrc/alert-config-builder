@@ -48,4 +48,14 @@ package object builder {
     override def write(obj: HttpStatus.HTTP_STATUS): JsValue =
       JsNumber(obj.status)
   }
+
+  implicit val alertingPlatformFormat: JsonFormat[AlertingPlatform] = new JsonFormat[AlertingPlatform] {
+    override def write(obj: AlertingPlatform): JsValue = JsString(obj.toString)
+
+    override def read(json: JsValue): AlertingPlatform =
+      Seq(AlertingPlatform.Grafana, AlertingPlatform.Sensu)
+        .find(_.toString == json.toString)
+        .getOrElse(deserializationError("Invalid Alerting Platform"))
+  }
+
 }
