@@ -292,6 +292,24 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service2Config("httpTrafficThresholds") shouldBe expected
     }
 
+    "return TeamAlertConfigBuilder with empty httpTrafficThreshold when Grafana alerting is used" in {
+      val threshold = HttpTrafficThreshold(Some(10), Some(5), 35, AlertingPlatform.Grafana)
+      val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
+        .withHttpTrafficThreshold(threshold)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsArray() // Should be no alert config for Sensu generated
+
+      service1Config("httpTrafficThresholds") shouldBe expected
+      service2Config("httpTrafficThresholds") shouldBe expected
+    }
+
     "throw exception if httpTrafficThreshold is defined multiple times" in {
       an[Exception] should be thrownBy TeamAlertConfigBuilder.teamAlerts(Seq())
         .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))

@@ -187,6 +187,14 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     }
 
+    "return AlertConfigBuilder with empty httpTrafficThreshold when Grafana alerting is used" in {
+      val threshold = HttpTrafficThreshold(Some(10), Some(5), 35, AlertingPlatform.Grafana)
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpTrafficThreshold(threshold).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("httpTrafficThresholds") shouldBe JsArray() // No alert config should be generated for Sensu
+    }
+
     "throw exception if httpTrafficThreshold is defined multiple times" in {
       an[Exception] should be thrownBy AlertConfigBuilder("service1")
         .withHttpTrafficThreshold(HttpTrafficThreshold(Some(10), Some(5), 35))
