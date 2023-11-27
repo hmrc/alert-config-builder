@@ -39,6 +39,19 @@ object Environment {
   object ExternalTest extends Environment
   object Management   extends Environment
   object Production   extends Environment
+
+  def get(env: String): Environment = {
+    env.toLowerCase.trim.replaceAll(" ", "") match {
+      case "integration" => Integration
+      case "development" => Development
+      case "qa" => Qa
+      case "staging" => Staging
+      case "externaltest" => ExternalTest
+      case "management" => Management
+      case "production" => Production
+    }
+  }
+
 }
 
 object AllEnvironmentAlertConfigBuilder {
