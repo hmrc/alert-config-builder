@@ -118,7 +118,6 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
             "filters" -> JsArray(JsString("occurrences"), JsString("kitchen_filter"), JsString("packer_filter")))
     }
 
-
     "create config with development enabled with custom severities" in {
       EnvironmentAlertBuilder("team-telemetry").inDevelopment(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Development) shouldBe
         "team-telemetry" ->
@@ -169,4 +168,28 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
             "filter" -> JsString("occurrences"))
     }
   }
+
+  "Environment" when {
+    "using the get function" should {
+      "return specified environment" in {
+        Environment.get("integration") shouldBe Environment.Integration
+        Environment.get("development") shouldBe Environment.Development
+        Environment.get("qa") shouldBe Environment.Qa
+        Environment.get("staging") shouldBe Environment.Staging
+        Environment.get("externaltest") shouldBe Environment.ExternalTest
+        Environment.get("management") shouldBe Environment.Management
+        Environment.get("production") shouldBe Environment.Production
+      }
+      "work ignoring case" in {
+        Environment.get("PrOdUcTiOn") shouldBe Environment.Production
+      }
+      "work ignoring whitespace" in {
+        Environment.get("external test") shouldBe Environment.ExternalTest
+      }
+      "work ignoring any padded whitespace" in {
+        Environment.get("  production  ") shouldBe Environment.Production
+      }
+    }
+  }
+
 }
