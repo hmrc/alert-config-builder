@@ -307,7 +307,7 @@ case class TeamAlertConfigBuilder(
         httpAbsolutePercentSplitDownstreamServiceThresholds,
         httpAbsolutePercentSplitDownstreamHodThresholds,
         containerKillThreshold,
-        httpTrafficThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu),
+        httpTrafficThresholds,
         httpStatusThresholds,
         httpStatusPercentThresholds,
         metricsThresholds,
