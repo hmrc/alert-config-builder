@@ -108,8 +108,19 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
-        JsObject("httpStatus" -> JsNumber(502), "count" -> JsNumber(2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
-        JsObject("httpStatus" -> JsNumber(504), "count" -> JsNumber(4), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
+        JsObject("httpStatus" -> JsNumber(502), "count" -> JsNumber(2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST"), "alertingPlatform" -> JsString("Sensu")),
+        JsObject("httpStatus" -> JsNumber(504), "count" -> JsNumber(4), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"), "alertingPlatform" -> JsString("Sensu"))
+      )
+    }
+
+    "build/configure http status threshold with given thresholds and severities and targeting multiple alerting platforms" in {
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 2, AlertSeverity.Warning, HttpMethod.Post, alertingPlatform = AlertingPlatform.Grafana))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_504, 4)).build.get.parseJson.asJsObject.fields
+
+      serviceConfig("httpStatusThresholds") shouldBe JsArray(
+        JsObject("httpStatus" -> JsNumber(502), "count" -> JsNumber(2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST"), "alertingPlatform" -> JsString("Grafana")),
+        JsObject("httpStatus" -> JsNumber(504), "count" -> JsNumber(4), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"), "alertingPlatform" -> JsString("Sensu"))
       )
     }
 
@@ -118,7 +129,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS(404))).build.get.parseJson.asJsObject.fields
 
       serviceConfig("httpStatusThresholds") shouldBe JsArray(
-        JsObject("httpStatus" -> JsNumber(404), "count" -> JsNumber(1), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"))
+        JsObject("httpStatus" -> JsNumber(404), "count" -> JsNumber(1), "severity" -> JsString("critical"), "httpMethod" -> JsString("ALL_METHODS"), "alertingPlatform" -> JsString("Sensu"))
       )
     }
 
