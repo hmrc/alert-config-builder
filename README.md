@@ -9,7 +9,7 @@ The artifact produced by this project is used in the `alert-config` project. The
 
 **Java** : 11\
 **Scala** : 2.13.*\
-**SBT** : 1.7.2\
+**SBT** : 1.9.7\
 **app-config** : Depends on the **app-config** Git repository for the environment for which the alert config is being generated e.g. **app-config-qa**.\
 For local testing, you will need an empty **app-config** folder outside the **alert-config-builder** i.e. `mkdir -p ../app-config`
 
@@ -28,6 +28,24 @@ To see the outcome:
 - Update the [alert-config dependencies](https://github.com/hmrc/alert-config/blob/0951f5a361b5d04ddb28ec96589ff609e99ff428/project/AppDependencies.scala#L6) to use your new version
 - Update **alert-config** code to make sure it is going to use your new code in **alert-config-builder**
 - Run `sbt clean test run` in **alert-config** folder to generate configuration and investigate the result in the target folder
+
+## Scalafmt
+This repository uses [Scalafmt](https://scalameta.org/scalafmt/), a code formatter for Scala.
+The formatting rules configured for this repository are defined within [.scalafmt.conf](.scalafmt.conf).
+
+Formatting is not integrated with build pipelines.
+We encourage contributors to make sure their work is well formatted using the following before committing changes:
+
+ ```
+ # check
+ sbt scalafmtCheckAll
+
+ # Apply
+ sbt scalafmtAll
+ ```
+
+[Visit the official Scalafmt documentation to view a complete list of tasks which can be run.](https://scalameta.org/scalafmt/docs/installation.html#task-keys)
+
 
 ### License
 

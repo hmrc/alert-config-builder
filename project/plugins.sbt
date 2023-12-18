@@ -4,3 +4,4 @@ resolvers += Resolver.typesafeRepo("releases")
 
 addSbtPlugin("uk.gov.hmrc"   % "sbt-auto-build" % "3.15.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage"  % "1.6.1")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.2")
