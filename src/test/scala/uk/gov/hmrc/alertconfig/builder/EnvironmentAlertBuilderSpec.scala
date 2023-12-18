@@ -27,31 +27,34 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
     "create config with production enabled by default" in {
       EnvironmentAlertBuilder("team-telemetry").alertConfigFor(Environment.Production) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with production disabled" in {
       EnvironmentAlertBuilder("team-telemetry").disableProduction().alertConfigFor(Environment.Production) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/noop.rb"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/noop.rb"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with integration enabled with default severities" in {
       EnvironmentAlertBuilder("infra").inIntegration().alertConfigFor(Environment.Integration) shouldBe
         "infra" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_integration"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_integration"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with integration enabled with custom command" in {
@@ -60,112 +63,134 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
         .inIntegration()
         .alertConfigFor(Environment.Integration) shouldBe
         "infra" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/some-custom-ruby-handler.rb"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences")
-          )
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/some-custom-ruby-handler.rb"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with integration disabled with custom command" in {
       EnvironmentAlertBuilder("infra").withCommand("/etc/sensu/handlers/dose-pagerduty-high.rb").alertConfigFor(Environment.Integration) shouldBe
         "infra" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/noop.rb"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/noop.rb"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config for txm-infra with integration enabled and custom environment" in {
       EnvironmentAlertBuilder("txm-infra").inIntegration(customEnv = "txm_integration").alertConfigFor(Environment.Integration) shouldBe
         "txm-infra" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team txm-infra -e txm_integration"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team txm-infra -e txm_integration"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with integration disabled" in {
       EnvironmentAlertBuilder("labs-team-telemetry").alertConfigFor(Environment.Integration) shouldBe
         "labs-team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/noop.rb"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/noop.rb"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with integration enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inIntegration(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Integration) shouldBe
+      EnvironmentAlertBuilder("team-telemetry")
+        .inIntegration(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown))
+        .alertConfigFor(Environment.Integration) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_integration"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_integration"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with management enabled should filter kitchen & packer" in {
       EnvironmentAlertBuilder("infra").inManagement().alertConfigFor(Environment.Management) shouldBe
         "infra" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_management"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-            "filters" -> JsArray(JsString("occurrences"), JsString("kitchen_filter"), JsString("packer_filter")))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_management"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
+          "filters"    -> JsArray(JsString("occurrences"), JsString("kitchen_filter"), JsString("packer_filter"))
+        )
     }
 
     "create config with development enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inDevelopment(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Development) shouldBe
+      EnvironmentAlertBuilder("team-telemetry")
+        .inDevelopment(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown))
+        .alertConfigFor(Environment.Development) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_development"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_development"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with qa enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inQa(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Qa) shouldBe
+      EnvironmentAlertBuilder("team-telemetry")
+        .inQa(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown))
+        .alertConfigFor(Environment.Qa) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_qa"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_qa"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with staging enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inStaging(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Staging) shouldBe
+      EnvironmentAlertBuilder("team-telemetry")
+        .inStaging(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown))
+        .alertConfigFor(Environment.Staging) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_staging"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_staging"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with external test enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inExternalTest(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.ExternalTest) shouldBe
+      EnvironmentAlertBuilder("team-telemetry")
+        .inExternalTest(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown))
+        .alertConfigFor(Environment.ExternalTest) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_externaltest"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_externaltest"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+          "filter"     -> JsString("occurrences")
+        )
     }
 
     "create config with production enabled with custom severities" in {
-      EnvironmentAlertBuilder("team-telemetry").inProduction(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown)).alertConfigFor(Environment.Production) shouldBe
+      EnvironmentAlertBuilder("team-telemetry")
+        .inProduction(Set(Severity.Ok, Severity.Warning, Severity.Critical, Severity.Unknown))
+        .alertConfigFor(Environment.Production) shouldBe
         "team-telemetry" ->
-          JsObject(
-            "command" -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),
-            "type" -> JsString("pipe"),
-            "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
-            "filter" -> JsString("occurrences"))
+        JsObject(
+          "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_production"),
+          "type"       -> JsString("pipe"),
+          "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical"), JsString("unknown")),
+          "filter"     -> JsString("occurrences")
+        )
     }
   }
 

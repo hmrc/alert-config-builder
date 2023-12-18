@@ -20,13 +20,13 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 // By default we alert if the count of messages is >= threshold. If lessThanMode is set we alert if < threshold
 case class LogMessageThreshold(
-  message     : String,
-  count       : Int,
-  lessThanMode: Boolean = false,
-  severity: AlertSeverity = AlertSeverity.Critical
+    message: String,
+    count: Int,
+    lessThanMode: Boolean = false,
+    severity: AlertSeverity = AlertSeverity.Critical
 )
 
 object LogMessageThresholdProtocol extends DefaultJsonProtocol {
-  implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+  implicit val asf: JsonFormat[AlertSeverity]          = alertSeverityFormat
   implicit val format: JsonFormat[LogMessageThreshold] = jsonFormat4(LogMessageThreshold)
 }

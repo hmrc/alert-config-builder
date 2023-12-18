@@ -19,10 +19,10 @@ package uk.gov.hmrc.alertconfig.builder
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class Http5xxRateIncrease(
-                                name: String,
-                                simple_threshold: Int,
-                                complex_threshold: Int
-                              )
+    name: String,
+    simple_threshold: Int,
+    complex_threshold: Int
+)
 
 object Http5xxRateIncreaseProtocol extends DefaultJsonProtocol {
   implicit val rateIncreaseFormat: JsonFormat[Http5xxRateIncrease] = jsonFormat3(Http5xxRateIncrease)

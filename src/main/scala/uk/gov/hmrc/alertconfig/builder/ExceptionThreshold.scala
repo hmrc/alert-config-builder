@@ -19,8 +19,8 @@ package uk.gov.hmrc.alertconfig.builder
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class ExceptionThreshold(
-  count   : Int           = 2,
-  severity: AlertSeverity = AlertSeverity.Critical
+    count: Int = 2,
+    severity: AlertSeverity = AlertSeverity.Critical
 )
 
 object ExceptionThresholdProtocol {
@@ -30,4 +30,5 @@ object ExceptionThresholdProtocol {
     implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
     jsonFormat2(ExceptionThreshold)
   }
+
 }

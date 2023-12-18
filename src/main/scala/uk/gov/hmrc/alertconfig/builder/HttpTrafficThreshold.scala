@@ -19,11 +19,11 @@ package uk.gov.hmrc.alertconfig.builder
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class HttpTrafficThreshold(
-                                 warning: Option[Int],
-                                 critical: Option[Int],
-                                 maxMinutesBelowThreshold: Int = 5,
-                                 alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
-                               )
+    warning: Option[Int],
+    critical: Option[Int],
+    maxMinutesBelowThreshold: Int = 5,
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+)
 
 object HttpTrafficThresholdProtocol {
 

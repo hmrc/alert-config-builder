@@ -19,10 +19,10 @@ package uk.gov.hmrc.alertconfig.builder
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class Http90PercentileResponseTimeThreshold(
-                                                  warning: Option[Int],
-                                                  critical: Option[Int],
-                                                  timePeriod: Int = 15
-                                                )
+    warning: Option[Int],
+    critical: Option[Int],
+    timePeriod: Int = 15
+)
 
 object Http90PercentileResponseTimeThresholdProtocol {
 
@@ -31,4 +31,5 @@ object Http90PercentileResponseTimeThresholdProtocol {
   implicit val thresholdPercentileFormat: JsonFormat[Http90PercentileResponseTimeThreshold] = {
     jsonFormat3(Http90PercentileResponseTimeThreshold)
   }
+
 }
