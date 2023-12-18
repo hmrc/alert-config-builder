@@ -27,26 +27,26 @@ trait Builder[T] {
 }
 
 case class AlertConfigBuilder(
-  serviceName                                        : String,
-  handlers                                           : Seq[String]                                             = Seq("noop"),
-  errorsLoggedThreshold                              : Int                                                     = Int.MaxValue,
-  exceptionThreshold                                 : ExceptionThreshold                                      = ExceptionThreshold(),
-  http5xxRateIncrease                                : Seq[Http5xxRateIncrease]                                = Nil,
-  http5xxThreshold                                   : Http5xxThreshold                                        = Http5xxThreshold(),
-  http5xxPercentThreshold                            : Http5xxPercentThreshold                                 = Http5xxPercentThreshold(100.0),
-  http90PercentileResponseTimeThresholds             : Seq[Http90PercentileResponseTimeThreshold]              = Nil,
-  httpAbsolutePercentSplitThresholds                 : Seq[HttpAbsolutePercentSplitThreshold]                  = Nil,
-  httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
-  httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
-  containerKillThreshold                             : Int                                                     = 1,
-  httpTrafficThresholds                              : Seq[HttpTrafficThreshold]                               = Nil,
-  httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
-  httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
-  metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
-  logMessageThresholds                               : Seq[LogMessageThreshold]                                = Nil,
-  totalHttpRequestThreshold                          : Int                                                     = Int.MaxValue,
-  averageCPUThreshold                                : Int                                                     = Int.MaxValue,
-  platformService                                    : Boolean                                                 = false
+    serviceName: String,
+    handlers: Seq[String] = Seq("noop"),
+    errorsLoggedThreshold: Int = Int.MaxValue,
+    exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
+    http5xxRateIncrease: Seq[Http5xxRateIncrease] = Nil,
+    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
+    http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
+    http90PercentileResponseTimeThresholds: Seq[Http90PercentileResponseTimeThreshold] = Nil,
+    httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
+    httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
+    httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
+    containerKillThreshold: Int = 1,
+    httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
+    httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
+    httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
+    metricsThresholds: Seq[MetricsThreshold] = Nil,
+    logMessageThresholds: Seq[LogMessageThreshold] = Nil,
+    totalHttpRequestThreshold: Int = Int.MaxValue,
+    averageCPUThreshold: Int = Int.MaxValue,
+    platformService: Boolean = false
 ) extends Builder[Option[String]] {
 
   import spray.json._
@@ -71,8 +71,7 @@ case class AlertConfigBuilder(
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {
       throw new Exception("withHttp90PercentileResponseTimeThreshold has already been defined for this microservice")
-    }
-    else {
+    } else {
       this.copy(http90PercentileResponseTimeThresholds = Seq(threshold))
     }
   }
@@ -90,10 +89,9 @@ case class AlertConfigBuilder(
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
 
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) = {
-    if(httpTrafficThresholds.nonEmpty) {
+    if (httpTrafficThresholds.nonEmpty) {
       throw new Exception("withHttpTrafficThreshold has already been defined for this microservice")
-    }
-    else {
+    } else {
       this.copy(httpTrafficThresholds = Seq(threshold))
     }
   }
@@ -110,7 +108,7 @@ case class AlertConfigBuilder(
   def withContainerKillThreshold(containerCrashThreshold: Int) =
     this.copy(containerKillThreshold = containerCrashThreshold)
 
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false,  severity: AlertSeverity = AlertSeverity.Critical) =
+  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
@@ -126,14 +124,12 @@ case class AlertConfigBuilder(
     import HttpStatusPercentThresholdProtocol._
     import DefaultJsonProtocol._
 
-
-    val appConfigPath = System.getProperty("app-config-path", "../app-config")
+    val appConfigPath      = System.getProperty("app-config-path", "../app-config")
     val appConfigDirectory = new File(appConfigPath)
-    val appConfigFile = new File(appConfigDirectory, s"${serviceName}.yaml")
+    val appConfigFile      = new File(appConfigDirectory, s"${serviceName}.yaml")
 
     if (!appConfigDirectory.exists)
       throw new FileNotFoundException(s"Could not find app-config repository: $appConfigPath")
-
 
     appConfigFile match {
       case file if !platformService && !file.exists =>
@@ -158,7 +154,9 @@ case class AlertConfigBuilder(
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-percent-threshold":${http5xxPercentThreshold.toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
              |"containerKillThreshold" : $containerKillThreshold,
-             |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption.map(_.toJson.compactPrint).getOrElse(JsNull)},
+             |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption
+              .map(_.toJson.compactPrint)
+              .getOrElse(JsNull)},
              |"httpTrafficThresholds" : ${httpTrafficThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
@@ -167,9 +165,12 @@ case class AlertConfigBuilder(
              |"total-http-request-threshold": $totalHttpRequestThreshold,
              |"log-message-thresholds" : $buildLogMessageThresholdsJson,
              |"average-cpu-threshold" : $averageCPUThreshold,
-             |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
-             |"absolute-percentage-split-downstream-service-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamServiceThresholds)(HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)},
-             |"absolute-percentage-split-downstream-hod-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamHodThresholds)(HttpAbsolutePercentSplitDownstreamHodThresholdProtocol.thresholdFormat)}
+             |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(
+              HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
+             |"absolute-percentage-split-downstream-service-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamServiceThresholds)(
+              HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)},
+             |"absolute-percentage-split-downstream-hod-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamHodThresholds)(
+              HttpAbsolutePercentSplitDownstreamHodThresholdProtocol.thresholdFormat)}
              |}
               """.stripMargin
         }
@@ -190,36 +191,38 @@ case class AlertConfigBuilder(
 
       parseAppConfigFile match {
         case Failure(exception) =>
-          logger.warn(s"app-config file ${appConfigFile} for service: '${serviceName}' is not valid YAML and could not be parsed. Parsing Exception: ${exception.getMessage}")
+          logger.warn(
+            s"app-config file ${appConfigFile} for service: '${serviceName}' is not valid YAML and could not be parsed. Parsing Exception: ${exception.getMessage}")
           None
         case Success(appConfig) =>
           val versionObject = appConfig.asScala.toMap.view.mapValues(_.asScala.toMap)("0.0.0")
           versionObject.get("zone")
       }
     }
+
 }
 
 case class TeamAlertConfigBuilder(
-                                   services                                           : Seq[String],
-                                   handlers                                           : Seq[String]                                             = Seq("noop"),
-                                   errorsLoggedThreshold                              : Int                                                     = Int.MaxValue,
-                                   exceptionThreshold                                 : ExceptionThreshold                                      = ExceptionThreshold(),
-                                   http5xxThreshold                                   : Http5xxThreshold                                        = Http5xxThreshold(),
-                                   http5xxPercentThreshold                            : Http5xxPercentThreshold                                 = Http5xxPercentThreshold(100.0),
-                                   http90PercentileResponseTimeThresholds             : Seq[Http90PercentileResponseTimeThreshold]              = Nil,
-                                   httpAbsolutePercentSplitThresholds                 : Seq[HttpAbsolutePercentSplitThreshold]                  = Nil,
-                                   httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
-                                   httpAbsolutePercentSplitDownstreamHodThresholds    : Seq[HttpAbsolutePercentSplitDownstreamHodThreshold]     = Nil,
-                                   containerKillThreshold                             : Int                                                     = 1,
-                                   httpTrafficThresholds                              : Seq[HttpTrafficThreshold]                               = Nil,
-                                   httpStatusThresholds                               : Seq[HttpStatusThreshold]                                = Nil,
-                                   httpStatusPercentThresholds                        : Seq[HttpStatusPercentThreshold]                         = Nil,
-                                   http5xxRateIncrease                                : Seq[Http5xxRateIncrease]                                = Nil,
-                                   metricsThresholds                                  : Seq[MetricsThreshold]                                   = Nil,
-                                   logMessageThresholds                               : Seq[LogMessageThreshold]                                = Nil,
-                                   totalHttpRequestThreshold                          : Int                                                     = Int.MaxValue,
-                                   averageCPUThreshold                                : Int                                                     = Int.MaxValue,
-                                   platformService                                    : Boolean                                                 = false
+    services: Seq[String],
+    handlers: Seq[String] = Seq("noop"),
+    errorsLoggedThreshold: Int = Int.MaxValue,
+    exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
+    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
+    http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
+    http90PercentileResponseTimeThresholds: Seq[Http90PercentileResponseTimeThreshold] = Nil,
+    httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
+    httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
+    httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
+    containerKillThreshold: Int = 1,
+    httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
+    httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
+    httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
+    http5xxRateIncrease: Seq[Http5xxRateIncrease] = Nil,
+    metricsThresholds: Seq[MetricsThreshold] = Nil,
+    logMessageThresholds: Seq[LogMessageThreshold] = Nil,
+    totalHttpRequestThreshold: Int = Int.MaxValue,
+    averageCPUThreshold: Int = Int.MaxValue,
+    platformService: Boolean = false
 ) extends Builder[Seq[AlertConfigBuilder]] {
 
   def withHandlers(handlers: String*) =
@@ -242,7 +245,8 @@ case class TeamAlertConfigBuilder(
       throw new Exception("withHttp90PercentileResponseTimeThreshold has already been defined for this microservice")
     } else if (threshold.timePeriod <= 0 && threshold.timePeriod >= 15) {
       println(Console.CYAN + s" = ${threshold}" + Console.RESET)
-      throw new Exception(s"withHttp90PercentileResponseTimeThreshold timePeriod '${threshold.timePeriod}' needs to be in the range 1-15 minutes (inclusive)")
+      throw new Exception(
+        s"withHttp90PercentileResponseTimeThreshold timePeriod '${threshold.timePeriod}' needs to be in the range 1-15 minutes (inclusive)")
     } else {
       this.copy(http90PercentileResponseTimeThresholds = Seq(threshold))
     }
@@ -263,8 +267,7 @@ case class TeamAlertConfigBuilder(
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) = {
     if (httpTrafficThresholds.nonEmpty) {
       throw new Exception("withHttpTrafficThreshold has already been defined for this microservice")
-    }
-    else {
+    } else {
       this.copy(httpTrafficThresholds = Seq(threshold))
     }
   }
@@ -284,7 +287,7 @@ case class TeamAlertConfigBuilder(
   def withTotalHttpRequestsCountThreshold(threshold: Int) =
     this.copy(totalHttpRequestThreshold = threshold)
 
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false,  severity: AlertSeverity = AlertSeverity.Critical) =
+  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
@@ -295,7 +298,8 @@ case class TeamAlertConfigBuilder(
 
   override def build: Seq[AlertConfigBuilder] =
     services.map(service =>
-      AlertConfigBuilder(service,
+      AlertConfigBuilder(
+        service,
         handlers,
         errorsLoggedThreshold,
         exceptionThreshold,
@@ -314,27 +318,32 @@ case class TeamAlertConfigBuilder(
         logMessageThresholds,
         totalHttpRequestThreshold,
         averageCPUThreshold,
-        platformService)
-    )
+        platformService
+      ))
+
 }
 
 object TeamAlertConfigBuilder {
+
   def teamAlerts(services: Seq[String]): TeamAlertConfigBuilder = {
     require(services.nonEmpty, "no alert service provided")
     TeamAlertConfigBuilder(services)
   }
+
 }
 
 object ZoneToServiceDomainMapper {
-  val logger = new Logger()
+  val logger                       = new Logger()
   val zoneToServiceMappingFilePath = System.getProperty("zone-mapping-path", "zone-to-service-domain-mapping.yml")
-  val zoneToServiceMappingFile = new File(zoneToServiceMappingFilePath)
+  val zoneToServiceMappingFile     = new File(zoneToServiceMappingFilePath)
+
   if (!zoneToServiceMappingFile.exists())
     throw new FileNotFoundException(s"Could not find zone to service domain mapping file: ${zoneToServiceMappingFilePath}")
 
   val zoneToServiceDomainMappings: Map[String, String] =
     new Yaml()
-      .load(new FileInputStream(zoneToServiceMappingFile)).asInstanceOf[java.util.Map[String, String]]
+      .load(new FileInputStream(zoneToServiceMappingFile))
+      .asInstanceOf[java.util.Map[String, String]]
       .asScala
       .toMap
 
@@ -346,9 +355,11 @@ object ZoneToServiceDomainMapper {
         case Some(_: String) =>
           val mappedServiceDomain = zoneToServiceDomainMappings.get(zone.get)
           if (mappedServiceDomain.isEmpty) {
-            logger.error(s"Zone to service domain mapping file '${zoneToServiceMappingFile.getAbsolutePath}' does not contain mapping for zone '${zone.get}'")
+            logger.error(
+              s"Zone to service domain mapping file '${zoneToServiceMappingFile.getAbsolutePath}' does not contain mapping for zone '${zone.get}'")
           }
           mappedServiceDomain
         case _ => zone
       }
+
 }

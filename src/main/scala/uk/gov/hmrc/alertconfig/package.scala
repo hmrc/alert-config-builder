@@ -21,6 +21,7 @@ import spray.json.{DefaultJsonProtocol, JsNumber, JsString, JsValue, JsonFormat,
 package object builder {
 
   val alertSeverityFormat = new JsonFormat[AlertSeverity] {
+
     override def write(obj: AlertSeverity): JsValue =
       JsString(obj.toString)
 
@@ -28,9 +29,11 @@ package object builder {
       Seq(AlertSeverity.Warning, AlertSeverity.Critical)
         .find(_.toString == json.toString)
         .getOrElse(deserializationError("Invalid AlertSeverity"))
+
   }
 
   val httpMethodFormat = new JsonFormat[HttpMethod] {
+
     override def write(obj: HttpMethod): JsValue =
       JsString(obj.toString)
 
@@ -38,15 +41,18 @@ package object builder {
       Seq(HttpMethod.All, HttpMethod.Post, HttpMethod.Get, HttpMethod.Put, HttpMethod.Delete)
         .find(_.toString == json.toString)
         .getOrElse(deserializationError("Invalid HttpMethod"))
+
   }
 
   val httpStatusFormat = new JsonFormat[HttpStatus.HTTP_STATUS] {
     import DefaultJsonProtocol._
+
     override def read(json: JsValue): HttpStatus.HTTP_STATUS =
       HttpStatus.HTTP_STATUS(IntJsonFormat.read(json))
 
     override def write(obj: HttpStatus.HTTP_STATUS): JsValue =
       JsNumber(obj.status)
+
   }
 
   implicit val alertingPlatformFormat: JsonFormat[AlertingPlatform] = new JsonFormat[AlertingPlatform] {
@@ -56,6 +62,7 @@ package object builder {
       Seq(AlertingPlatform.Grafana, AlertingPlatform.Sensu)
         .find(_.toString == json.toString)
         .getOrElse(deserializationError("Invalid Alerting Platform"))
+
   }
 
 }

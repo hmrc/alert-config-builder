@@ -19,11 +19,11 @@ package uk.gov.hmrc.alertconfig.builder
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class MetricsThreshold(
-  name    : String,
-  query   : String,
-  warning : Option[Double] = None,
-  critical: Option[Double] = None,
-  invert  : Boolean        = false
+    name: String,
+    query: String,
+    warning: Option[Double] = None,
+    critical: Option[Double] = None,
+    invert: Boolean = false
 )
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {

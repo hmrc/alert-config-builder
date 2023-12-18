@@ -38,4 +38,5 @@ object ObjectScanner {
 
   private def objectInstance[T](name: String)(implicit ct: ClassTag[T]): T =
     Class.forName(name).getField("MODULE$").get(ct.runtimeClass).asInstanceOf[T]
+
 }

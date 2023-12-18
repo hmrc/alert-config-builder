@@ -19,6 +19,7 @@ package uk.gov.hmrc.alertconfig.builder
 sealed trait AlertingPlatform
 
 object AlertingPlatform {
+
   object Grafana extends AlertingPlatform {
     override def toString: String = "Grafana"
   }
