@@ -67,10 +67,8 @@ case class AlertConfigBuilder(
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
-                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) = {
-    val adjustedPercentThreshold = if (alertingPlatform != AlertingPlatform.Sensu) 333.33 else percentThreshold
-    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(adjustedPercentThreshold, severity, alertingPlatform = alertingPlatform))
-  }
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {
@@ -243,10 +241,8 @@ case class TeamAlertConfigBuilder(
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
-                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) = {
-    val adjustedPercentThreshold = if (alertingPlatform != AlertingPlatform.Sensu) 333.33 else percentThreshold
-    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(adjustedPercentThreshold, severity, alertingPlatform))
-  }
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {

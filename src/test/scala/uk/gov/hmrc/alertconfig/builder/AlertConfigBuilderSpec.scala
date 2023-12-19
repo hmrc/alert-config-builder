@@ -562,8 +562,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
   }
 
   "build/configure http5xxPercentThreshold with required parameters for Grafana alerting platform" in {
-    val threshold            = 13.3
-    val overwrittenThreshold = 333.33
+    val threshold = 13.3
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
       .withHttp5xxPercentThreshold(threshold, alertingPlatform = AlertingPlatform.Grafana)
       .build
@@ -574,7 +573,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"         -> JsString("critical"),
-      "percentage"       -> JsNumber(overwrittenThreshold),
+      "percentage"       -> JsNumber(threshold),
       "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
     )
   }
