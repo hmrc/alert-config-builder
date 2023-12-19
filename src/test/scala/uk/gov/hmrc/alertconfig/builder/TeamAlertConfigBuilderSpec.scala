@@ -202,7 +202,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     }
 
     "return TeamAlertConfigBuilder with correct Http5xxPercentThreshold for Grafana alerting platform" in {
-      val threshold = 19.9
+      val threshold            = 19.9
+      val overwrittenThreshold = 333.33
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
         .withHttp5xxPercentThreshold(threshold, alertingPlatform = AlertingPlatform.Grafana)
@@ -216,12 +217,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
-        "percentage"       -> JsNumber(threshold),
+        "percentage"       -> JsNumber(overwrittenThreshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
-        "percentage"       -> JsNumber(threshold),
+        "percentage"       -> JsNumber(overwrittenThreshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
@@ -481,18 +482,20 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     }
 
     "return TeamAlertConfigBuilder with correct withHttp5xxPercentThreshold for Grafana alerting platform" in {
+      val threshold            = 19.9
+      val overwrittenThreshold = 333.33
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
-        .withHttp5xxPercentThreshold(12.2, AlertSeverity.Warning, AlertingPlatform.Grafana)
+        .withHttp5xxPercentThreshold(threshold, AlertSeverity.Warning, AlertingPlatform.Grafana)
 
       alertConfigBuilder.services shouldBe Seq("service1")
       val configs                              = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
       val service1Config: Map[String, JsValue] = configs(0)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "percentage"       -> JsNumber(12.2),
+        "percentage"       -> JsNumber(overwrittenThreshold),
         "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )

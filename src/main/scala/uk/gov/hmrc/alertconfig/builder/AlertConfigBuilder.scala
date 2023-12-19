@@ -147,6 +147,12 @@ case class AlertConfigBuilder(
           a.toJson.compactPrint
 
         ZoneToServiceDomainMapper.getServiceDomain(serviceDomain, platformService).map { serviceDomain =>
+          val updated5xxPercentThreshold = if (http5xxPercentThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+            333.33
+          } else {
+            http5xxPercentThreshold.percentage
+          }
+
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
@@ -154,7 +160,10 @@ case class AlertConfigBuilder(
              |"errors-logged-threshold":$errorsLoggedThreshold,
              |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
              |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
-             |"5xx-percent-threshold":${http5xxPercentThreshold.toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
+             |"5xx-percent-threshold":${http5xxPercentThreshold
+              .copy(percentage = updated5xxPercentThreshold)
+              .toJson(Http5xxPercentThresholdProtocol.thresholdFormat)
+              .compactPrint},
              |"containerKillThreshold" : $containerKillThreshold,
              |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption
               .map(_.toJson.compactPrint)
