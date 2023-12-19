@@ -45,8 +45,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("exception-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("critical"))
       config("5xx-threshold") shouldBe JsObject("count" -> JsNumber(Int.MaxValue), "severity" -> JsString("critical"))
       config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"   -> JsString("critical"),
-        "percentage" -> JsNumber(100)
+        "severity"         -> JsString("critical"),
+        "percentage"       -> JsNumber(100),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
       )
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
       config("containerKillThreshold") shouldBe JsNumber(56)
@@ -554,8 +555,27 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
-      "severity"   -> JsString("critical"),
-      "percentage" -> JsNumber(threshold)
+      "severity"         -> JsString("critical"),
+      "percentage"       -> JsNumber(threshold),
+      "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+    )
+  }
+
+  "build/configure http5xxPercentThreshold with required parameters for Grafana alerting platform" in {
+    val threshold            = 13.3
+    val overwrittenThreshold = 333.33
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withHttp5xxPercentThreshold(threshold, alertingPlatform = AlertingPlatform.Grafana)
+      .build
+      .get
+      .parseJson
+      .asJsObject
+      .fields
+
+    serviceConfig("5xx-percent-threshold") shouldBe JsObject(
+      "severity"         -> JsString("critical"),
+      "percentage"       -> JsNumber(overwrittenThreshold),
+      "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
     )
   }
 
