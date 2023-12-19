@@ -65,8 +65,10 @@ case class AlertConfigBuilder(
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
+  def withHttp5xxPercentThreshold(percentThreshold: Double,
+                                  severity: AlertSeverity = AlertSeverity.Critical,
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {
@@ -237,8 +239,10 @@ case class TeamAlertConfigBuilder(
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
 
-  def withHttp5xxPercentThreshold(percentThreshold: Double, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity))
+  def withHttp5xxPercentThreshold(percentThreshold: Double,
+                                  severity: AlertSeverity = AlertSeverity.Critical,
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {

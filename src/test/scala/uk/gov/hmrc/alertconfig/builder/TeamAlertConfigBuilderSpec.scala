@@ -190,12 +190,39 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"   -> JsString("critical"),
-        "percentage" -> JsNumber(threshold)
+        "severity"         -> JsString("critical"),
+        "percentage"       -> JsNumber(threshold),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"   -> JsString("critical"),
-        "percentage" -> JsNumber(threshold)
+        "severity"         -> JsString("critical"),
+        "percentage"       -> JsNumber(threshold),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+      )
+    }
+
+    "return TeamAlertConfigBuilder with correct Http5xxPercentThreshold for Grafana alerting platform" in {
+      val threshold = 19.9
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withHttp5xxPercentThreshold(threshold, alertingPlatform = AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("5xx-percent-threshold") shouldBe JsObject(
+        "severity"         -> JsString("critical"),
+        "percentage"       -> JsNumber(threshold),
+        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+      )
+      service2Config("5xx-percent-threshold") shouldBe JsObject(
+        "severity"         -> JsString("critical"),
+        "percentage"       -> JsNumber(threshold),
+        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
 
@@ -447,8 +474,27 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config: Map[String, JsValue] = configs(0)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "percentage" -> JsNumber(12.2),
-        "severity"   -> JsString("warning")
+        "percentage"       -> JsNumber(12.2),
+        "severity"         -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+      )
+    }
+
+    "return TeamAlertConfigBuilder with correct withHttp5xxPercentThreshold for Grafana alerting platform" in {
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1"))
+        .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
+        .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
+        .withHttp5xxPercentThreshold(12.2, AlertSeverity.Warning, AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1")
+      val configs                              = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val service1Config: Map[String, JsValue] = configs(0)
+
+      service1Config("5xx-percent-threshold") shouldBe JsObject(
+        "percentage"       -> JsNumber(12.2),
+        "severity"         -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
 
