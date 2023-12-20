@@ -280,7 +280,26 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsObject("count" -> JsNumber(threshold), "severity" -> JsString("warning"))
+      val expected = JsObject("count" -> JsNumber(threshold), "severity" -> JsString("warning"), "alertingPlatform" -> JsString("Sensu"))
+
+      service1Config("5xx-threshold") shouldBe expected
+      service2Config("5xx-threshold") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with correct http5xxThresholdSeverities targeting Grafana" in {
+      val threshold = 19
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withHttp5xxThreshold(threshold, AlertSeverity.Warning, AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsObject("count" -> JsNumber(Int.MaxValue), "severity" -> JsString("warning"), "alertingPlatform" -> JsString("Grafana"))
 
       service1Config("5xx-threshold") shouldBe expected
       service2Config("5xx-threshold") shouldBe expected

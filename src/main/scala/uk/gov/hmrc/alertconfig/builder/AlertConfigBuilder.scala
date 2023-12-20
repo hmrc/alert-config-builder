@@ -62,8 +62,10 @@ case class AlertConfigBuilder(
   def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+  def withHttp5xxThreshold(http5xxThreshold: Int,
+                           severity: AlertSeverity = AlertSeverity.Critical,
+                           alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity, alertingPlatform))
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
@@ -153,13 +155,24 @@ case class AlertConfigBuilder(
             http5xxPercentThreshold.percentage
           }
 
+          val updated5xxThreshold = if (http5xxThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+            // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
+            // it will never be triggered
+            Int.MaxValue
+          } else {
+            http5xxThreshold.count
+          }
+
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
              |"handlers": ${handlers.toJson.compactPrint},
              |"errors-logged-threshold":$errorsLoggedThreshold,
              |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
-             |"5xx-threshold":${http5xxThreshold.toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
+             |"5xx-threshold":${http5xxThreshold
+              .copy(count = updated5xxThreshold)
+              .toJson(Http5xxThresholdProtocol.thresholdFormat)
+              .compactPrint},
              |"5xx-percent-threshold":${http5xxPercentThreshold
               .copy(percentage = updated5xxPercentThreshold)
               .toJson(Http5xxPercentThresholdProtocol.thresholdFormat)
@@ -245,8 +258,10 @@ case class TeamAlertConfigBuilder(
   def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
 
-  def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+  def withHttp5xxThreshold(http5xxThreshold: Int,
+                           severity: AlertSeverity = AlertSeverity.Critical,
+                           alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity, alertingPlatform))
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
