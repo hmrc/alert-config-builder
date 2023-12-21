@@ -20,7 +20,8 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class ExceptionThreshold(
     count: Int = 2,
-    severity: AlertSeverity = AlertSeverity.Critical
+    severity: AlertSeverity = AlertSeverity.Critical,
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
 )
 
 object ExceptionThresholdProtocol {
@@ -28,7 +29,7 @@ object ExceptionThresholdProtocol {
 
   implicit val thresholdFormat: JsonFormat[ExceptionThreshold] = {
     implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
-    jsonFormat2(ExceptionThreshold)
+    jsonFormat3(ExceptionThreshold)
   }
 
 }

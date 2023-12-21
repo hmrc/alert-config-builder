@@ -59,8 +59,9 @@ case class AlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical,
+                             alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
                            severity: AlertSeverity = AlertSeverity.Critical,
@@ -163,6 +164,7 @@ case class AlertConfigBuilder(
             http5xxThreshold.count
           }
 
+          //             |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
@@ -255,8 +257,10 @@ case class TeamAlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
+  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical,
+                             alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
+
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
                            severity: AlertSeverity = AlertSeverity.Critical,
