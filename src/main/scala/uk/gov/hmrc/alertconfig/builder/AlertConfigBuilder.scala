@@ -38,7 +38,7 @@ case class AlertConfigBuilder(
     httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
-    containerKillThreshold: Int = 1,
+    containerKillThreshold: ContainerKillThreshold = ContainerKillThreshold(1),
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
     httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
@@ -111,8 +111,8 @@ case class AlertConfigBuilder(
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
-  def withContainerKillThreshold(containerCrashThreshold: Int) =
-    this.copy(containerKillThreshold = containerCrashThreshold)
+  def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(containerKillThreshold = ContainerKillThreshold(containerCrashThreshold, alertingPlatform))
 
   def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false, severity: AlertSeverity = AlertSeverity.Critical) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
@@ -165,6 +165,12 @@ case class AlertConfigBuilder(
             http5xxThreshold.count
           }
 
+          val updatedContainerKillThreshold = if (containerKillThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+            Int.MaxValue
+          } else {
+            containerKillThreshold.count
+          }
+
           val updatedExceptionThreshold = if (exceptionThreshold.alertingPlatform != AlertingPlatform.Sensu) {
             // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
             // it will never be triggered
@@ -190,7 +196,7 @@ case class AlertConfigBuilder(
               .copy(percentage = updated5xxPercentThreshold)
               .toJson(Http5xxPercentThresholdProtocol.thresholdFormat)
               .compactPrint},
-             |"containerKillThreshold" : $containerKillThreshold,
+             |"containerKillThreshold" : $updatedContainerKillThreshold,
              |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption
               .map(_.toJson.compactPrint)
               .getOrElse(JsNull)},
@@ -250,7 +256,7 @@ case class TeamAlertConfigBuilder(
     httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
-    containerKillThreshold: Int = 1,
+    containerKillThreshold: ContainerKillThreshold = ContainerKillThreshold(1),
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
     httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
@@ -304,8 +310,8 @@ case class TeamAlertConfigBuilder(
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
 
-  def withContainerKillThreshold(containerKillThreshold: Int) =
-    this.copy(containerKillThreshold = containerKillThreshold)
+  def withContainerKillThreshold(containerKillThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(containerKillThreshold = ContainerKillThreshold(containerKillThreshold, alertingPlatform))
 
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) = {
     if (httpTrafficThresholds.nonEmpty) {
