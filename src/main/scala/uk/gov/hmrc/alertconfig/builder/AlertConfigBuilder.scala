@@ -256,7 +256,6 @@ case class TeamAlertConfigBuilder(
     httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
-    // containerKillThreshold: Int = 1,
     containerKillThreshold: ContainerKillThreshold = ContainerKillThreshold(1),
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
