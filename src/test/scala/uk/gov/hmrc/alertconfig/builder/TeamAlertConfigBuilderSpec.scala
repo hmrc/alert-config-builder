@@ -242,11 +242,38 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("exception-threshold") shouldBe JsObject(
         "count"    -> JsNumber(threshold),
-        "severity" -> JsString("warning")
+        "severity" -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
       )
       service2Config("exception-threshold") shouldBe JsObject(
         "count"    -> JsNumber(threshold),
-        "severity" -> JsString("warning")
+        "severity" -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+      )
+    }
+
+    "return TeamAlertConfigBuilder with correct ExceptionThreshold for Grafana sets threshold to Int.Max" in {
+      val threshold = 13
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withExceptionThreshold(threshold, AlertSeverity.Warning, AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("exception-threshold") shouldBe JsObject(
+        "count"    -> JsNumber(Int.MaxValue),
+        "severity" -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+      )
+      service2Config("exception-threshold") shouldBe JsObject(
+        "count"    -> JsNumber(Int.MaxValue),
+        "severity" -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
 
