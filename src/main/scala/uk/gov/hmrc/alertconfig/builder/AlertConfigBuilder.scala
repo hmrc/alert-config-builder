@@ -164,13 +164,23 @@ case class AlertConfigBuilder(
             http5xxThreshold.count
           }
 
-          //             |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
+          val updatedExceptionThreshold = if (exceptionThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+            // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
+            // it will never be triggered
+            Int.MaxValue
+          } else {
+            exceptionThreshold.count
+          }
+
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
              |"handlers": ${handlers.toJson.compactPrint},
              |"errors-logged-threshold":$errorsLoggedThreshold,
-             |"exception-threshold":${exceptionThreshold.toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
+             |"exception-threshold":${exceptionThreshold
+              .copy(count = updatedExceptionThreshold)
+              .toJson(ExceptionThresholdProtocol.thresholdFormat)
+              .compactPrint},
              |"5xx-threshold":${http5xxThreshold
               .copy(count = updated5xxThreshold)
               .toJson(Http5xxThresholdProtocol.thresholdFormat)
