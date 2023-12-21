@@ -43,7 +43,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("app") shouldBe JsString("service1.domain.zone.1")
       config("handlers") shouldBe JsArray(JsString("h1"), JsString("h2"))
       config("exception-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("critical"))
-      config("5xx-threshold") shouldBe JsObject("count" -> JsNumber(Int.MaxValue), "severity" -> JsString("critical"), "alertingPlatform" -> JsString("Sensu"))
+      config("5xx-threshold") shouldBe JsObject(
+        "count"            -> JsNumber(Int.MaxValue),
+        "severity"         -> JsString("critical"),
+        "alertingPlatform" -> JsString("Sensu"))
       config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
         "percentage"       -> JsNumber(100),
@@ -229,7 +232,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("5xx-threshold") shouldBe JsObject("count" -> JsNumber(Int.MaxValue), "severity" -> JsString("warning"), "alertingPlatform" -> JsString("Grafana"))
+      serviceConfig("5xx-threshold") shouldBe JsObject(
+        "count"            -> JsNumber(Int.MaxValue),
+        "severity"         -> JsString("warning"),
+        "alertingPlatform" -> JsString("Grafana"))
     }
 
     "build/configure http 5xx threshold severity with given thresholds and unspecified severity" in {
@@ -241,7 +247,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("5xx-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("critical"), "alertingPlatform" -> JsString("Sensu"))
+      serviceConfig("5xx-threshold") shouldBe JsObject(
+        "count"            -> JsNumber(2),
+        "severity"         -> JsString("critical"),
+        "alertingPlatform" -> JsString("Sensu"))
     }
 
     "build/configure logMessageThresholds with given thresholds" in {
@@ -590,6 +599,32 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("average-cpu-threshold") shouldBe JsNumber(threshold)
+  }
+
+  "use the configured value for withContainerKillThreshold when the alerting platform is Sensu" in {
+    val threshold = 3
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withContainerKillThreshold(threshold)
+      .build
+      .get
+      .parseJson
+      .asJsObject
+      .fields
+
+    serviceConfig("containerKillThreshold") shouldBe JsNumber(threshold)
+  }
+
+  "not use the configured value for withContainerKillThreshold when the alerting platform is Grafana" in {
+    val threshold = 3
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withContainerKillThreshold(threshold, AlertingPlatform.Grafana)
+      .build
+      .get
+      .parseJson
+      .asJsObject
+      .fields
+
+    serviceConfig("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
   }
 
 }
