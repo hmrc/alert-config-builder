@@ -59,7 +59,8 @@ case class AlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical,
+  def withExceptionThreshold(exceptionThreshold: Int,
+                             severity: AlertSeverity = AlertSeverity.Critical,
                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
 
@@ -267,10 +268,10 @@ case class TeamAlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
     this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
 
-  def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical,
+  def withExceptionThreshold(exceptionThreshold: Int,
+                             severity: AlertSeverity = AlertSeverity.Critical,
                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
-
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
                            severity: AlertSeverity = AlertSeverity.Critical,
