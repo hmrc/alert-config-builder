@@ -300,13 +300,6 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("warning"),
           "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
-        ),
-        JsObject(
-          "message"          -> JsString("SIMULATED_ERROR5"),
-          "count"            -> JsNumber(7),
-          "lessThanMode"     -> JsFalse,
-          "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
         )
       )
     }

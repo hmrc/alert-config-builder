@@ -27,7 +27,12 @@ case class LogMessageThreshold(
     alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
 )
 
-object LogMessageThresholdProtocol extends DefaultJsonProtocol {
-  implicit val asf: JsonFormat[AlertSeverity]          = alertSeverityFormat
-  implicit val format: JsonFormat[LogMessageThreshold] = jsonFormat5(LogMessageThreshold)
+object LogMessageThresholdProtocol extends {
+  import DefaultJsonProtocol._
+
+  implicit val logMessageThresholdFormat: JsonFormat[LogMessageThreshold] = {
+    implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+    jsonFormat5(LogMessageThreshold)
+  }
+
 }

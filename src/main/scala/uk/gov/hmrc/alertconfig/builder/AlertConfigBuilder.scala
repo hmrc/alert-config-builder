@@ -129,6 +129,7 @@ case class AlertConfigBuilder(
 
   def build: Option[String] = {
     import Http90PercentileResponseTimeThresholdProtocol._
+    import LogMessageThresholdProtocol._
     import HttpTrafficThresholdProtocol._
     import HttpStatusThresholdProtocol._
     import HttpStatusPercentThresholdProtocol._
@@ -210,7 +211,7 @@ case class AlertConfigBuilder(
              |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
              |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $totalHttpRequestThreshold,
-             |"log-message-thresholds" : $buildLogMessageThresholdsJson,
+             |"log-message-thresholds" : ${logMessageThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"average-cpu-threshold" : $averageCPUThreshold,
              |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(
               HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
@@ -222,11 +223,6 @@ case class AlertConfigBuilder(
               """.stripMargin
         }
     }
-  }
-
-  def buildLogMessageThresholdsJson = {
-    import LogMessageThresholdProtocol._
-    logMessageThresholds.toJson.compactPrint
   }
 
   def getZone(appConfigFile: File, platformService: Boolean = false): Option[String] =

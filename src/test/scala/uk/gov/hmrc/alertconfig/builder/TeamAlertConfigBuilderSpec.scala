@@ -583,13 +583,6 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("warning"),
           "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
-        ),
-        JsObject(
-          "message"          -> JsString("SIMULATED_ERROR4"),
-          "count"            -> JsNumber(22),
-          "lessThanMode"     -> JsFalse,
-          "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
         )
       )
 
