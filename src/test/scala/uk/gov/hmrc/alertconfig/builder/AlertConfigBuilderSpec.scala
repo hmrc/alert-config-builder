@@ -43,13 +43,13 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("app") shouldBe JsString("service1.domain.zone.1")
       config("handlers") shouldBe JsArray(JsString("h1"), JsString("h2"))
       config("exception-threshold") shouldBe JsObject(
-        "count" -> JsNumber(2),
-        "severity" -> JsString("critical"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString),
+        "count"            -> JsNumber(2),
+        "severity"         -> JsString("critical"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
       )
       config("5xx-threshold") shouldBe JsObject(
-        "count" -> JsNumber(Int.MaxValue),
-        "severity" -> JsString("critical"),
+        "count"            -> JsNumber(Int.MaxValue),
+        "severity"         -> JsString("critical"),
         "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
       )
       config("5xx-percent-threshold") shouldBe JsObject(
@@ -136,7 +136,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "count"            -> JsNumber(2),
           "severity"         -> JsString("warning"),
           "httpMethod"       -> JsString("POST"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        ),
         JsObject(
           "httpStatus"       -> JsNumber(504),
           "count"            -> JsNumber(4),
@@ -237,7 +238,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("5xx-threshold") shouldBe JsObject("count" -> JsNumber(Int.MaxValue), "severity" -> JsString("warning"), "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString))
+      serviceConfig("5xx-threshold") shouldBe JsObject(
+        "count"            -> JsNumber(Int.MaxValue),
+        "severity"         -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString))
     }
 
     "build/configure http 5xx threshold severity with given thresholds and unspecified severity" in {
@@ -249,7 +253,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("5xx-threshold") shouldBe JsObject("count" -> JsNumber(2), "severity" -> JsString("critical"), "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
+      serviceConfig("5xx-threshold") shouldBe JsObject(
+        "count"            -> JsNumber(2),
+        "severity"         -> JsString("critical"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
     }
 
     "build/configure logMessageThresholds with given thresholds" in {
@@ -258,6 +265,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .withLogMessageThreshold("SIMULATED_ERROR2", 4, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR3", 5, lessThanMode = true)
         .withLogMessageThreshold("SIMULATED_ERROR4", 6, lessThanMode = true, AlertSeverity.Warning)
+        .withLogMessageThreshold("SIMULATED_ERROR5", 7, alertingPlatform = AlertingPlatform.Grafana)
         .build
         .get
         .parseJson
@@ -265,10 +273,34 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .fields
 
       serviceConfig("log-message-thresholds") shouldBe JsArray(
-        JsObject("message" -> JsString("SIMULATED_ERROR1"), "count" -> JsNumber(3), "lessThanMode" -> JsFalse, "severity" -> JsString("critical")),
-        JsObject("message" -> JsString("SIMULATED_ERROR2"), "count" -> JsNumber(4), "lessThanMode" -> JsFalse, "severity" -> JsString("critical")),
-        JsObject("message" -> JsString("SIMULATED_ERROR3"), "count" -> JsNumber(5), "lessThanMode" -> JsTrue, "severity"  -> JsString("critical")),
-        JsObject("message" -> JsString("SIMULATED_ERROR4"), "count" -> JsNumber(6), "lessThanMode" -> JsTrue, "severity"  -> JsString("warning"))
+        JsObject(
+          "message"          -> JsString("SIMULATED_ERROR1"),
+          "count"            -> JsNumber(3),
+          "lessThanMode"     -> JsFalse,
+          "severity"         -> JsString("critical"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        ),
+        JsObject(
+          "message"          -> JsString("SIMULATED_ERROR2"),
+          "count"            -> JsNumber(4),
+          "lessThanMode"     -> JsFalse,
+          "severity"         -> JsString("critical"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        ),
+        JsObject(
+          "message"          -> JsString("SIMULATED_ERROR3"),
+          "count"            -> JsNumber(5),
+          "lessThanMode"     -> JsTrue,
+          "severity"         -> JsString("critical"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        ),
+        JsObject(
+          "message"          -> JsString("SIMULATED_ERROR4"),
+          "count"            -> JsNumber(6),
+          "lessThanMode"     -> JsTrue,
+          "severity"         -> JsString("warning"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        )
       )
     }
 
@@ -514,8 +546,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     val expected = JsObject(
-      "severity" -> JsString("critical"),
-      "count"    -> JsNumber(threshold),
+      "severity"         -> JsString("critical"),
+      "count"            -> JsNumber(threshold),
       "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
     )
 
@@ -533,8 +565,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     val expected = JsObject(
-      "severity" -> JsString("critical"),
-      "count"    -> JsNumber(Int.MaxValue),
+      "severity"         -> JsString("critical"),
+      "count"            -> JsNumber(Int.MaxValue),
       "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
     )
 
@@ -552,8 +584,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     val expected = JsObject(
-      "severity" -> JsString("warning"),
-      "count"    -> JsNumber(threshold),
+      "severity"         -> JsString("warning"),
+      "count"            -> JsNumber(threshold),
       "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
     )
 

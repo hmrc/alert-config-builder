@@ -23,10 +23,16 @@ case class LogMessageThreshold(
     message: String,
     count: Int,
     lessThanMode: Boolean = false,
-    severity: AlertSeverity = AlertSeverity.Critical
+    severity: AlertSeverity = AlertSeverity.Critical,
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
 )
 
-object LogMessageThresholdProtocol extends DefaultJsonProtocol {
-  implicit val asf: JsonFormat[AlertSeverity]          = alertSeverityFormat
-  implicit val format: JsonFormat[LogMessageThreshold] = jsonFormat4(LogMessageThreshold)
+object LogMessageThresholdProtocol extends {
+  import DefaultJsonProtocol._
+
+  implicit val logMessageThresholdFormat: JsonFormat[LogMessageThreshold] = {
+    implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
+    jsonFormat5(LogMessageThreshold)
+  }
+
 }

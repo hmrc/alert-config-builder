@@ -241,13 +241,13 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       service1Config("exception-threshold") shouldBe JsObject(
-        "count"    -> JsNumber(threshold),
-        "severity" -> JsString("warning"),
+        "count"            -> JsNumber(threshold),
+        "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
       )
       service2Config("exception-threshold") shouldBe JsObject(
-        "count"    -> JsNumber(threshold),
-        "severity" -> JsString("warning"),
+        "count"            -> JsNumber(threshold),
+        "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
       )
     }
@@ -266,13 +266,13 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       service1Config("exception-threshold") shouldBe JsObject(
-        "count"    -> JsNumber(Int.MaxValue),
-        "severity" -> JsString("warning"),
+        "count"            -> JsNumber(Int.MaxValue),
+        "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
       service2Config("exception-threshold") shouldBe JsObject(
-        "count"    -> JsNumber(Int.MaxValue),
-        "severity" -> JsString("warning"),
+        "count"            -> JsNumber(Int.MaxValue),
+        "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
@@ -553,6 +553,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
         .withLogMessageThreshold("SIMULATED_ERROR3", 21, lessThanMode = true, AlertSeverity.Warning)
+        .withLogMessageThreshold("SIMULATED_ERROR4", 22, alertingPlatform = AlertingPlatform.Grafana)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -563,22 +564,25 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       val expected = JsArray(
         JsObject(
-          "message"      -> JsString("SIMULATED_ERROR1"),
-          "count"        -> JsNumber(19),
-          "lessThanMode" -> JsFalse,
-          "severity"     -> JsString("critical")
+          "message"          -> JsString("SIMULATED_ERROR1"),
+          "count"            -> JsNumber(19),
+          "lessThanMode"     -> JsFalse,
+          "severity"         -> JsString("critical"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
         ),
         JsObject(
-          "message"      -> JsString("SIMULATED_ERROR2"),
-          "count"        -> JsNumber(20),
-          "lessThanMode" -> JsTrue,
-          "severity"     -> JsString("critical")
+          "message"          -> JsString("SIMULATED_ERROR2"),
+          "count"            -> JsNumber(20),
+          "lessThanMode"     -> JsTrue,
+          "severity"         -> JsString("critical"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
         ),
         JsObject(
-          "message"      -> JsString("SIMULATED_ERROR3"),
-          "count"        -> JsNumber(21),
-          "lessThanMode" -> JsTrue,
-          "severity"     -> JsString("warning")
+          "message"          -> JsString("SIMULATED_ERROR3"),
+          "count"            -> JsNumber(21),
+          "lessThanMode"     -> JsTrue,
+          "severity"         -> JsString("warning"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
         )
       )
 
