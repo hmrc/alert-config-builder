@@ -114,8 +114,12 @@ case class AlertConfigBuilder(
   def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerCrashThreshold, alertingPlatform))
 
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
+  def withLogMessageThreshold(message: String,
+                              threshold: Int,
+                              lessThanMode: Boolean = false,
+                              severity: AlertSeverity = AlertSeverity.Critical,
+                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
     this.copy(averageCPUThreshold = averageCPUThreshold)
@@ -336,8 +340,12 @@ case class TeamAlertConfigBuilder(
   def withTotalHttpRequestsCountThreshold(threshold: Int) =
     this.copy(totalHttpRequestThreshold = threshold)
 
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
+  def withLogMessageThreshold(message: String,
+                              threshold: Int,
+                              lessThanMode: Boolean = false,
+                              severity: AlertSeverity = AlertSeverity.Critical,
+                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
     this.copy(averageCPUThreshold = averageCPUThreshold)
