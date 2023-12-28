@@ -190,13 +190,32 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .fields
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
-        JsObject("httpStatus" -> JsNumber(502), "percentage" -> JsNumber(2.2), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
         JsObject(
-          "httpStatus" -> JsNumber(504),
-          "percentage" -> JsNumber(4.4),
-          "severity"   -> JsString("critical"),
-          "httpMethod" -> JsString("ALL_METHODS"))
+          "httpStatus"       -> JsNumber(502),
+          "percentage"       -> JsNumber(2.2),
+          "severity"         -> JsString("warning"),
+          "httpMethod"       -> JsString("POST"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+        JsObject(
+          "httpStatus"       -> JsNumber(504),
+          "percentage"       -> JsNumber(4.4),
+          "severity"         -> JsString("critical"),
+          "httpMethod"       -> JsString("ALL_METHODS"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
       )
+    }
+
+    "disable http status percent threshold when alerting platform is Grafana" in {
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post, AlertingPlatform.Grafana))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4, alertingPlatform = AlertingPlatform.Grafana))
+        .build
+        .get
+        .parseJson
+        .asJsObject
+        .fields
+
+      serviceConfig("httpStatusPercentThresholds") shouldBe JsArray()
     }
 
     "configure http status percent threshold with given status code using default threshold" in {
@@ -210,10 +229,11 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
         JsObject(
-          "httpStatus" -> JsNumber(404),
-          "percentage" -> JsNumber(100.0),
-          "severity"   -> JsString("critical"),
-          "httpMethod" -> JsString("ALL_METHODS"))
+          "httpStatus"       -> JsNumber(404),
+          "percentage"       -> JsNumber(100.0),
+          "severity"         -> JsString("critical"),
+          "httpMethod"       -> JsString("ALL_METHODS"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
       )
     }
 

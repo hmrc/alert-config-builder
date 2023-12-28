@@ -22,7 +22,8 @@ case class HttpStatusPercentThreshold(
     httpStatus: HttpStatus.HTTP_STATUS,
     percentage: Double = 100.0,
     severity: AlertSeverity = AlertSeverity.Critical,
-    httpMethod: HttpMethod = HttpMethod.All
+    httpMethod: HttpMethod = HttpMethod.All,
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
 )
 
 object HttpStatusPercentThresholdProtocol {
@@ -32,7 +33,7 @@ object HttpStatusPercentThresholdProtocol {
     implicit val hsf: JsonFormat[HttpStatus.HTTP_STATUS] = httpStatusFormat
     implicit val asf: JsonFormat[AlertSeverity]          = alertSeverityFormat
     implicit val hmf: JsonFormat[HttpMethod]             = httpMethodFormat
-    jsonFormat4(HttpStatusPercentThreshold)
+    jsonFormat5(HttpStatusPercentThreshold)
   }
 
 }

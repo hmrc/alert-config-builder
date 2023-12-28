@@ -544,11 +544,14 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.Warning, HttpMethod.Post)
       val threshold2 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_501, 20)
       val threshold3 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(555), 55.5)
+      // threshold4 should not appear in sensu (json) output as alerting platform is Grafana
+      val threshold4 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 10, alertingPlatform = AlertingPlatform.Grafana)
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
         .withHttpStatusPercentThreshold(threshold1)
         .withHttpStatusPercentThreshold(threshold2)
         .withHttpStatusPercentThreshold(threshold3)
+        .withHttpStatusPercentThreshold(threshold4)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -558,17 +561,24 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       val expected = JsArray(
-        JsObject("httpStatus" -> JsNumber(500), "percentage" -> JsNumber(19.1), "severity" -> JsString("warning"), "httpMethod" -> JsString("POST")),
         JsObject(
-          "httpStatus" -> JsNumber(501),
-          "percentage" -> JsNumber(20),
-          "severity"   -> JsString("critical"),
-          "httpMethod" -> JsString("ALL_METHODS")),
+          "httpStatus"       -> JsNumber(500),
+          "percentage"       -> JsNumber(19.1),
+          "severity"         -> JsString("warning"),
+          "httpMethod"       -> JsString("POST"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
         JsObject(
-          "httpStatus" -> JsNumber(555),
-          "percentage" -> JsNumber(55.5),
-          "severity"   -> JsString("critical"),
-          "httpMethod" -> JsString("ALL_METHODS"))
+          "httpStatus"       -> JsNumber(501),
+          "percentage"       -> JsNumber(20),
+          "severity"         -> JsString("critical"),
+          "httpMethod"       -> JsString("ALL_METHODS"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+        JsObject(
+          "httpStatus"       -> JsNumber(555),
+          "percentage"       -> JsNumber(55.5),
+          "severity"         -> JsString("critical"),
+          "httpMethod"       -> JsString("ALL_METHODS"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
       )
 
       service1Config("httpStatusPercentThresholds") shouldBe expected

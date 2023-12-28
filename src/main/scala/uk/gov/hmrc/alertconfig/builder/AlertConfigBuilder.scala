@@ -213,7 +213,7 @@ case class AlertConfigBuilder(
               .getOrElse(JsNull)},
              |"httpTrafficThresholds" : ${httpTrafficThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
-             |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.toJson.compactPrint},
+             |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
              |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $totalHttpRequestThreshold,
