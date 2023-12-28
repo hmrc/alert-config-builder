@@ -44,7 +44,7 @@ case class AlertConfigBuilder(
     httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
     metricsThresholds: Seq[MetricsThreshold] = Nil,
     logMessageThresholds: Seq[LogMessageThreshold] = Nil,
-    totalHttpRequestThreshold: Int = Int.MaxValue,
+    totalHttpRequestThreshold: TotalHttpRequestThreshold = TotalHttpRequestThreshold(),
     averageCPUThreshold: Int = Int.MaxValue,
     platformService: Boolean = false
 ) extends Builder[Option[String]] {
@@ -113,6 +113,9 @@ case class AlertConfigBuilder(
 
   def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerCrashThreshold, alertingPlatform))
+
+  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   def withLogMessageThreshold(message: String,
                               threshold: Int,
@@ -190,6 +193,12 @@ case class AlertConfigBuilder(
             exceptionThreshold.count
           }
 
+          val updatedTotalHttpRequestThreshold = if (totalHttpRequestThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+            Int.MaxValue
+          } else {
+            totalHttpRequestThreshold.count
+          }
+
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
@@ -216,7 +225,7 @@ case class AlertConfigBuilder(
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
              |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
-             |"total-http-request-threshold": $totalHttpRequestThreshold,
+             |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
              |"log-message-thresholds" : ${logMessageThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"average-cpu-threshold" : $averageCPUThreshold,
              |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(
@@ -269,7 +278,7 @@ case class TeamAlertConfigBuilder(
     http5xxRateIncrease: Seq[Http5xxRateIncrease] = Nil,
     metricsThresholds: Seq[MetricsThreshold] = Nil,
     logMessageThresholds: Seq[LogMessageThreshold] = Nil,
-    totalHttpRequestThreshold: Int = Int.MaxValue,
+    totalHttpRequestThreshold: TotalHttpRequestThreshold = TotalHttpRequestThreshold(),
     averageCPUThreshold: Int = Int.MaxValue,
     platformService: Boolean = false
 ) extends Builder[Seq[AlertConfigBuilder]] {
@@ -339,8 +348,8 @@ case class TeamAlertConfigBuilder(
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
-  def withTotalHttpRequestsCountThreshold(threshold: Int) =
-    this.copy(totalHttpRequestThreshold = threshold)
+  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   def withLogMessageThreshold(message: String,
                               threshold: Int,
