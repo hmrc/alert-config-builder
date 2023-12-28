@@ -201,9 +201,9 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       )
     }
 
-    "return TeamAlertConfigBuilder with correct Http5xxPercentThreshold for Grafana alerting platform" in {
-      val threshold            = 19.9
-      val overwrittenThreshold = 333.33
+    "return TeamAlertConfigBuilder with disabled Http5xxPercentThreshold when alerting platform is Grafana" in {
+      val threshold          = 19.9
+      val disabledThreshold  = 333.33
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
         .withHttp5xxPercentThreshold(threshold, alertingPlatform = AlertingPlatform.Grafana)
@@ -217,12 +217,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
-        "percentage"       -> JsNumber(overwrittenThreshold),
+        "percentage"       -> JsNumber(disabledThreshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
-        "percentage"       -> JsNumber(overwrittenThreshold),
+        "percentage"       -> JsNumber(disabledThreshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
@@ -252,7 +252,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       )
     }
 
-    "return TeamAlertConfigBuilder with correct ExceptionThreshold for Grafana sets threshold to Int.Max" in {
+    "return TeamAlertConfigBuilder with disabled ExceptionThreshold when alerting platform is Grafana" in {
       val threshold = 13
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
@@ -275,6 +275,89 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
+    }
+
+    "return TeamAlertConfigBuilder with correct ErrorsLoggedThreshold" in {
+      val threshold = 13
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withErrorsLoggedThreshold(threshold)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("errors-logged-threshold") shouldBe JsNumber(threshold)
+      service2Config("errors-logged-threshold") shouldBe JsNumber(threshold)
+    }
+
+    "return TeamAlertConfigBuilder with disabled ErrorsLoggedThreshold when alerting platform is Grafana" in {
+      val threshold = 13
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withErrorsLoggedThreshold(threshold, AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
+    }
+
+    "return TeamAlertConfigBuilder with default ContainerKillThreshold" in {
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("containerKillThreshold") shouldBe JsNumber(1)
+      service2Config("containerKillThreshold") shouldBe JsNumber(1)
+    }
+
+    "return TeamAlertConfigBuilder with correct ContainerKillThreshold" in {
+      val threshold = 2
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withContainerKillThreshold(threshold)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("containerKillThreshold") shouldBe JsNumber(threshold)
+      service2Config("containerKillThreshold") shouldBe JsNumber(threshold)
+    }
+
+    "return TeamAlertConfigBuilder with disabled ContainerKillThreshold when alerting platform is Grafana" in {
+      val threshold = 2
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withContainerKillThreshold(threshold, AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with correct AverageCPUThreshold" in {
@@ -313,7 +396,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service2Config("5xx-threshold") shouldBe expected
     }
 
-    "return TeamAlertConfigBuilder with correct http5xxThresholdSeverities targeting Grafana" in {
+    "return TeamAlertConfigBuilder with disabled http5xxThresholdSeverities when alerting platform is Grafana" in {
       val threshold = 19
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
@@ -386,7 +469,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service2Config("httpTrafficThresholds") shouldBe expected
     }
 
-    "return TeamAlertConfigBuilder with empty httpTrafficThreshold when Grafana alerting is used" in {
+    "return TeamAlertConfigBuilder with empty httpTrafficThreshold when alerting platform is Grafana" in {
       val threshold = HttpTrafficThreshold(Some(10), Some(5), 35, AlertingPlatform.Grafana)
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
@@ -527,9 +610,9 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       )
     }
 
-    "return TeamAlertConfigBuilder with correct withHttp5xxPercentThreshold for Grafana alerting platform" in {
-      val threshold            = 19.9
-      val overwrittenThreshold = 333.33
+    "return TeamAlertConfigBuilder with disabled withHttp5xxPercentThreshold when alerting platform is Grafana" in {
+      val threshold          = 19.9
+      val disabledThreshold  = 333.33
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
@@ -541,7 +624,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config: Map[String, JsValue] = configs(0)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "percentage"       -> JsNumber(overwrittenThreshold),
+        "percentage"       -> JsNumber(disabledThreshold),
         "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )

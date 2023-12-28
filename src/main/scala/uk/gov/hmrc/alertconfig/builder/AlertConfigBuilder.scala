@@ -29,7 +29,7 @@ trait Builder[T] {
 case class AlertConfigBuilder(
     serviceName: String,
     handlers: Seq[String] = Seq("noop"),
-    errorsLoggedThreshold: Int = Int.MaxValue,
+    errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
     exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
     http5xxRateIncrease: Seq[Http5xxRateIncrease] = Nil,
     http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
@@ -56,8 +56,8 @@ case class AlertConfigBuilder(
   def withHandlers(handlers: String*) =
     this.copy(handlers = handlers)
 
-  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
-    this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
+  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold, alertingPlatform))
 
   def withExceptionThreshold(exceptionThreshold: Int,
                              severity: AlertSeverity = AlertSeverity.Critical,
@@ -176,6 +176,12 @@ case class AlertConfigBuilder(
             containerKillThreshold.count
           }
 
+          val updatedErrorsLoggedThreshold = if (errorsLoggedThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+            Int.MaxValue
+          } else {
+            errorsLoggedThreshold.count
+          }
+
           val updatedExceptionThreshold = if (exceptionThreshold.alertingPlatform != AlertingPlatform.Sensu) {
             // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
             // it will never be triggered
@@ -188,7 +194,7 @@ case class AlertConfigBuilder(
              |{
              |"app": "$serviceName.$serviceDomain",
              |"handlers": ${handlers.toJson.compactPrint},
-             |"errors-logged-threshold":$errorsLoggedThreshold,
+             |"errors-logged-threshold":$updatedErrorsLoggedThreshold,
              |"exception-threshold":${exceptionThreshold
               .copy(count = updatedExceptionThreshold)
               .toJson(ExceptionThresholdProtocol.thresholdFormat)
@@ -248,7 +254,7 @@ case class AlertConfigBuilder(
 case class TeamAlertConfigBuilder(
     services: Seq[String],
     handlers: Seq[String] = Seq("noop"),
-    errorsLoggedThreshold: Int = Int.MaxValue,
+    errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
     exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
     http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
     http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
@@ -271,8 +277,8 @@ case class TeamAlertConfigBuilder(
   def withHandlers(handlers: String*) =
     this.copy(handlers = handlers)
 
-  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
-    this.copy(errorsLoggedThreshold = errorsLoggedThreshold)
+  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold, alertingPlatform))
 
   def withExceptionThreshold(exceptionThreshold: Int,
                              severity: AlertSeverity = AlertSeverity.Critical,
