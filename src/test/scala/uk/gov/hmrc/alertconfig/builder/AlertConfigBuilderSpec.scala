@@ -416,16 +416,51 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "query"       -> JsString(query),
           "warning"     -> JsNumber(65.0),
           "critical"    -> JsNumber(88.0),
-          "invert"      -> JsBoolean(false)),
-        JsObject("name" -> JsString("alert1-warning-only"), "query"  -> JsString(query), "warning"  -> JsNumber(44.0), "invert" -> JsBoolean(false)),
-        JsObject("name" -> JsString("alert1-critical-only"), "query" -> JsString(query), "critical" -> JsNumber(45.0), "invert" -> JsBoolean(false)),
+          "invert"      -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+        JsObject(
+          "name" -> JsString("alert1-warning-only"),
+          "query"  -> JsString(query),
+          "warning"  -> JsNumber(44.0),
+          "invert" -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+        JsObject(
+          "name" -> JsString("alert1-critical-only"),
+          "query" -> JsString(query),
+          "critical" -> JsNumber(45.0),
+          "invert" -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
         JsObject(
           "name"     -> JsString("alert2"),
           "query"    -> JsString(query),
           "warning"  -> JsNumber(30.03),
           "critical" -> JsNumber(12.21),
-          "invert"   -> JsBoolean(true))
+          "invert"   -> JsBoolean(true),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
       )
+    }
+
+    "disable metrics threshold where alerting platform is Grafana" in {
+      val query = "some_function(over.some.query.for.anything.like*)"
+      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withMetricsThreshold(MetricsThreshold(name = "alert1", query = query, warning = Some(65), critical = Some(88)))
+        .withMetricsThreshold(MetricsThreshold(name = "alert1-warning-only", query = query, warning = Some(44), alertingPlatform = AlertingPlatform.Grafana))
+        .withMetricsThreshold(MetricsThreshold(name = "alert1-critical-only", query = query, critical = Some(45), alertingPlatform = AlertingPlatform.Grafana))
+        .withMetricsThreshold(MetricsThreshold(name = "alert2", query = query, warning = Some(30.03), critical = Some(12.21), invert = true, alertingPlatform = AlertingPlatform.Grafana))
+        .build
+        .get
+        .parseJson
+        .asJsObject
+        .fields
+
+      serviceConfig("metricsThresholds") shouldBe JsArray(
+        JsObject(
+          "name" -> JsString("alert1"),
+          "query" -> JsString(query),
+          "warning" -> JsNumber(65.0),
+          "critical" -> JsNumber(88.0),
+          "invert" -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)))
     }
 
   }
