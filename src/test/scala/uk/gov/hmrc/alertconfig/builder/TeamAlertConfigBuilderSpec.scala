@@ -40,7 +40,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.totalHttpRequestThreshold shouldBe TotalHttpRequestThreshold(Int.MaxValue, AlertingPlatform.Sensu)
       alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
       alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Sensu)
-      alertConfigBuilder.averageCPUThreshold shouldBe Int.MaxValue
+      alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Sensu)
       alertConfigBuilder.httpStatusThresholds shouldBe List()
       alertConfigBuilder.http90PercentileResponseTimeThresholds shouldBe List()
       alertConfigBuilder.httpTrafficThresholds shouldBe List()
@@ -375,6 +375,23 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("average-cpu-threshold") shouldBe JsNumber(threshold)
       service2Config("average-cpu-threshold") shouldBe JsNumber(threshold)
+    }
+
+    "return TeamAlertConfigBuilder with disabled AverageCPUThreshold when alerting plaform is Grafana" in {
+      val threshold = 67
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withAverageCPUThreshold(threshold, alertingPlatform = AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      service1Config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with correct http5xxThresholdSeverities" in {

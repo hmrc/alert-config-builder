@@ -45,7 +45,7 @@ case class AlertConfigBuilder(
     metricsThresholds: Seq[MetricsThreshold] = Nil,
     logMessageThresholds: Seq[LogMessageThreshold] = Nil,
     totalHttpRequestThreshold: TotalHttpRequestThreshold = TotalHttpRequestThreshold(),
-    averageCPUThreshold: Int = Int.MaxValue,
+    averageCPUThreshold: AverageCPUThreshold = AverageCPUThreshold(),
     platformService: Boolean = false
 ) extends Builder[Option[String]] {
 
@@ -124,8 +124,8 @@ case class AlertConfigBuilder(
                               alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
-  def withAverageCPUThreshold(averageCPUThreshold: Int) =
-    this.copy(averageCPUThreshold = averageCPUThreshold)
+  def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(averageCPUThreshold = AverageCPUThreshold(averageCPUThreshold, alertingPlatform = alertingPlatform))
 
   def isPlatformService(platformService: Boolean): AlertConfigBuilder =
     this.copy(platformService = platformService)
@@ -171,6 +171,12 @@ case class AlertConfigBuilder(
             Int.MaxValue
           } else {
             http5xxThreshold.count
+          }
+
+          val updatedAverageCPUThreshold = if (averageCPUThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+            Int.MaxValue
+          } else {
+            averageCPUThreshold.count
           }
 
           val updatedContainerKillThreshold = if (containerKillThreshold.alertingPlatform != AlertingPlatform.Sensu) {
@@ -228,7 +234,7 @@ case class AlertConfigBuilder(
               MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
              |"log-message-thresholds" : ${logMessageThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
-             |"average-cpu-threshold" : $averageCPUThreshold,
+             |"average-cpu-threshold" : $updatedAverageCPUThreshold,
              |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(
               HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
              |"absolute-percentage-split-downstream-service-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamServiceThresholds)(
@@ -280,7 +286,7 @@ case class TeamAlertConfigBuilder(
     metricsThresholds: Seq[MetricsThreshold] = Nil,
     logMessageThresholds: Seq[LogMessageThreshold] = Nil,
     totalHttpRequestThreshold: TotalHttpRequestThreshold = TotalHttpRequestThreshold(),
-    averageCPUThreshold: Int = Int.MaxValue,
+    averageCPUThreshold: AverageCPUThreshold = AverageCPUThreshold(),
     platformService: Boolean = false
 ) extends Builder[Seq[AlertConfigBuilder]] {
 
@@ -359,8 +365,8 @@ case class TeamAlertConfigBuilder(
                               alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
-  def withAverageCPUThreshold(averageCPUThreshold: Int) =
-    this.copy(averageCPUThreshold = averageCPUThreshold)
+  def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+    this.copy(averageCPUThreshold = AverageCPUThreshold(averageCPUThreshold, alertingPlatform = alertingPlatform))
 
   def isPlatformService(platformService: Boolean): TeamAlertConfigBuilder =
     this.copy(platformService = platformService)
