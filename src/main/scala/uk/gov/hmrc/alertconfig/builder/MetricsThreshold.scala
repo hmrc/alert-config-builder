@@ -23,9 +23,10 @@ case class MetricsThreshold(
     query: String,
     warning: Option[Double] = None,
     critical: Option[Double] = None,
-    invert: Boolean = false
+    invert: Boolean = false,
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
 )
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {
-  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat5(MetricsThreshold)
+  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat6(MetricsThreshold)
 }

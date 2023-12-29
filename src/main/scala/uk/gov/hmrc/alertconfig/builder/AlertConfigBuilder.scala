@@ -224,7 +224,8 @@ case class AlertConfigBuilder(
              |"httpStatusThresholds" : ${httpStatusThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
-             |"metricsThresholds" : ${printSeq(metricsThresholds)(MetricsThresholdProtocol.thresholdFormat)},
+             |"metricsThresholds" : ${printSeq(metricsThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu))(
+              MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
              |"log-message-thresholds" : ${logMessageThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
              |"average-cpu-threshold" : $averageCPUThreshold,
