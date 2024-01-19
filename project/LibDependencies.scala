@@ -5,7 +5,9 @@ object LibDependencies {
   val compile = Seq(
     "org.reflections" %  "reflections"   % "0.10.2",
     "io.spray"        %% "spray-json"    % "1.3.6",
-    "org.yaml"        %  "snakeyaml"     % "1.33"
+    "org.yaml"        %  "snakeyaml"     % "1.33",
+    "com.fasterxml.jackson.dataformat" %  "jackson-dataformat-yaml" % "2.15.3",
+    "com.fasterxml.jackson.module"     %% "jackson-module-scala"    % "2.15.3"
   )
 
 
