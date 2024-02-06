@@ -750,6 +750,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
+
+    unSetEnv("ENVIRONMENT")
   }
 
   "enable averageCPUThreshold when the environment is integration but alertingPlatform is Sensu" in {
