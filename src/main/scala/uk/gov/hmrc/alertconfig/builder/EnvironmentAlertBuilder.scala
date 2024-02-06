@@ -53,19 +53,6 @@ object Environment {
       case "production"   => Production
     }
   }
-
-  def getDefaultAlertingPlatform(env: Environment) = {
-    env match {
-      case Environment.Integration => AlertingPlatform.Grafana
-      case Environment.Development => AlertingPlatform.Sensu
-      case Environment.Qa => AlertingPlatform.Sensu
-      case Environment.Staging => AlertingPlatform.Sensu
-      case Environment.ExternalTest => AlertingPlatform.Sensu
-      case Environment.Management => AlertingPlatform.Sensu
-      case Environment.Production => AlertingPlatform.Sensu
-    }
-  }
-
 }
 
 object AllEnvironmentAlertConfigBuilder {
