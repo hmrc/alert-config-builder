@@ -31,6 +31,13 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     map.put(key, value)
   }
 
+  def unSetEnv(key: String) = {
+    val field = System.getenv().getClass.getDeclaredField("m")
+    field.setAccessible(true)
+    val map = field.get(System.getenv()).asInstanceOf[java.util.Map[java.lang.String, java.lang.String]]
+    map.remove(key)
+  }
+
   override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
     System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
@@ -758,6 +765,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("average-cpu-threshold") shouldBe JsNumber(threshold)
+
+    unSetEnv("ENVIRONMENT")
   }
 
   "use the configured value for containerKillThreshold when the alerting platform is Sensu" in {
