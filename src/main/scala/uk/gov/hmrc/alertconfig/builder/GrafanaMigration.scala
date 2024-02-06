@@ -129,9 +129,10 @@ object GrafanaMigration {
     )
   )
     def isGrafanaEnabled(alertingPlatform: AlertingPlatform, currentEnvironment: Environment, alertType: AlertType): Boolean = {
-    alertingPlatform match {
-        case AlertingPlatform.Sensu => false 
+      alertingPlatform match {
+        case AlertingPlatform.Sensu => false
         case AlertingPlatform.Grafana => true
         case _ => config(currentEnvironment)(alertType) == AlertingPlatform.Grafana
+      }
     }
 }
