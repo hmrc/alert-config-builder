@@ -17,6 +17,7 @@
 package uk.gov.hmrc.alertconfig.builder
 
 import org.yaml.snakeyaml.Yaml
+import uk.gov.hmrc.alertconfig.builder.GrafanaMigration.isGrafanaEnabled
 
 import java.io.{File, FileInputStream, FileNotFoundException}
 import scala.jdk.CollectionConverters._
@@ -124,7 +125,7 @@ case class AlertConfigBuilder(
                               alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
-  def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(averageCPUThreshold = AverageCPUThreshold(averageCPUThreshold, alertingPlatform = alertingPlatform))
 
   def isPlatformService(platformService: Boolean): AlertConfigBuilder =
@@ -141,6 +142,8 @@ case class AlertConfigBuilder(
     val appConfigPath      = System.getProperty("app-config-path", "../app-config")
     val appConfigDirectory = new File(appConfigPath)
     val appConfigFile      = new File(appConfigDirectory, s"${serviceName}.yaml")
+    val currentEnvironment = Environment.get(System.getenv().getOrDefault("ENVIRONMENT", "production"))
+
 
     if (!appConfigDirectory.exists)
       throw new FileNotFoundException(s"Could not find app-config repository: $appConfigPath")
@@ -173,7 +176,7 @@ case class AlertConfigBuilder(
             http5xxThreshold.count
           }
 
-          val updatedAverageCPUThreshold = if (averageCPUThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedAverageCPUThreshold = if (isGrafanaEnabled(averageCPUThreshold.alertingPlatform, currentEnvironment, AlertType.AverageCPUThreshold)) {
             Int.MaxValue
           } else {
             averageCPUThreshold.count

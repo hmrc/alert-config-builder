@@ -22,11 +22,12 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import uk.gov.hmrc.alertconfig.builder.AlertingPlatform.Grafana
-import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertingPlatform, AverageCPUThreshold, ContainerKillThreshold, Environment, ErrorsLoggedThreshold, ExceptionThreshold, Http5xxPercentThreshold, Http5xxThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, LogMessageThreshold, Logger, MetricsThreshold, TotalHttpRequestThreshold}
+import uk.gov.hmrc.alertconfig.builder.GrafanaMigration.isGrafanaEnabled
+import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertType, AlertingPlatform, AverageCPUThreshold, ContainerKillThreshold, Environment, ErrorsLoggedThreshold, ExceptionThreshold, Http5xxPercentThreshold, Http5xxThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, LogMessageThreshold, Logger, MetricsThreshold, TotalHttpRequestThreshold}
 
 import java.io.File
 
-object YAMLBuilder {
+object YamlBuilder {
 
   val logger = new Logger()
 
@@ -34,7 +35,7 @@ object YAMLBuilder {
 
     val currentEnvironment = Environment.get(environment)
     val topLevelConfig     = TopLevelConfig(convert(alertConfigs, currentEnvironment))
-    logger.debug(s"Generating YAML for $currentEnvironment")
+    logger.debug(s"Generating Yaml for $currentEnvironment")
 
     val mapper = new ObjectMapper(
       new YAMLFactory()
@@ -45,7 +46,7 @@ object YAMLBuilder {
     mapper.registerModule(DefaultScalaModule)
 
     mapper.writeValue(new File(s"./target/output/services.yml"), topLevelConfig)
-    logger.debug(s"Done generating YAML for $currentEnvironment")
+    logger.debug(s"Done generating Yaml for $currentEnvironment")
   }
 
   def convert(alertConfigs: Seq[AlertConfig], currentEnvironment: Environment): Seq[ServiceConfig] = {
@@ -55,10 +56,10 @@ object YAMLBuilder {
   def convert(alertConfig: AlertConfig, currentEnvironment: Environment): Seq[ServiceConfig] = {
     val filtered             = alertConfig.environmentConfig.filter(_.enabledEnvironments.contains(currentEnvironment))
     val enabledHandlersInEnv = filtered.map(_.handlerName).toSet
-    alertConfig.alertConfig.flatMap(convert(_, enabledHandlersInEnv))
+    alertConfig.alertConfig.flatMap(convert(_, enabledHandlersInEnv, currentEnvironment))
   }
 
-  def convert(alertConfigBuilder: AlertConfigBuilder, environmentDefinedHandlers: Set[String]): Option[ServiceConfig] = {
+  def convert(alertConfigBuilder: AlertConfigBuilder, environmentDefinedHandlers: Set[String], currentEnvironment: Environment): Option[ServiceConfig] = {
     val enabledHandlers = alertConfigBuilder.handlers.toSet.intersect(environmentDefinedHandlers)
     if (enabledHandlers.isEmpty) {
       None
@@ -66,15 +67,15 @@ object YAMLBuilder {
       Some(
         ServiceConfig(
           service = alertConfigBuilder.serviceName.trim.toLowerCase.replaceAll(" ", "-"),
-          alerts = convertAlerts(alertConfigBuilder),
+          alerts = convertAlerts(alertConfigBuilder, currentEnvironment),
           pagerduty = enabledHandlers.map(handler => PagerDuty(integrationKeyName = handler)).toSeq
         ))
     }
   }
 
-  def convertAlerts(alertConfigBuilder: AlertConfigBuilder): Alerts = {
+  def convertAlerts(alertConfigBuilder: AlertConfigBuilder, currentEnvironment: Environment): Alerts = {
     Alerts(
-      averageCPUThreshold = convertAverageCPUThreshold(alertConfigBuilder.averageCPUThreshold),
+      averageCPUThreshold = convertAverageCPUThreshold(alertConfigBuilder.averageCPUThreshold, currentEnvironment),
       containerKillThreshold = convertContainerKillThreshold(alertConfigBuilder.containerKillThreshold),
       errorsLoggedThreshold = convertErrorsLoggedThreshold(alertConfigBuilder.errorsLoggedThreshold),
       exceptionThreshold = convertExceptionThreshold(alertConfigBuilder.exceptionThreshold),
@@ -89,54 +90,54 @@ object YAMLBuilder {
     )
   }
 
-  def convertAverageCPUThreshold(averageCPUThreshold: AverageCPUThreshold): Option[YAMLAverageCPUThresholdAlert] = {
-    Option.when(averageCPUThreshold.alertingPlatform == AlertingPlatform.Grafana)(
-      YAMLAverageCPUThresholdAlert(averageCPUThreshold.count)
+  def convertAverageCPUThreshold(averageCPUThreshold: AverageCPUThreshold, currentEnvironment: Environment): Option[YamlAverageCPUThresholdAlert] = {
+    Option.when(isGrafanaEnabled(averageCPUThreshold.alertingPlatform, currentEnvironment, AlertType.AverageCPUThreshold))(
+      YamlAverageCPUThresholdAlert(averageCPUThreshold.count)
     )
   }
 
-  def convertContainerKillThreshold(containerKillThreshold: ContainerKillThreshold): Option[YAMLContainerKillThresholdAlert] = {
+  def convertContainerKillThreshold(containerKillThreshold: ContainerKillThreshold): Option[YamlContainerKillThresholdAlert] = {
     Option.when(containerKillThreshold.alertingPlatform == AlertingPlatform.Grafana)(
-      YAMLContainerKillThresholdAlert(containerKillThreshold.count)
+      YamlContainerKillThresholdAlert(containerKillThreshold.count)
     )
   }
 
-  def convertErrorsLoggedThreshold(errorsLoggedThreshold: ErrorsLoggedThreshold): Option[YAMLErrorsLoggedThresholdAlert] = {
+  def convertErrorsLoggedThreshold(errorsLoggedThreshold: ErrorsLoggedThreshold): Option[YamlErrorsLoggedThresholdAlert] = {
     Option.when(errorsLoggedThreshold.alertingPlatform == AlertingPlatform.Grafana)(
-      YAMLErrorsLoggedThresholdAlert(errorsLoggedThreshold.count)
+      YamlErrorsLoggedThresholdAlert(errorsLoggedThreshold.count)
     )
   }
 
-  def convertExceptionThreshold(exceptionThreshold: ExceptionThreshold): Option[YAMLExceptionThresholdAlert] = {
+  def convertExceptionThreshold(exceptionThreshold: ExceptionThreshold): Option[YamlExceptionThresholdAlert] = {
     Option.when(exceptionThreshold.alertingPlatform == AlertingPlatform.Grafana)(
-      YAMLExceptionThresholdAlert(
+      YamlExceptionThresholdAlert(
         count = exceptionThreshold.count,
         severity = exceptionThreshold.severity.toString
       )
     )
   }
 
-  def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Http5xxPercentThreshold): Option[YAMLHttp5xxPercentThresholdAlert] = {
+  def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Http5xxPercentThreshold): Option[YamlHttp5xxPercentThresholdAlert] = {
     Option.when(http5xxPercentThreshold.alertingPlatform == AlertingPlatform.Grafana)(
-      YAMLHttp5xxPercentThresholdAlert(
+      YamlHttp5xxPercentThresholdAlert(
         percentage = http5xxPercentThreshold.percentage,
         severity = http5xxPercentThreshold.severity.toString
       )
     )
   }
 
-  def convertHttp5xxThreshold(http5xxThreshold: Http5xxThreshold): Option[YAMLHttp5xxThresholdAlert] = {
+  def convertHttp5xxThreshold(http5xxThreshold: Http5xxThreshold): Option[YamlHttp5xxThresholdAlert] = {
     Option.when(http5xxThreshold.alertingPlatform == AlertingPlatform.Grafana)(
-      YAMLHttp5xxThresholdAlert(
+      YamlHttp5xxThresholdAlert(
         count = http5xxThreshold.count,
         severity = http5xxThreshold.severity.toString
       )
     )
   }
 
-  def convertHttpStatusThresholds(httpStatusThresholds: Seq[HttpStatusThreshold]): Option[Seq[YAMLHttpStatusThresholdAlert]] = {
+  def convertHttpStatusThresholds(httpStatusThresholds: Seq[HttpStatusThreshold]): Option[Seq[YamlHttpStatusThresholdAlert]] = {
     val converted = httpStatusThresholds.withFilter(_.alertingPlatform == Grafana).map { threshold =>
-      YAMLHttpStatusThresholdAlert(
+      YamlHttpStatusThresholdAlert(
         count = threshold.count,
         httpMethod = threshold.httpMethod.toString,
         httpStatus = threshold.httpStatus.status,
@@ -146,9 +147,9 @@ object YAMLBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertLogMessageThresholdAlerts(logMessageThresholds: Seq[LogMessageThreshold]): Option[Seq[YAMLLogMessageThresholdAlert]] = {
+  def convertLogMessageThresholdAlerts(logMessageThresholds: Seq[LogMessageThreshold]): Option[Seq[YamlLogMessageThresholdAlert]] = {
     val converted = logMessageThresholds.withFilter(_.alertingPlatform == Grafana).map { threshold =>
-      YAMLLogMessageThresholdAlert(
+      YamlLogMessageThresholdAlert(
         message = threshold.message,
         count = threshold.count,
         lessThanMode = threshold.lessThanMode,
@@ -159,9 +160,9 @@ object YAMLBuilder {
   }
 
   def convertHttpStatusPercentThresholdAlerts(
-                                               httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold]): Option[Seq[YAMLHttpStatusPercentThresholdAlert]] = {
+                                               httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold]): Option[Seq[YamlHttpStatusPercentThresholdAlert]] = {
     val converted = httpStatusPercentThresholds.withFilter(_.alertingPlatform == Grafana).map { threshold =>
-      YAMLHttpStatusPercentThresholdAlert(
+      YamlHttpStatusPercentThresholdAlert(
         percentage = threshold.percentage,
         httpMethod = threshold.httpMethod.toString,
         httpStatus = threshold.httpStatus.status,
@@ -171,19 +172,19 @@ object YAMLBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertHttpTrafficThresholds(httpTrafficThresholds: Seq[HttpTrafficThreshold]): Option[Seq[YAMLHttpTrafficThresholdAlert]] = {
+  def convertHttpTrafficThresholds(httpTrafficThresholds: Seq[HttpTrafficThreshold]): Option[Seq[YamlHttpTrafficThresholdAlert]] = {
     val converted = httpTrafficThresholds.flatMap { threshold =>
       if (threshold.alertingPlatform == Grafana) {
         Seq(
           threshold.warning.map { warningCount =>
-            YAMLHttpTrafficThresholdAlert(
+            YamlHttpTrafficThresholdAlert(
               count = warningCount,
               maxMinutesBelowThreshold = threshold.maxMinutesBelowThreshold,
               severity = "warning"
             )
           },
           threshold.critical.map { criticalCount =>
-            YAMLHttpTrafficThresholdAlert(
+            YamlHttpTrafficThresholdAlert(
               count = criticalCount,
               maxMinutesBelowThreshold = threshold.maxMinutesBelowThreshold,
               severity = "critical"
@@ -197,18 +198,18 @@ object YAMLBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertTotalHttpRequestThreshold(totalHttpRequestThreshold: TotalHttpRequestThreshold): Option[YAMLTotalHttpRequestThresholdAlert] = {
+  def convertTotalHttpRequestThreshold(totalHttpRequestThreshold: TotalHttpRequestThreshold): Option[YamlTotalHttpRequestThresholdAlert] = {
     Option.when(totalHttpRequestThreshold.alertingPlatform == AlertingPlatform.Grafana)(
-      YAMLTotalHttpRequestThresholdAlert(totalHttpRequestThreshold.count)
+      YamlTotalHttpRequestThresholdAlert(totalHttpRequestThreshold.count)
     )
   }
 
-  def convertMetricsThreshold(metricsThreshold: Seq[MetricsThreshold]): Option[Seq[YAMLMetricsThresholdAlert]] = {
+  def convertMetricsThreshold(metricsThreshold: Seq[MetricsThreshold]): Option[Seq[YamlMetricsThresholdAlert]] = {
     val converted = metricsThreshold.flatMap { threshold =>
       if (threshold.alertingPlatform == Grafana) {
         Seq(
           threshold.warning.map { warningCount =>
-            YAMLMetricsThresholdAlert(
+            YamlMetricsThresholdAlert(
               count = warningCount,
               name = threshold.name,
               query = threshold.query,
@@ -217,7 +218,7 @@ object YAMLBuilder {
             )
           },
           threshold.critical.map { criticalCount =>
-            YAMLMetricsThresholdAlert(
+            YamlMetricsThresholdAlert(
               count = criticalCount,
               name = threshold.name,
               query = threshold.query,

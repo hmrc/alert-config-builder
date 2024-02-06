@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-import uk.gov.hmrc.alertconfig.builder.yaml.{YAMLBuilder, YAMLContainerKillThresholdAlert}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import spray.json.{JsArray, JsObject, JsString}
-import spray.json._
+import uk.gov.hmrc.alertconfig.builder.yaml.{YamlBuilder, YamlContainerKillThresholdAlert}
 
-class YAMLBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+class YamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
@@ -32,7 +30,7 @@ class YAMLBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach 
 
   "convert(Seq[AlertConfig])" should {
     "when supplied an empty sequence it should return an empty list" in {
-      YAMLBuilder.convert(Seq(), Environment.Qa) shouldBe List()
+      YamlBuilder.convert(Seq(), Environment.Qa) shouldBe List()
     }
   }
 
@@ -42,9 +40,9 @@ class YAMLBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach 
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withContainerKillThreshold(56, AlertingPlatform.Grafana)
 
-      val output = YAMLBuilder.convertAlerts(config)
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.containerKillThreshold shouldBe Some(YAMLContainerKillThresholdAlert(56))
+      output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(56))
     }
   }
 }

@@ -16,61 +16,61 @@
 
 package uk.gov.hmrc.alertconfig.builder.yaml
 
-case class YAMLAverageCPUThresholdAlert(
+case class YamlAverageCPUThresholdAlert(
                                          count: Int
                                        )
 
-case class YAMLContainerKillThresholdAlert(
+case class YamlContainerKillThresholdAlert(
                                             count: Int
                                           )
 
-case class YAMLErrorsLoggedThresholdAlert(
+case class YamlErrorsLoggedThresholdAlert(
                                            count: Int
                                          )
 
-case class YAMLExceptionThresholdAlert(
+case class YamlExceptionThresholdAlert(
                                         count: Int,
                                         severity: String
                                       )
 
-case class YAMLHttp5xxPercentThresholdAlert(
+case class YamlHttp5xxPercentThresholdAlert(
                                              percentage: Double,
                                              severity: String
                                            )
 
-case class YAMLHttp5xxThresholdAlert(
+case class YamlHttp5xxThresholdAlert(
                                       count: Int,
                                       severity: String
                                     )
 
-case class YAMLHttpStatusThresholdAlert(
+case class YamlHttpStatusThresholdAlert(
                                          count: Int = 1,
                                          httpMethod: String,
                                          httpStatus: Int,
                                          severity: String
                                        )
 
-case class YAMLHttpStatusPercentThresholdAlert(
+case class YamlHttpStatusPercentThresholdAlert(
                                                 percentage: Double,
                                                 httpMethod: String,
                                                 httpStatus: Int,
                                                 severity: String
                                               )
 
-case class YAMLLogMessageThresholdAlert(
+case class YamlLogMessageThresholdAlert(
                                          count: Int,
                                          lessThanMode: Boolean,
                                          message: String,
                                          severity: String
                                        )
 
-case class YAMLHttpTrafficThresholdAlert(
+case class YamlHttpTrafficThresholdAlert(
                                           count: Int,
                                           maxMinutesBelowThreshold: Int,
                                           severity: String
                                         )
 
-case class YAMLMetricsThresholdAlert(
+case class YamlMetricsThresholdAlert(
                                       count: Double,
                                       name: String,
                                       query: String,
@@ -78,6 +78,6 @@ case class YAMLMetricsThresholdAlert(
                                       invert: Boolean
                                     )
 
-case class YAMLTotalHttpRequestThresholdAlert(
+case class YamlTotalHttpRequestThresholdAlert(
                                                count: Int
                                              )
