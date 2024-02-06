@@ -745,6 +745,21 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
   }
 
+  "enable averageCPUThreshold when the environment is integration but alertingPlatform is Sensu" in {
+    setEnv("ENVIRONMENT", "integration")
+
+    val threshold = 15
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withAverageCPUThreshold(threshold, alertingPlatform = AlertingPlatform.Sensu)
+      .build
+      .get
+      .parseJson
+      .asJsObject
+      .fields
+
+    serviceConfig("average-cpu-threshold") shouldBe JsNumber(threshold)
+  }
+
   "use the configured value for containerKillThreshold when the alerting platform is Sensu" in {
     val threshold = 3
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
