@@ -40,7 +40,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.totalHttpRequestThreshold shouldBe TotalHttpRequestThreshold(Int.MaxValue, AlertingPlatform.Sensu)
       alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
       alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Sensu)
-      alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Sensu)
+      alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Default)
       alertConfigBuilder.httpStatusThresholds shouldBe List()
       alertConfigBuilder.http90PercentileResponseTimeThresholds shouldBe List()
       alertConfigBuilder.httpTrafficThresholds shouldBe List()

@@ -20,6 +20,10 @@ sealed trait AlertingPlatform
 
 object AlertingPlatform {
 
+  object Default extends AlertingPlatform {
+    override def toString: String = "Default"
+  }
+
   object Grafana extends AlertingPlatform {
     override def toString: String = "Grafana"
   }

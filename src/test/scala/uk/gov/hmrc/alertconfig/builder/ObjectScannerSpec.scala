@@ -34,5 +34,4 @@ class ObjectScannerSpec extends AnyWordSpec with Matchers {
       ObjectScanner.loadAll[SuperType](this.getClass.getPackage.getName) should contain only (A, B)
     }
   }
-
 }

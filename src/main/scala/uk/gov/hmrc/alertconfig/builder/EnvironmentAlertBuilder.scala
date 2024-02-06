@@ -53,7 +53,6 @@ object Environment {
       case "production"   => Production
     }
   }
-
 }
 
 object AllEnvironmentAlertConfigBuilder {
