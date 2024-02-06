@@ -35,7 +35,7 @@ object YamlBuilder {
 
     val currentEnvironment = Environment.get(environment)
     val topLevelConfig     = TopLevelConfig(convert(alertConfigs, currentEnvironment))
-    logger.debug(s"Generating Yaml for $currentEnvironment")
+    logger.debug(s"Generating YAML for $currentEnvironment")
 
     val mapper = new ObjectMapper(
       new YAMLFactory()
@@ -46,7 +46,7 @@ object YamlBuilder {
     mapper.registerModule(DefaultScalaModule)
 
     mapper.writeValue(new File(s"./target/output/services.yml"), topLevelConfig)
-    logger.debug(s"Done generating Yaml for $currentEnvironment")
+    logger.debug(s"Done generating YAML for $currentEnvironment")
   }
 
   def convert(alertConfigs: Seq[AlertConfig], currentEnvironment: Environment): Seq[ServiceConfig] = {
