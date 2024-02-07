@@ -112,7 +112,7 @@ case class AlertConfigBuilder(
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
-  def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerCrashThreshold, alertingPlatform))
 
   def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
@@ -182,7 +182,7 @@ case class AlertConfigBuilder(
             averageCPUThreshold.count
           }
 
-          val updatedContainerKillThreshold = if (containerKillThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedContainerKillThreshold = if (isGrafanaEnabled(containerKillThreshold.alertingPlatform, currentEnvironment, AlertType.ContainerKillThreshold)) {
             Int.MaxValue
           } else {
             containerKillThreshold.count
@@ -335,7 +335,7 @@ case class TeamAlertConfigBuilder(
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
 
-  def withContainerKillThreshold(containerKillThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withContainerKillThreshold(containerKillThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerKillThreshold, alertingPlatform))
 
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) = {

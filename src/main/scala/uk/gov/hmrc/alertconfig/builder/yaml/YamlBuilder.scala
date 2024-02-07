@@ -76,7 +76,7 @@ object YamlBuilder {
   def convertAlerts(alertConfigBuilder: AlertConfigBuilder, currentEnvironment: Environment): Alerts = {
     Alerts(
       averageCPUThreshold = convertAverageCPUThreshold(alertConfigBuilder.averageCPUThreshold, currentEnvironment),
-      containerKillThreshold = convertContainerKillThreshold(alertConfigBuilder.containerKillThreshold),
+      containerKillThreshold = convertContainerKillThreshold(alertConfigBuilder.containerKillThreshold, currentEnvironment),
       errorsLoggedThreshold = convertErrorsLoggedThreshold(alertConfigBuilder.errorsLoggedThreshold),
       exceptionThreshold = convertExceptionThreshold(alertConfigBuilder.exceptionThreshold),
       http5xxPercentThreshold = convertHttp5xxPercentThresholds(alertConfigBuilder.http5xxPercentThreshold),
@@ -96,8 +96,8 @@ object YamlBuilder {
     )
   }
 
-  def convertContainerKillThreshold(containerKillThreshold: ContainerKillThreshold): Option[YamlContainerKillThresholdAlert] = {
-    Option.when(containerKillThreshold.alertingPlatform == AlertingPlatform.Grafana)(
+  def convertContainerKillThreshold(containerKillThreshold: ContainerKillThreshold, currentEnvironment: Environment): Option[YamlContainerKillThresholdAlert] = {
+    Option.when(isGrafanaEnabled(containerKillThreshold.alertingPlatform, currentEnvironment, AlertType.AverageCPUThreshold) && containerKillThreshold.count < Int.MaxValue)(
       YamlContainerKillThresholdAlert(containerKillThreshold.count)
     )
   }

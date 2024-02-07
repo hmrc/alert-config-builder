@@ -64,5 +64,41 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       output.averageCPUThreshold shouldBe None
     }
+
+    "containerKillThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60, AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
+    }
+
+    "containerKillThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
+    }
+
+    "containerKillThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.containerKillThreshold shouldBe None
+    }
+
+    "containerKillThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withAverageCPUThreshold(60, AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.averageCPUThreshold shouldBe None
+    }
   }
 }

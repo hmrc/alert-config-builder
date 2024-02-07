@@ -40,7 +40,7 @@ object GrafanaMigration {
   val config = Map(
     Environment.Integration -> Map(
       AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Sensu,
+      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
       AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Sensu,
       AlertType.ExceptionThreshold -> AlertingPlatform.Sensu,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Sensu,
