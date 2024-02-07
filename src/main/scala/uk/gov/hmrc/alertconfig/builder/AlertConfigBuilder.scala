@@ -122,7 +122,7 @@ case class AlertConfigBuilder(
                               threshold: Int,
                               lessThanMode: Boolean = false,
                               severity: AlertSeverity = AlertSeverity.Critical,
-                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                              alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
@@ -236,7 +236,7 @@ case class AlertConfigBuilder(
              |"metricsThresholds" : ${printSeq(metricsThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu))(
               MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
-             |"log-message-thresholds" : ${logMessageThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
+             |"log-message-thresholds" : ${logMessageThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.LogMessageThreshold)).toJson.compactPrint},
              |"average-cpu-threshold" : $updatedAverageCPUThreshold,
              |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(
               HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
@@ -365,7 +365,7 @@ case class TeamAlertConfigBuilder(
                               threshold: Int,
                               lessThanMode: Boolean = false,
                               severity: AlertSeverity = AlertSeverity.Critical,
-                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                              alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =

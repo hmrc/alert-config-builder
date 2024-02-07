@@ -775,21 +775,21 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "count"            -> JsNumber(19),
           "lessThanMode"     -> JsFalse,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         ),
         JsObject(
           "message"          -> JsString("SIMULATED_ERROR2"),
           "count"            -> JsNumber(20),
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         ),
         JsObject(
           "message"          -> JsString("SIMULATED_ERROR3"),
           "count"            -> JsNumber(21),
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("warning"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         )
       )
 

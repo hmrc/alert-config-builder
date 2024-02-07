@@ -24,7 +24,7 @@ case class LogMessageThreshold(
     count: Int,
     lessThanMode: Boolean = false,
     severity: AlertSeverity = AlertSeverity.Critical,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object LogMessageThresholdProtocol extends {

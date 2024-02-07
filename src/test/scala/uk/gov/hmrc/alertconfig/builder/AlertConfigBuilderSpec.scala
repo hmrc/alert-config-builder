@@ -287,28 +287,28 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "count"            -> JsNumber(3),
           "lessThanMode"     -> JsFalse,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         ),
         JsObject(
           "message"          -> JsString("SIMULATED_ERROR2"),
           "count"            -> JsNumber(4),
           "lessThanMode"     -> JsFalse,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         ),
         JsObject(
           "message"          -> JsString("SIMULATED_ERROR3"),
           "count"            -> JsNumber(5),
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         ),
         JsObject(
           "message"          -> JsString("SIMULATED_ERROR4"),
           "count"            -> JsNumber(6),
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("warning"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         )
       )
     }
