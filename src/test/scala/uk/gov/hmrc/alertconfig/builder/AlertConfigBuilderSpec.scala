@@ -195,13 +195,13 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "percentage"       -> JsNumber(2.2),
           "severity"         -> JsString("warning"),
           "httpMethod"       -> JsString("POST"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "httpStatus"       -> JsNumber(504),
           "percentage"       -> JsNumber(4.4),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
       )
     }
 
@@ -233,7 +233,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "percentage"       -> JsNumber(100.0),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
       )
     }
 

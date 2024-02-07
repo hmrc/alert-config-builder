@@ -663,19 +663,19 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "percentage"       -> JsNumber(19.1),
           "severity"         -> JsString("warning"),
           "httpMethod"       -> JsString("POST"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "httpStatus"       -> JsNumber(501),
           "percentage"       -> JsNumber(20),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "httpStatus"       -> JsNumber(555),
           "percentage"       -> JsNumber(55.5),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
       )
 
       service1Config("httpStatusPercentThresholds") shouldBe expected
