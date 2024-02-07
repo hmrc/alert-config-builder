@@ -611,21 +611,21 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       val expected = JsArray(
         JsObject(
-          "alertingPlatform" -> JsString("Sensu"),
+          "alertingPlatform" -> JsString("Default"),
           "httpStatus"       -> JsNumber(500),
           "count"            -> JsNumber(19),
           "severity"         -> JsString("warning"),
           "httpMethod"       -> JsString("POST")
         ),
         JsObject(
-          "alertingPlatform" -> JsString("Sensu"),
+          "alertingPlatform" -> JsString("Default"),
           "httpStatus"       -> JsNumber(501),
           "count"            -> JsNumber(20),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS")
         ),
         JsObject(
-          "alertingPlatform" -> JsString("Sensu"),
+          "alertingPlatform" -> JsString("Default"),
           "httpStatus"       -> JsNumber(555),
           "count"            -> JsNumber(55),
           "severity"         -> JsString("critical"),
