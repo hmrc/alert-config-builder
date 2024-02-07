@@ -328,7 +328,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "warning"                  -> JsNumber(10),
           "critical"                 -> JsNumber(5),
           "maxMinutesBelowThreshold" -> JsNumber(35),
-          "alertingPlatform"         -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform"         -> JsString(AlertingPlatform.Default.toString)
         )
       )
     }

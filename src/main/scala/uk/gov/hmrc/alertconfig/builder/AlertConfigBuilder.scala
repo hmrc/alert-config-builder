@@ -229,7 +229,7 @@ case class AlertConfigBuilder(
              |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption
               .map(_.toJson.compactPrint)
               .getOrElse(JsNull)},
-             |"httpTrafficThresholds" : ${httpTrafficThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
+             |"httpTrafficThresholds" : ${httpTrafficThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpTrafficThreshold)).toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusThreshold)).toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold)).toJson.compactPrint},
              |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
