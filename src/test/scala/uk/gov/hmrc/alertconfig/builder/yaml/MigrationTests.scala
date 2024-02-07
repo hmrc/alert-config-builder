@@ -74,6 +74,15 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
     }
 
+    "containerKillThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60, AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.containerKillThreshold shouldBe None
+    }
+
     "containerKillThreshold should be enabled by default in integration" in {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withContainerKillThreshold(60)
@@ -92,13 +101,40 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.containerKillThreshold shouldBe None
     }
 
-    "containerKillThreshold should be disabled if alertingPlatform is Sensu" in {
+    "ErrorsLoggedThreshold should be enabled if alertingPlatform is Grafana" in {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withAverageCPUThreshold(60, AlertingPlatform.Sensu)
+        .withErrorsLoggedThreshold(60, AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
+    }
+
+    "ErrorsLoggedThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withErrorsLoggedThreshold(60, AlertingPlatform.Sensu)
 
       val output = YamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.averageCPUThreshold shouldBe None
+      output.errorsLoggedThreshold shouldBe None
+    }
+
+    "ErrorsLoggedThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withErrorsLoggedThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
+    }
+
+    "ErrorsLoggedThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withErrorsLoggedThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.errorsLoggedThreshold shouldBe None
     }
   }
 }

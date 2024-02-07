@@ -57,7 +57,7 @@ case class AlertConfigBuilder(
   def withHandlers(handlers: String*) =
     this.copy(handlers = handlers)
 
-  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold, alertingPlatform))
 
   def withExceptionThreshold(exceptionThreshold: Int,
@@ -188,7 +188,7 @@ case class AlertConfigBuilder(
             containerKillThreshold.count
           }
 
-          val updatedErrorsLoggedThreshold = if (errorsLoggedThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedErrorsLoggedThreshold = if (isGrafanaEnabled(errorsLoggedThreshold.alertingPlatform, currentEnvironment, AlertType.ErrorsLoggedThreshold)) {
             Int.MaxValue
           } else {
             errorsLoggedThreshold.count
@@ -296,7 +296,7 @@ case class TeamAlertConfigBuilder(
   def withHandlers(handlers: String*) =
     this.copy(handlers = handlers)
 
-  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold, alertingPlatform))
 
   def withExceptionThreshold(exceptionThreshold: Int,
