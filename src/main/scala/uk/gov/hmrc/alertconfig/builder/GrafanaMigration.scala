@@ -49,7 +49,7 @@ object GrafanaMigration {
       AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
       AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
-      AlertType.MetricsThreshold -> AlertingPlatform.Sensu,
+      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
       AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Sensu
     ),
 

@@ -417,26 +417,26 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "warning"     -> JsNumber(65.0),
           "critical"    -> JsNumber(88.0),
           "invert"      -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "name" -> JsString("alert1-warning-only"),
           "query"  -> JsString(query),
           "warning"  -> JsNumber(44.0),
           "invert" -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "name" -> JsString("alert1-critical-only"),
           "query" -> JsString(query),
           "critical" -> JsNumber(45.0),
           "invert" -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "name"     -> JsString("alert2"),
           "query"    -> JsString(query),
           "warning"  -> JsNumber(30.03),
           "critical" -> JsNumber(12.21),
           "invert"   -> JsBoolean(true),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
       )
     }
 
@@ -460,7 +460,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "warning" -> JsNumber(65.0),
           "critical" -> JsNumber(88.0),
           "invert" -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)))
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)))
     }
 
   }

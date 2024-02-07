@@ -24,7 +24,7 @@ case class MetricsThreshold(
     warning: Option[Double] = None,
     critical: Option[Double] = None,
     invert: Boolean = false,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {
