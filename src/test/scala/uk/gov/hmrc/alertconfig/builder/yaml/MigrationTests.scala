@@ -14,53 +14,55 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builder
+package uk.gov.hmrc.alertconfig.builder.yaml
 
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.yaml.{YamlAverageCPUThresholdAlert, YamlBuilder, YamlContainerKillThresholdAlert}
+import uk.gov.hmrc.alertconfig.builder.{AlertConfigBuilder, AlertingPlatform, Environment}
 
-class YamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
+class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
     System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
   }
 
-  "convert(Seq[AlertConfig])" should {
-    "when supplied an empty sequence it should return an empty list" in {
-      YamlBuilder.convert(Seq(), Environment.Qa) shouldBe List()
-    }
-  }
-
   "convertAlerts(alertConfigBuilder)" should {
-    "containerKillThreshold should be set to defined threshold" in {
-      val threshold = 56
+    "averageCPUThreshold should be enabled if alertingPlatform is Grafana" in {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withContainerKillThreshold(threshold, AlertingPlatform.Grafana)
+        .withAverageCPUThreshold(60, AlertingPlatform.Grafana)
 
       val output = YamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(threshold))
+      output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(60))
     }
 
-    "averageCPUThreshold should be disabled by default" in {
+    "averageCPUThreshold should be enabled by default in integration" in {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withAverageCPUThreshold(60)
 
       val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(60))
+    }
+
+    "averageCPUThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withAverageCPUThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
 
       output.averageCPUThreshold shouldBe None
     }
 
-    "averageCPUThreshold should be set to defined threshold" in {
-      val threshold = 60
+    "averageCPUThreshold should be disabled if alertingPlatform is Sensu" in {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withAverageCPUThreshold(threshold)
+        .withAverageCPUThreshold(60, AlertingPlatform.Sensu)
 
       val output = YamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(threshold))
+      output.averageCPUThreshold shouldBe None
     }
   }
 }
