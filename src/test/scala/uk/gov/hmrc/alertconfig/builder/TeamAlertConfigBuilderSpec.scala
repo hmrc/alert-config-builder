@@ -323,12 +323,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service1Config("exception-threshold") shouldBe JsObject(
         "count"            -> JsNumber(threshold),
         "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       service2Config("exception-threshold") shouldBe JsObject(
         "count"            -> JsNumber(threshold),
         "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
     }
 

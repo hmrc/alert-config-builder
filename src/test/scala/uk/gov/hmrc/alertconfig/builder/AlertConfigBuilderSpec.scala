@@ -45,7 +45,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("exception-threshold") shouldBe JsObject(
         "count"            -> JsNumber(2),
         "severity"         -> JsString("critical"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       config("5xx-threshold") shouldBe JsObject(
         "count"            -> JsNumber(Int.MaxValue),
@@ -592,7 +592,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val expected = JsObject(
       "severity"         -> JsString("critical"),
       "count"            -> JsNumber(threshold),
-      "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+      "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
     )
 
     serviceConfig("exception-threshold") shouldBe expected
@@ -630,7 +630,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val expected = JsObject(
       "severity"         -> JsString("warning"),
       "count"            -> JsNumber(threshold),
-      "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+      "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
     )
 
     serviceConfig("exception-threshold") shouldBe expected

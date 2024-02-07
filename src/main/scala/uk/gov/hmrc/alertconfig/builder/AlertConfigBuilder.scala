@@ -62,7 +62,7 @@ case class AlertConfigBuilder(
 
   def withExceptionThreshold(exceptionThreshold: Int,
                              severity: AlertSeverity = AlertSeverity.Critical,
-                             alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                             alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
@@ -194,7 +194,7 @@ case class AlertConfigBuilder(
             errorsLoggedThreshold.count
           }
 
-          val updatedExceptionThreshold = if (exceptionThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedExceptionThreshold = if (isGrafanaEnabled(exceptionThreshold.alertingPlatform, currentEnvironment, AlertType.ExceptionThreshold)) {
             // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
             // it will never be triggered
             Int.MaxValue
@@ -301,7 +301,7 @@ case class TeamAlertConfigBuilder(
 
   def withExceptionThreshold(exceptionThreshold: Int,
                              severity: AlertSeverity = AlertSeverity.Critical,
-                             alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                             alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
