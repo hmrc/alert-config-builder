@@ -21,7 +21,7 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 case class Http5xxPercentThreshold(
     percentage: Double = 100.0,
     severity: AlertSeverity = AlertSeverity.Critical,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object Http5xxPercentThresholdProtocol {

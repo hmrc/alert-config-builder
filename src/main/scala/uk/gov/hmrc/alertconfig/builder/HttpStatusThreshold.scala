@@ -23,7 +23,7 @@ case class HttpStatusThreshold(
     count: Int = 1,
     severity: AlertSeverity = AlertSeverity.Critical,
     httpMethod: HttpMethod = HttpMethod.All,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object HttpStatusThresholdProtocol {
