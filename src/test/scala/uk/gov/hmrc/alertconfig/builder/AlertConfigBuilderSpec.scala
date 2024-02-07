@@ -55,7 +55,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
         "percentage"       -> JsNumber(100),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
       config("containerKillThreshold") shouldBe JsNumber(56)
@@ -675,7 +675,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"         -> JsString("critical"),
       "percentage"       -> JsNumber(threshold),
-      "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+      "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
     )
   }
 

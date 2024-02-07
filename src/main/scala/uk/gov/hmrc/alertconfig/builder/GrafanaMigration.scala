@@ -43,7 +43,7 @@ object GrafanaMigration {
       AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
       AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
       AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Sensu,
+      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Sensu,

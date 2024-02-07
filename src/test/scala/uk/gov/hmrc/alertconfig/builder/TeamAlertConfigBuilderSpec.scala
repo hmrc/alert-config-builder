@@ -272,12 +272,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
         "percentage"       -> JsNumber(threshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
         "percentage"       -> JsNumber(threshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
     }
 
@@ -730,7 +730,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "percentage"       -> JsNumber(12.2),
         "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
     }
 

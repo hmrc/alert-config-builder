@@ -72,7 +72,7 @@ case class AlertConfigBuilder(
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
-                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
@@ -162,7 +162,7 @@ case class AlertConfigBuilder(
           a.toJson.compactPrint
 
         ZoneToServiceDomainMapper.getServiceDomain(serviceDomain, platformService).map { serviceDomain =>
-          val updated5xxPercentThreshold = if (http5xxPercentThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updated5xxPercentThreshold = if (isGrafanaEnabled(http5xxPercentThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxPercentThreshold)) {
             333.33
           } else {
             http5xxPercentThreshold.percentage
@@ -311,7 +311,7 @@ case class TeamAlertConfigBuilder(
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
-                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
