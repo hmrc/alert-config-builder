@@ -67,7 +67,7 @@ case class AlertConfigBuilder(
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
                            severity: AlertSeverity = AlertSeverity.Critical,
-                           alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                           alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity, alertingPlatform))
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
@@ -168,7 +168,7 @@ case class AlertConfigBuilder(
             http5xxPercentThreshold.percentage
           }
 
-          val updated5xxThreshold = if (http5xxThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updated5xxThreshold = if (isGrafanaEnabled(http5xxThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxThreshold)) {
             // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
             // it will never be triggered
             Int.MaxValue
@@ -306,7 +306,7 @@ case class TeamAlertConfigBuilder(
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
                            severity: AlertSeverity = AlertSeverity.Critical,
-                           alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                           alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity, alertingPlatform))
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,

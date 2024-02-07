@@ -50,7 +50,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("5xx-threshold") shouldBe JsObject(
         "count"            -> JsNumber(Int.MaxValue),
         "severity"         -> JsString("critical"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
@@ -264,7 +264,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       serviceConfig("5xx-threshold") shouldBe JsObject(
         "count"            -> JsNumber(2),
         "severity"         -> JsString("critical"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
     }
 
     "configure logMessageThresholds with given thresholds only if alerting platform is Sensu" in {

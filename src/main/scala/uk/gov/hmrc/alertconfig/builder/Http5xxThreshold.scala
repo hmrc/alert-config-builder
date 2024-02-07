@@ -21,7 +21,7 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 case class Http5xxThreshold(
     count: Int = Int.MaxValue,
     severity: AlertSeverity = AlertSeverity.Critical,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object Http5xxThresholdProtocol {
