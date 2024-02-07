@@ -115,7 +115,7 @@ case class AlertConfigBuilder(
   def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerCrashThreshold, alertingPlatform))
 
-  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   def withLogMessageThreshold(message: String,
@@ -202,7 +202,7 @@ case class AlertConfigBuilder(
             exceptionThreshold.count
           }
 
-          val updatedTotalHttpRequestThreshold = if (totalHttpRequestThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedTotalHttpRequestThreshold = if (isGrafanaEnabled(totalHttpRequestThreshold.alertingPlatform, currentEnvironment, AlertType.TotalHttpRequestThreshold)) {
             Int.MaxValue
           } else {
             totalHttpRequestThreshold.count
@@ -358,7 +358,7 @@ case class TeamAlertConfigBuilder(
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
-  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   def withLogMessageThreshold(message: String,
