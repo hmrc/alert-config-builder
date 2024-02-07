@@ -368,7 +368,7 @@ case class TeamAlertConfigBuilder(
                               alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
-  def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(averageCPUThreshold = AverageCPUThreshold(averageCPUThreshold, alertingPlatform = alertingPlatform))
 
   def isPlatformService(platformService: Boolean): TeamAlertConfigBuilder =

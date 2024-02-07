@@ -35,17 +35,97 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
+      alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Default)
+      alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Sensu)
+      alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
       alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, AlertSeverity.Critical)
       alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue, AlertSeverity.Critical)
-      alertConfigBuilder.totalHttpRequestThreshold shouldBe TotalHttpRequestThreshold(Int.MaxValue, AlertingPlatform.Sensu)
-      alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
-      alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Sensu)
-      alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Default)
-      alertConfigBuilder.httpStatusThresholds shouldBe List()
       alertConfigBuilder.http90PercentileResponseTimeThresholds shouldBe List()
+      alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
+      alertConfigBuilder.httpStatusThresholds shouldBe List()
       alertConfigBuilder.httpTrafficThresholds shouldBe List()
       alertConfigBuilder.logMessageThresholds shouldBe List()
-      alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
+      alertConfigBuilder.totalHttpRequestThreshold shouldBe TotalHttpRequestThreshold(Int.MaxValue, AlertingPlatform.Sensu)
+    }
+
+    "result in identical defaults to AlertConfigBuilder" in {
+      val teamAlertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"))
+      val alertConfigBuilder = AlertConfigBuilder("service1")
+
+      val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val configs = alertConfigBuilder.build.get.parseJson.asJsObject.fields
+
+      teamConfigs shouldBe List(configs)
+    }
+
+    "result in identical config to AlertConfigBuilder" in {
+      val teamAlertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"
+        )).withAverageCPUThreshold(50)
+        .withContainerKillThreshold(2)
+        .withErrorsLoggedThreshold(5)
+        .withExceptionThreshold(3)
+        .withHttp5xxPercentThreshold(85)
+        .withHttp5xxThreshold(15)
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 90))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical=Some(1000)))
+        .withLogMessageThreshold("BLAH", 1)
+        .withTotalHttpRequestsCountThreshold(2000)
+
+      val alertConfigBuilder = AlertConfigBuilder("service1")
+        .withAverageCPUThreshold(50)
+        .withContainerKillThreshold(2)
+        .withErrorsLoggedThreshold(5)
+        .withExceptionThreshold(3)
+        .withHttp5xxPercentThreshold(85)
+        .withHttp5xxThreshold(15)
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 90))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
+        .withLogMessageThreshold("BLAH", 1)
+        .withTotalHttpRequestsCountThreshold(2000)
+
+      val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val configs = alertConfigBuilder.build.get.parseJson.asJsObject.fields
+
+      teamConfigs shouldBe List(configs)
+    }
+
+    "result in identical config to AlertConfigBuilder in migrated environment" in {
+      EnvironmentVars.setEnv("ENVIRONMENT", "integration")
+
+      val teamAlertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"
+        )).withAverageCPUThreshold(50)
+        .withContainerKillThreshold(2)
+        .withErrorsLoggedThreshold(5)
+        .withExceptionThreshold(3)
+        .withHttp5xxPercentThreshold(85)
+        .withHttp5xxThreshold(15)
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 90))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
+        .withLogMessageThreshold("BLAH", 1)
+        .withTotalHttpRequestsCountThreshold(2000)
+
+      val alertConfigBuilder = AlertConfigBuilder("service1")
+        .withAverageCPUThreshold(50)
+        .withContainerKillThreshold(2)
+        .withErrorsLoggedThreshold(5)
+        .withExceptionThreshold(3)
+        .withHttp5xxPercentThreshold(85)
+        .withHttp5xxThreshold(15)
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 90))
+        .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
+        .withLogMessageThreshold("BLAH", 1)
+        .withTotalHttpRequestsCountThreshold(2000)
+
+      val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val configs = alertConfigBuilder.build.get.parseJson.asJsObject.fields
+
+      teamConfigs shouldBe List(configs)
+
+      EnvironmentVars.unsetEnv("ENVIRONMENT")
     }
 
     "return TeamAlertConfigBuilder with correct 5xxPercentThreshold" in {

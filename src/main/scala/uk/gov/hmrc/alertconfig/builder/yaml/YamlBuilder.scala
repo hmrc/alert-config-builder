@@ -91,7 +91,7 @@ object YamlBuilder {
   }
 
   def convertAverageCPUThreshold(averageCPUThreshold: AverageCPUThreshold, currentEnvironment: Environment): Option[YamlAverageCPUThresholdAlert] = {
-    Option.when(isGrafanaEnabled(averageCPUThreshold.alertingPlatform, currentEnvironment, AlertType.AverageCPUThreshold))(
+    Option.when(isGrafanaEnabled(averageCPUThreshold.alertingPlatform, currentEnvironment, AlertType.AverageCPUThreshold) && averageCPUThreshold.count < Int.MaxValue)(
       YamlAverageCPUThresholdAlert(averageCPUThreshold.count)
     )
   }

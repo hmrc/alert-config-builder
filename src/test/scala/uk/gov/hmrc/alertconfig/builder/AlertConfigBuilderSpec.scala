@@ -24,20 +24,6 @@ import spray.json._
 
 class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
-  def setEnv(key: String, value: String) = {
-    val field = System.getenv().getClass.getDeclaredField("m")
-    field.setAccessible(true)
-    val map = field.get(System.getenv()).asInstanceOf[java.util.Map[java.lang.String, java.lang.String]]
-    map.put(key, value)
-  }
-
-  def unSetEnv(key: String) = {
-    val field = System.getenv().getClass.getDeclaredField("m")
-    field.setAccessible(true)
-    val map = field.get(System.getenv()).asInstanceOf[java.util.Map[java.lang.String, java.lang.String]]
-    map.remove(key)
-  }
-
   override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
     System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
@@ -738,7 +724,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
   }
 
   "disable averageCPUThreshold when the environment is integration" in {
-    setEnv("ENVIRONMENT", "integration")
+    EnvironmentVars.setEnv("ENVIRONMENT", "integration")
 
     val threshold = 15
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
@@ -751,11 +737,11 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     serviceConfig("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
 
-    unSetEnv("ENVIRONMENT")
+    EnvironmentVars.unsetEnv("ENVIRONMENT")
   }
 
   "enable averageCPUThreshold when the environment is integration but alertingPlatform is Sensu" in {
-    setEnv("ENVIRONMENT", "integration")
+    EnvironmentVars.setEnv("ENVIRONMENT", "integration")
 
     val threshold = 15
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
@@ -768,7 +754,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     serviceConfig("average-cpu-threshold") shouldBe JsNumber(threshold)
 
-    unSetEnv("ENVIRONMENT")
+    EnvironmentVars.unsetEnv("ENVIRONMENT")
   }
 
   "use the configured value for containerKillThreshold when the alerting platform is Sensu" in {
