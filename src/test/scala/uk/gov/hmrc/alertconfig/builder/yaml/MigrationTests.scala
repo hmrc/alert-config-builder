@@ -19,7 +19,8 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.{AlertConfigBuilder, AlertingPlatform, Environment}
+import uk.gov.hmrc.alertconfig.builder.HttpStatus.HTTP_STATUS
+import uk.gov.hmrc.alertconfig.builder.{AlertConfigBuilder, AlertingPlatform, Environment, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold}
 
 class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -63,6 +64,402 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val output = YamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.averageCPUThreshold shouldBe None
+    }
+
+    "containerKillThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60, AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
+    }
+
+    "containerKillThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60, AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.containerKillThreshold shouldBe None
+    }
+
+    "containerKillThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
+    }
+
+    "containerKillThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.containerKillThreshold shouldBe None
+    }
+
+    "ErrorsLoggedThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withErrorsLoggedThreshold(60, AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
+    }
+
+    "ErrorsLoggedThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withErrorsLoggedThreshold(60, AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.errorsLoggedThreshold shouldBe None
+    }
+
+    "ErrorsLoggedThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withErrorsLoggedThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
+    }
+
+    "ErrorsLoggedThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withErrorsLoggedThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.errorsLoggedThreshold shouldBe None
+    }
+
+    "ExceptionThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withExceptionThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.exceptionThreshold shouldBe Some(YamlExceptionThresholdAlert(60, "critical"))
+    }
+
+    "ExceptionThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withExceptionThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.exceptionThreshold shouldBe None
+    }
+
+    "ExceptionThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withExceptionThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.exceptionThreshold shouldBe Some(YamlExceptionThresholdAlert(60, "critical"))
+    }
+
+    "ExceptionThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withExceptionThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.exceptionThreshold shouldBe None
+    }
+
+    "Http5xxPercentThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxPercentThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, "critical"))
+    }
+
+    "Http5xxPercentThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxPercentThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.http5xxPercentThreshold shouldBe None
+    }
+
+    "Http5xxPercentThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxPercentThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, "critical"))
+    }
+
+    "Http5xxPercentThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxPercentThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.http5xxPercentThreshold shouldBe None
+    }
+
+    "Http5xxThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.http5xxThreshold shouldBe Some(YamlHttp5xxThresholdAlert(60, "critical"))
+    }
+
+    "Http5xxThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.http5xxThreshold shouldBe None
+    }
+
+    "Http5xxThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.http5xxThreshold shouldBe Some(YamlHttp5xxThresholdAlert(60, "critical"))
+    }
+
+    "Http5xxThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxPercentThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.http5xxThreshold shouldBe None
+    }
+
+    "HttpStatusPercentThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Grafana))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.httpStatusPercentThresholds shouldBe Some(List(YamlHttpStatusPercentThresholdAlert(60, "ALL_METHODS", 500, "critical")))
+    }
+
+    "HttpStatusPercentThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Sensu))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpStatusPercentThresholds shouldBe None
+    }
+
+    "HttpStatusPercentThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpStatusPercentThresholds shouldBe Some(List(YamlHttpStatusPercentThresholdAlert(60, "ALL_METHODS", 500, "critical")))
+    }
+
+    "HttpStatusPercentThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.httpStatusPercentThresholds shouldBe None
+    }
+
+    "HttpStatusThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Grafana))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.httpStatusThresholds shouldBe Some(List(YamlHttpStatusThresholdAlert(60, "ALL_METHODS", 500, "critical")))
+    }
+
+    "HttpStatusThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Sensu))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpStatusThresholds shouldBe None
+    }
+
+    "HttpStatusThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpStatusThresholds shouldBe Some(List(YamlHttpStatusThresholdAlert(60, "ALL_METHODS", 500, "critical")))
+    }
+
+    "HttpStatusThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.httpStatusThresholds shouldBe None
+    }
+
+    "HttpTrafficThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60), alertingPlatform = AlertingPlatform.Grafana))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.httpTrafficThresholds shouldBe Some(List(YamlHttpTrafficThresholdAlert(60, 5, "critical")))
+    }
+
+    "HttpTrafficThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60), alertingPlatform = AlertingPlatform.Sensu))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpTrafficThresholds shouldBe None
+    }
+
+    "HttpTrafficThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60)))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpTrafficThresholds shouldBe Some(List(YamlHttpTrafficThresholdAlert(60, 5, "critical")))
+    }
+
+    "HttpTrafficThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60)))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.httpTrafficThresholds shouldBe None
+    }
+
+    "LogMessageThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withLogMessageThreshold("LOG_MESSAGE", 60, alertingPlatform = AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(60, false, "LOG_MESSAGE", "critical")))
+    }
+
+    "LogMessageThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withLogMessageThreshold("LOG_MESSAGE", 60, alertingPlatform = AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.logMessageThresholds shouldBe None
+    }
+
+    "LogMessageThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withLogMessageThreshold("LOG_MESSAGE", 60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(60, false, "LOG_MESSAGE", "critical")))
+    }
+
+    "LogMessageThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withLogMessageThreshold("LOG_MESSAGE", 60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.logMessageThresholds shouldBe None
+    }
+
+    "MetricsThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Grafana))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(1, "metric", "a.b.c.d", "critical", false)))
+    }
+
+    "MetricsThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Sensu))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.metricsThresholds shouldBe None
+    }
+
+    "MetricsThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(1, "metric", "a.b.c.d", "critical", false)))
+    }
+
+    "MetricsThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.metricsThresholds shouldBe None
+    }
+
+    "TotalHttpRequestThreshold should be enabled if alertingPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Grafana)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
+    }
+
+    "TotalHttpRequestThreshold should be disabled if alertingPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Sensu)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.totalHttpRequestThreshold shouldBe None
+    }
+
+    "TotalHttpRequestThreshold should be enabled by default in integration" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withTotalHttpRequestsCountThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
+    }
+
+    "TotalHttpRequestThreshold should be disabled by default in production" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withTotalHttpRequestsCountThreshold(60)
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.totalHttpRequestThreshold shouldBe None
     }
   }
 }

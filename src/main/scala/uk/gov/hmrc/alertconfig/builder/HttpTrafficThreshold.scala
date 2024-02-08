@@ -22,7 +22,7 @@ case class HttpTrafficThreshold(
     warning: Option[Int],
     critical: Option[Int],
     maxMinutesBelowThreshold: Int = 5,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object HttpTrafficThresholdProtocol {

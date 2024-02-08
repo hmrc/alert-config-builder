@@ -36,7 +36,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       alertConfigBuilder.handlers shouldBe Seq("noop")
       alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Default)
-      alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Sensu)
+      alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Default)
       alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
       alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, AlertSeverity.Critical)
       alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue, AlertSeverity.Critical)
@@ -45,7 +45,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.httpStatusThresholds shouldBe List()
       alertConfigBuilder.httpTrafficThresholds shouldBe List()
       alertConfigBuilder.logMessageThresholds shouldBe List()
-      alertConfigBuilder.totalHttpRequestThreshold shouldBe TotalHttpRequestThreshold(Int.MaxValue, AlertingPlatform.Sensu)
+      alertConfigBuilder.totalHttpRequestThreshold shouldBe TotalHttpRequestThreshold(Int.MaxValue, AlertingPlatform.Default)
     }
 
     "result in identical defaults to AlertConfigBuilder" in {
@@ -272,12 +272,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
         "percentage"       -> JsNumber(threshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
         "percentage"       -> JsNumber(threshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
     }
 
@@ -323,12 +323,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service1Config("exception-threshold") shouldBe JsObject(
         "count"            -> JsNumber(threshold),
         "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       service2Config("exception-threshold") shouldBe JsObject(
         "count"            -> JsNumber(threshold),
         "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
     }
 
@@ -487,7 +487,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsObject("count" -> JsNumber(threshold), "severity" -> JsString("warning"), "alertingPlatform" -> JsString("Sensu"))
+      val expected = JsObject("count" -> JsNumber(threshold), "severity" -> JsString("warning"), "alertingPlatform" -> JsString("Default"))
 
       service1Config("5xx-threshold") shouldBe expected
       service2Config("5xx-threshold") shouldBe expected
@@ -558,7 +558,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "warning"                  -> JsNumber(10),
           "critical"                 -> JsNumber(5),
           "maxMinutesBelowThreshold" -> JsNumber(35),
-          "alertingPlatform"         -> JsString("Sensu")
+          "alertingPlatform"         -> JsString("Default")
         )
       )
 
@@ -611,21 +611,21 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       val expected = JsArray(
         JsObject(
-          "alertingPlatform" -> JsString("Sensu"),
+          "alertingPlatform" -> JsString("Default"),
           "httpStatus"       -> JsNumber(500),
           "count"            -> JsNumber(19),
           "severity"         -> JsString("warning"),
           "httpMethod"       -> JsString("POST")
         ),
         JsObject(
-          "alertingPlatform" -> JsString("Sensu"),
+          "alertingPlatform" -> JsString("Default"),
           "httpStatus"       -> JsNumber(501),
           "count"            -> JsNumber(20),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS")
         ),
         JsObject(
-          "alertingPlatform" -> JsString("Sensu"),
+          "alertingPlatform" -> JsString("Default"),
           "httpStatus"       -> JsNumber(555),
           "count"            -> JsNumber(55),
           "severity"         -> JsString("critical"),
@@ -663,19 +663,19 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "percentage"       -> JsNumber(19.1),
           "severity"         -> JsString("warning"),
           "httpMethod"       -> JsString("POST"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "httpStatus"       -> JsNumber(501),
           "percentage"       -> JsNumber(20),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
         JsObject(
           "httpStatus"       -> JsNumber(555),
           "percentage"       -> JsNumber(55.5),
           "severity"         -> JsString("critical"),
           "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString))
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
       )
 
       service1Config("httpStatusPercentThresholds") shouldBe expected
@@ -730,7 +730,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "percentage"       -> JsNumber(12.2),
         "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
     }
 
@@ -775,21 +775,21 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "count"            -> JsNumber(19),
           "lessThanMode"     -> JsFalse,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         ),
         JsObject(
           "message"          -> JsString("SIMULATED_ERROR2"),
           "count"            -> JsNumber(20),
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         ),
         JsObject(
           "message"          -> JsString("SIMULATED_ERROR3"),
           "count"            -> JsNumber(21),
           "lessThanMode"     -> JsTrue,
           "severity"         -> JsString("warning"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
         )
       )
 

@@ -19,7 +19,7 @@ package uk.gov.hmrc.alertconfig.builder
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.yaml.{YamlAverageCPUThresholdAlert, YamlBuilder, YamlContainerKillThresholdAlert}
+import uk.gov.hmrc.alertconfig.builder.yaml.{YamlAverageCPUThresholdAlert, YamlBuilder, YamlContainerKillThresholdAlert, YamlExceptionThresholdAlert, YamlHttp5xxPercentThresholdAlert}
 
 class YamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -61,6 +61,86 @@ class YamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach 
       val output = YamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(threshold))
+    }
+
+    "ErrorsLoggedThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.errorsLoggedThreshold shouldBe None
+    }
+
+    "ExceptionThreshold should be 2 by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.exceptionThreshold shouldBe Some(YamlExceptionThresholdAlert(2, "critical"))
+    }
+
+    "Http5xxPercentThreshold should be 100% by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(100.0, "critical"))
+    }
+
+    "Http5xxThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.http5xxThreshold shouldBe None
+    }
+
+    "HttpStatusPercentThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpStatusPercentThresholds shouldBe None
+    }
+
+    "HttpStatusThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpStatusThresholds shouldBe None
+    }
+
+    "HttpTrafficThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpTrafficThresholds shouldBe None
+    }
+
+    "LogMessageThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.logMessageThresholds shouldBe None
+    }
+
+    "MetricsThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.metricsThresholds shouldBe None
+    }
+
+    "TotalHttpRequestThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.totalHttpRequestThreshold shouldBe None
     }
   }
 }

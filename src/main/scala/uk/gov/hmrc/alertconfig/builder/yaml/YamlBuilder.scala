@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import uk.gov.hmrc.alertconfig.builder.AlertingPlatform.Grafana
 import uk.gov.hmrc.alertconfig.builder.GrafanaMigration.isGrafanaEnabled
 import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertType, AlertingPlatform, AverageCPUThreshold, ContainerKillThreshold, Environment, ErrorsLoggedThreshold, ExceptionThreshold, Http5xxPercentThreshold, Http5xxThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, LogMessageThreshold, Logger, MetricsThreshold, TotalHttpRequestThreshold}
 
@@ -76,17 +75,17 @@ object YamlBuilder {
   def convertAlerts(alertConfigBuilder: AlertConfigBuilder, currentEnvironment: Environment): Alerts = {
     Alerts(
       averageCPUThreshold = convertAverageCPUThreshold(alertConfigBuilder.averageCPUThreshold, currentEnvironment),
-      containerKillThreshold = convertContainerKillThreshold(alertConfigBuilder.containerKillThreshold),
-      errorsLoggedThreshold = convertErrorsLoggedThreshold(alertConfigBuilder.errorsLoggedThreshold),
-      exceptionThreshold = convertExceptionThreshold(alertConfigBuilder.exceptionThreshold),
-      http5xxPercentThreshold = convertHttp5xxPercentThresholds(alertConfigBuilder.http5xxPercentThreshold),
-      http5xxThreshold = convertHttp5xxThreshold(alertConfigBuilder.http5xxThreshold),
-      httpStatusPercentThresholds = convertHttpStatusPercentThresholdAlerts(alertConfigBuilder.httpStatusPercentThresholds),
-      httpStatusThresholds = convertHttpStatusThresholds(alertConfigBuilder.httpStatusThresholds),
-      httpTrafficThresholds = convertHttpTrafficThresholds(alertConfigBuilder.httpTrafficThresholds),
-      logMessageThresholds = convertLogMessageThresholdAlerts(alertConfigBuilder.logMessageThresholds),
-      totalHttpRequestThreshold = convertTotalHttpRequestThreshold(alertConfigBuilder.totalHttpRequestThreshold),
-      metricsThresholds = convertMetricsThreshold(alertConfigBuilder.metricsThresholds)
+      containerKillThreshold = convertContainerKillThreshold(alertConfigBuilder.containerKillThreshold, currentEnvironment),
+      errorsLoggedThreshold = convertErrorsLoggedThreshold(alertConfigBuilder.errorsLoggedThreshold, currentEnvironment),
+      exceptionThreshold = convertExceptionThreshold(alertConfigBuilder.exceptionThreshold, currentEnvironment),
+      http5xxPercentThreshold = convertHttp5xxPercentThresholds(alertConfigBuilder.http5xxPercentThreshold, currentEnvironment),
+      http5xxThreshold = convertHttp5xxThreshold(alertConfigBuilder.http5xxThreshold, currentEnvironment),
+      httpStatusPercentThresholds = convertHttpStatusPercentThresholdAlerts(alertConfigBuilder.httpStatusPercentThresholds, currentEnvironment),
+      httpStatusThresholds = convertHttpStatusThresholds(alertConfigBuilder.httpStatusThresholds, currentEnvironment),
+      httpTrafficThresholds = convertHttpTrafficThresholds(alertConfigBuilder.httpTrafficThresholds, currentEnvironment),
+      logMessageThresholds = convertLogMessageThresholdAlerts(alertConfigBuilder.logMessageThresholds, currentEnvironment),
+      totalHttpRequestThreshold = convertTotalHttpRequestThreshold(alertConfigBuilder.totalHttpRequestThreshold, currentEnvironment),
+      metricsThresholds = convertMetricsThreshold(alertConfigBuilder.metricsThresholds, currentEnvironment)
     )
   }
 
@@ -96,20 +95,20 @@ object YamlBuilder {
     )
   }
 
-  def convertContainerKillThreshold(containerKillThreshold: ContainerKillThreshold): Option[YamlContainerKillThresholdAlert] = {
-    Option.when(containerKillThreshold.alertingPlatform == AlertingPlatform.Grafana)(
+  def convertContainerKillThreshold(containerKillThreshold: ContainerKillThreshold, currentEnvironment: Environment): Option[YamlContainerKillThresholdAlert] = {
+    Option.when(isGrafanaEnabled(containerKillThreshold.alertingPlatform, currentEnvironment, AlertType.ContainerKillThreshold) && containerKillThreshold.count < Int.MaxValue)(
       YamlContainerKillThresholdAlert(containerKillThreshold.count)
     )
   }
 
-  def convertErrorsLoggedThreshold(errorsLoggedThreshold: ErrorsLoggedThreshold): Option[YamlErrorsLoggedThresholdAlert] = {
-    Option.when(errorsLoggedThreshold.alertingPlatform == AlertingPlatform.Grafana)(
+  def convertErrorsLoggedThreshold(errorsLoggedThreshold: ErrorsLoggedThreshold, currentEnvironment: Environment): Option[YamlErrorsLoggedThresholdAlert] = {
+    Option.when(isGrafanaEnabled(errorsLoggedThreshold.alertingPlatform , currentEnvironment, AlertType.ErrorsLoggedThreshold) && errorsLoggedThreshold.count < Int.MaxValue)(
       YamlErrorsLoggedThresholdAlert(errorsLoggedThreshold.count)
     )
   }
 
-  def convertExceptionThreshold(exceptionThreshold: ExceptionThreshold): Option[YamlExceptionThresholdAlert] = {
-    Option.when(exceptionThreshold.alertingPlatform == AlertingPlatform.Grafana)(
+  def convertExceptionThreshold(exceptionThreshold: ExceptionThreshold, currentEnvironment: Environment): Option[YamlExceptionThresholdAlert] = {
+    Option.when(isGrafanaEnabled(exceptionThreshold.alertingPlatform, currentEnvironment, AlertType.ExceptionThreshold) && exceptionThreshold.count < Int.MaxValue)(
       YamlExceptionThresholdAlert(
         count = exceptionThreshold.count,
         severity = exceptionThreshold.severity.toString
@@ -117,8 +116,8 @@ object YamlBuilder {
     )
   }
 
-  def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Http5xxPercentThreshold): Option[YamlHttp5xxPercentThresholdAlert] = {
-    Option.when(http5xxPercentThreshold.alertingPlatform == AlertingPlatform.Grafana)(
+  def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Http5xxPercentThreshold, currentEnvironment: Environment): Option[YamlHttp5xxPercentThresholdAlert] = {
+    Option.when(isGrafanaEnabled(http5xxPercentThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxPercentThreshold) && http5xxPercentThreshold.percentage <= 100.0)(
       YamlHttp5xxPercentThresholdAlert(
         percentage = http5xxPercentThreshold.percentage,
         severity = http5xxPercentThreshold.severity.toString
@@ -126,8 +125,8 @@ object YamlBuilder {
     )
   }
 
-  def convertHttp5xxThreshold(http5xxThreshold: Http5xxThreshold): Option[YamlHttp5xxThresholdAlert] = {
-    Option.when(http5xxThreshold.alertingPlatform == AlertingPlatform.Grafana)(
+  def convertHttp5xxThreshold(http5xxThreshold: Http5xxThreshold, currentEnvironment: Environment): Option[YamlHttp5xxThresholdAlert] = {
+    Option.when(isGrafanaEnabled(http5xxThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxThreshold) && http5xxThreshold.count < Int.MaxValue)(
       YamlHttp5xxThresholdAlert(
         count = http5xxThreshold.count,
         severity = http5xxThreshold.severity.toString
@@ -135,8 +134,8 @@ object YamlBuilder {
     )
   }
 
-  def convertHttpStatusThresholds(httpStatusThresholds: Seq[HttpStatusThreshold]): Option[Seq[YamlHttpStatusThresholdAlert]] = {
-    val converted = httpStatusThresholds.withFilter(_.alertingPlatform == Grafana).map { threshold =>
+  def convertHttpStatusThresholds(httpStatusThresholds: Seq[HttpStatusThreshold], currentEnvironment: Environment): Option[Seq[YamlHttpStatusThresholdAlert]] = {
+    val converted = httpStatusThresholds.withFilter(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusThreshold)).map { threshold =>
       YamlHttpStatusThresholdAlert(
         count = threshold.count,
         httpMethod = threshold.httpMethod.toString,
@@ -147,8 +146,8 @@ object YamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertLogMessageThresholdAlerts(logMessageThresholds: Seq[LogMessageThreshold]): Option[Seq[YamlLogMessageThresholdAlert]] = {
-    val converted = logMessageThresholds.withFilter(_.alertingPlatform == Grafana).map { threshold =>
+  def convertLogMessageThresholdAlerts(logMessageThresholds: Seq[LogMessageThreshold], currentEnvironment: Environment): Option[Seq[YamlLogMessageThresholdAlert]] = {
+    val converted = logMessageThresholds.withFilter(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.LogMessageThreshold)).map { threshold =>
       YamlLogMessageThresholdAlert(
         message = threshold.message,
         count = threshold.count,
@@ -160,8 +159,8 @@ object YamlBuilder {
   }
 
   def convertHttpStatusPercentThresholdAlerts(
-                                               httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold]): Option[Seq[YamlHttpStatusPercentThresholdAlert]] = {
-    val converted = httpStatusPercentThresholds.withFilter(_.alertingPlatform == Grafana).map { threshold =>
+                                               httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold], currentEnvironment: Environment): Option[Seq[YamlHttpStatusPercentThresholdAlert]] = {
+    val converted = httpStatusPercentThresholds.withFilter(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold)).map { threshold =>
       YamlHttpStatusPercentThresholdAlert(
         percentage = threshold.percentage,
         httpMethod = threshold.httpMethod.toString,
@@ -172,9 +171,9 @@ object YamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertHttpTrafficThresholds(httpTrafficThresholds: Seq[HttpTrafficThreshold]): Option[Seq[YamlHttpTrafficThresholdAlert]] = {
+  def convertHttpTrafficThresholds(httpTrafficThresholds: Seq[HttpTrafficThreshold], currentEnvironment: Environment): Option[Seq[YamlHttpTrafficThresholdAlert]] = {
     val converted = httpTrafficThresholds.flatMap { threshold =>
-      if (threshold.alertingPlatform == Grafana) {
+      if (isGrafanaEnabled(threshold.alertingPlatform, currentEnvironment, AlertType.HttpTrafficThreshold)) {
         Seq(
           threshold.warning.map { warningCount =>
             YamlHttpTrafficThresholdAlert(
@@ -198,15 +197,15 @@ object YamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertTotalHttpRequestThreshold(totalHttpRequestThreshold: TotalHttpRequestThreshold): Option[YamlTotalHttpRequestThresholdAlert] = {
-    Option.when(totalHttpRequestThreshold.alertingPlatform == AlertingPlatform.Grafana)(
+  def convertTotalHttpRequestThreshold(totalHttpRequestThreshold: TotalHttpRequestThreshold, currentEnvironment: Environment): Option[YamlTotalHttpRequestThresholdAlert] = {
+    Option.when(isGrafanaEnabled(totalHttpRequestThreshold.alertingPlatform, currentEnvironment, AlertType.TotalHttpRequestThreshold) && totalHttpRequestThreshold.count < Int.MaxValue)(
       YamlTotalHttpRequestThresholdAlert(totalHttpRequestThreshold.count)
     )
   }
 
-  def convertMetricsThreshold(metricsThreshold: Seq[MetricsThreshold]): Option[Seq[YamlMetricsThresholdAlert]] = {
+  def convertMetricsThreshold(metricsThreshold: Seq[MetricsThreshold], currentEnvironment: Environment): Option[Seq[YamlMetricsThresholdAlert]] = {
     val converted = metricsThreshold.flatMap { threshold =>
-      if (threshold.alertingPlatform == Grafana) {
+      if (isGrafanaEnabled(threshold.alertingPlatform, currentEnvironment, AlertType.MetricsThreshold)) {
         Seq(
           threshold.warning.map { warningCount =>
             YamlMetricsThresholdAlert(

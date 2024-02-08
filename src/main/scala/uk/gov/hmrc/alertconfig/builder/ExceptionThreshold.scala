@@ -21,7 +21,7 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 case class ExceptionThreshold(
     count: Int = 2,
     severity: AlertSeverity = AlertSeverity.Critical,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object ExceptionThresholdProtocol {

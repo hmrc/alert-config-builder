@@ -57,22 +57,22 @@ case class AlertConfigBuilder(
   def withHandlers(handlers: String*) =
     this.copy(handlers = handlers)
 
-  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold, alertingPlatform))
 
   def withExceptionThreshold(exceptionThreshold: Int,
                              severity: AlertSeverity = AlertSeverity.Critical,
-                             alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                             alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
                            severity: AlertSeverity = AlertSeverity.Critical,
-                           alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                           alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity, alertingPlatform))
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
-                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
@@ -112,17 +112,17 @@ case class AlertConfigBuilder(
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
-  def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withContainerKillThreshold(containerCrashThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerCrashThreshold, alertingPlatform))
 
-  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   def withLogMessageThreshold(message: String,
                               threshold: Int,
                               lessThanMode: Boolean = false,
                               severity: AlertSeverity = AlertSeverity.Critical,
-                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                              alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
@@ -162,13 +162,13 @@ case class AlertConfigBuilder(
           a.toJson.compactPrint
 
         ZoneToServiceDomainMapper.getServiceDomain(serviceDomain, platformService).map { serviceDomain =>
-          val updated5xxPercentThreshold = if (http5xxPercentThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updated5xxPercentThreshold = if (isGrafanaEnabled(http5xxPercentThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxPercentThreshold)) {
             333.33
           } else {
             http5xxPercentThreshold.percentage
           }
 
-          val updated5xxThreshold = if (http5xxThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updated5xxThreshold = if (isGrafanaEnabled(http5xxThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxThreshold)) {
             // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
             // it will never be triggered
             Int.MaxValue
@@ -182,19 +182,19 @@ case class AlertConfigBuilder(
             averageCPUThreshold.count
           }
 
-          val updatedContainerKillThreshold = if (containerKillThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedContainerKillThreshold = if (isGrafanaEnabled(containerKillThreshold.alertingPlatform, currentEnvironment, AlertType.ContainerKillThreshold)) {
             Int.MaxValue
           } else {
             containerKillThreshold.count
           }
 
-          val updatedErrorsLoggedThreshold = if (errorsLoggedThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedErrorsLoggedThreshold = if (isGrafanaEnabled(errorsLoggedThreshold.alertingPlatform, currentEnvironment, AlertType.ErrorsLoggedThreshold)) {
             Int.MaxValue
           } else {
             errorsLoggedThreshold.count
           }
 
-          val updatedExceptionThreshold = if (exceptionThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedExceptionThreshold = if (isGrafanaEnabled(exceptionThreshold.alertingPlatform, currentEnvironment, AlertType.ExceptionThreshold)) {
             // if this alert is configured to use NOT Sensu, then set it to an unreasonably high threshold so
             // it will never be triggered
             Int.MaxValue
@@ -202,7 +202,7 @@ case class AlertConfigBuilder(
             exceptionThreshold.count
           }
 
-          val updatedTotalHttpRequestThreshold = if (totalHttpRequestThreshold.alertingPlatform != AlertingPlatform.Sensu) {
+          val updatedTotalHttpRequestThreshold = if (isGrafanaEnabled(totalHttpRequestThreshold.alertingPlatform, currentEnvironment, AlertType.TotalHttpRequestThreshold)) {
             Int.MaxValue
           } else {
             totalHttpRequestThreshold.count
@@ -229,14 +229,14 @@ case class AlertConfigBuilder(
              |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption
               .map(_.toJson.compactPrint)
               .getOrElse(JsNull)},
-             |"httpTrafficThresholds" : ${httpTrafficThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
-             |"httpStatusThresholds" : ${httpStatusThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
-             |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
+             |"httpTrafficThresholds" : ${httpTrafficThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpTrafficThreshold)).toJson.compactPrint},
+             |"httpStatusThresholds" : ${httpStatusThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusThreshold)).toJson.compactPrint},
+             |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold)).toJson.compactPrint},
              |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
-             |"metricsThresholds" : ${printSeq(metricsThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu))(
+             |"metricsThresholds" : ${printSeq(metricsThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.MetricsThreshold)))(
               MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
-             |"log-message-thresholds" : ${logMessageThresholds.filter(_.alertingPlatform == AlertingPlatform.Sensu).toJson.compactPrint},
+             |"log-message-thresholds" : ${logMessageThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.LogMessageThreshold)).toJson.compactPrint},
              |"average-cpu-threshold" : $updatedAverageCPUThreshold,
              |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(
               HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
@@ -296,22 +296,22 @@ case class TeamAlertConfigBuilder(
   def withHandlers(handlers: String*) =
     this.copy(handlers = handlers)
 
-  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold, alertingPlatform))
 
   def withExceptionThreshold(exceptionThreshold: Int,
                              severity: AlertSeverity = AlertSeverity.Critical,
-                             alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                             alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity, alertingPlatform = alertingPlatform))
 
   def withHttp5xxThreshold(http5xxThreshold: Int,
                            severity: AlertSeverity = AlertSeverity.Critical,
-                           alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                           alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity, alertingPlatform))
 
   def withHttp5xxPercentThreshold(percentThreshold: Double,
                                   severity: AlertSeverity = AlertSeverity.Critical,
-                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                                  alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, severity, alertingPlatform))
 
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold) = {
@@ -335,7 +335,7 @@ case class TeamAlertConfigBuilder(
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
 
-  def withContainerKillThreshold(containerKillThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withContainerKillThreshold(containerKillThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerKillThreshold, alertingPlatform))
 
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold) = {
@@ -358,14 +358,14 @@ case class TeamAlertConfigBuilder(
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
-  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   def withLogMessageThreshold(message: String,
                               threshold: Int,
                               lessThanMode: Boolean = false,
                               severity: AlertSeverity = AlertSeverity.Critical,
-                              alertingPlatform: AlertingPlatform = AlertingPlatform.Sensu) =
+                              alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity, alertingPlatform))
 
   def withAverageCPUThreshold(averageCPUThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
