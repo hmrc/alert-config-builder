@@ -103,13 +103,13 @@ object YamlBuilder {
   }
 
   def convertErrorsLoggedThreshold(errorsLoggedThreshold: ErrorsLoggedThreshold, currentEnvironment: Environment): Option[YamlErrorsLoggedThresholdAlert] = {
-    Option.when(isGrafanaEnabled(errorsLoggedThreshold.alertingPlatform , currentEnvironment, AlertType.ErrorsLoggedThreshold))(
+    Option.when(isGrafanaEnabled(errorsLoggedThreshold.alertingPlatform , currentEnvironment, AlertType.ErrorsLoggedThreshold) && errorsLoggedThreshold.count < Int.MaxValue)(
       YamlErrorsLoggedThresholdAlert(errorsLoggedThreshold.count)
     )
   }
 
   def convertExceptionThreshold(exceptionThreshold: ExceptionThreshold, currentEnvironment: Environment): Option[YamlExceptionThresholdAlert] = {
-    Option.when(isGrafanaEnabled(exceptionThreshold.alertingPlatform, currentEnvironment, AlertType.ExceptionThreshold))(
+    Option.when(isGrafanaEnabled(exceptionThreshold.alertingPlatform, currentEnvironment, AlertType.ExceptionThreshold) && exceptionThreshold.count < Int.MaxValue)(
       YamlExceptionThresholdAlert(
         count = exceptionThreshold.count,
         severity = exceptionThreshold.severity.toString
@@ -118,7 +118,7 @@ object YamlBuilder {
   }
 
   def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Http5xxPercentThreshold, currentEnvironment: Environment): Option[YamlHttp5xxPercentThresholdAlert] = {
-    Option.when(isGrafanaEnabled(http5xxPercentThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxPercentThreshold))(
+    Option.when(isGrafanaEnabled(http5xxPercentThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxPercentThreshold) && http5xxPercentThreshold.percentage <= 100.0)(
       YamlHttp5xxPercentThresholdAlert(
         percentage = http5xxPercentThreshold.percentage,
         severity = http5xxPercentThreshold.severity.toString
@@ -127,7 +127,7 @@ object YamlBuilder {
   }
 
   def convertHttp5xxThreshold(http5xxThreshold: Http5xxThreshold, currentEnvironment: Environment): Option[YamlHttp5xxThresholdAlert] = {
-    Option.when(isGrafanaEnabled(http5xxThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxThreshold))(
+    Option.when(isGrafanaEnabled(http5xxThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxThreshold) && http5xxThreshold.count < Int.MaxValue)(
       YamlHttp5xxThresholdAlert(
         count = http5xxThreshold.count,
         severity = http5xxThreshold.severity.toString
@@ -199,7 +199,7 @@ object YamlBuilder {
   }
 
   def convertTotalHttpRequestThreshold(totalHttpRequestThreshold: TotalHttpRequestThreshold, currentEnvironment: Environment): Option[YamlTotalHttpRequestThresholdAlert] = {
-    Option.when(isGrafanaEnabled(totalHttpRequestThreshold.alertingPlatform, currentEnvironment, AlertType.TotalHttpRequestThreshold))(
+    Option.when(isGrafanaEnabled(totalHttpRequestThreshold.alertingPlatform, currentEnvironment, AlertType.TotalHttpRequestThreshold) && totalHttpRequestThreshold.count < Int.MaxValue)(
       YamlTotalHttpRequestThresholdAlert(totalHttpRequestThreshold.count)
     )
   }
