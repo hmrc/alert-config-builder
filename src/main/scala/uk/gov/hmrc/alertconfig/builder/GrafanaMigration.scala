@@ -126,6 +126,21 @@ object GrafanaMigration {
       AlertType.LogMessageThreshold -> AlertingPlatform.Sensu,
       AlertType.MetricsThreshold -> AlertingPlatform.Sensu,
       AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Sensu
+    ),
+
+    Environment.Management -> Map(
+      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana
     )
   )
     def isGrafanaEnabled(alertingPlatform: AlertingPlatform, currentEnvironment: Environment, alertType: AlertType): Boolean = {
