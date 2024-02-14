@@ -1,3 +1,4 @@
 java adoptopenjdk-11.0.15+10
+python 3.10.8
 sbt 1.9.7
 scala 2.13.12

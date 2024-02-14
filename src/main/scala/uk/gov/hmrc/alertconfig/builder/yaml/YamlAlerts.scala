@@ -75,7 +75,12 @@ case class YamlMetricsThresholdAlert(
                                       name: String,
                                       query: String,
                                       severity: String,
-                                      invert: Boolean
+                                      invert: Boolean,
+                                      reducer: String,
+                                      dashboardOverride: String,
+                                      dashboardPanelOverride: String,
+                                      runbookUrl: String,
+                                      summary: String,
                                     )
 
 case class YamlTotalHttpRequestThresholdAlert(

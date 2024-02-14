@@ -25,8 +25,16 @@ case class MetricsThreshold(
     critical: Option[Double] = None,
     invert: Boolean = false,
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default
+    ,
+    reducer: String = "mean", // TODO finite set including mean, last
+
+    // todo object for overrides
+    dashboardOverride: String = "",
+    dashboardPanelOverride: String = "",
+    runbookUrl: String = "",
+    summary: String = ""
 )
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {
-  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat6(MetricsThreshold)
+  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat11(MetricsThreshold)
 }
