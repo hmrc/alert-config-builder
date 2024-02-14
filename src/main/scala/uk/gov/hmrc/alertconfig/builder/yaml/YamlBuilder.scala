@@ -216,7 +216,7 @@ object YamlBuilder {
               invert = threshold.invert,
               reducer = threshold.reducer,
               dashboardOverride = threshold.dashboardOverride, // todo an object for overrides
-              dashboardPanelOverride = threshold.dashboarPaneldOverride,
+              dashboardPanelOverride = threshold.dashboardPanelOverride,
               runbookUrl = threshold.runbookUrl,
               summary = threshold.summary,
             )
@@ -230,7 +230,7 @@ object YamlBuilder {
               invert = threshold.invert,
               reducer = threshold.reducer,
               dashboardOverride = threshold.dashboardOverride, // todo an object for overrides
-              dashboardPanelOverride = threshold.dashboarPaneldOverride,
+              dashboardPanelOverride = threshold.dashboardPanelOverride,
               runbookUrl = threshold.runbookUrl,
               summary = threshold.summary,
             )
