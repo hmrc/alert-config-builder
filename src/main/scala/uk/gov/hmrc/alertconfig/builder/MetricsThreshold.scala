@@ -19,7 +19,6 @@ package uk.gov.hmrc.alertconfig.builder
 import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 
 case class Overrides(
-  // todo object for overrides
   dashboardOverride: String = "",
   dashboardPanelOverride: String = "",
   runbookUrl: String = "",
@@ -41,12 +40,6 @@ case class MetricsThreshold(
     reducer: String = "mean", // TODO finite set including mean, last
 
     overrides: Overrides = Overrides()
-
-//    // todo object for overrides
-//    dashboardOverride: String = "",
-//    dashboardPanelOverride: String = "",
-//    runbookUrl: String = "",
-//    summary: String = ""
 )
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {
