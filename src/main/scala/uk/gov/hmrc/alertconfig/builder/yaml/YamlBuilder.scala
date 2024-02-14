@@ -215,10 +215,11 @@ object YamlBuilder {
               severity = "warning",
               invert = threshold.invert,
               reducer = threshold.reducer,
-              dashboardOverride = threshold.dashboardOverride, // todo an object for overrides
-              dashboardPanelOverride = threshold.dashboardPanelOverride,
-              runbookUrl = threshold.runbookUrl,
-              summary = threshold.summary,
+              dashboardOverride = threshold.overrides.dashboardOverride,
+              dashboardPanelOverride = threshold.overrides.dashboardPanelOverride,
+              runbookUrl = threshold.overrides.runbookUrl,
+              summary = threshold.overrides.summary,
+              countOverrides = threshold.overrides.countOverrides
             )
           },
           threshold.critical.map { criticalCount =>
@@ -229,10 +230,11 @@ object YamlBuilder {
               severity = "critical",
               invert = threshold.invert,
               reducer = threshold.reducer,
-              dashboardOverride = threshold.dashboardOverride, // todo an object for overrides
-              dashboardPanelOverride = threshold.dashboardPanelOverride,
-              runbookUrl = threshold.runbookUrl,
-              summary = threshold.summary,
+              dashboardOverride = threshold.overrides.dashboardOverride,
+              dashboardPanelOverride = threshold.overrides.dashboardPanelOverride,
+              runbookUrl = threshold.overrides.runbookUrl,
+              summary = threshold.overrides.summary,
+              countOverrides = threshold.overrides.countOverrides
             )
           }
         ).flatten

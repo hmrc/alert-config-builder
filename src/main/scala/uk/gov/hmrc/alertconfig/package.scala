@@ -65,4 +65,18 @@ package object builder {
 
   }
 
+
+  val overridesFormat = new JsonFormat[Overrides] {
+    import DefaultJsonProtocol._
+
+    override def read(json: JsValue): Overrides =
+      Overrides(
+        // todo from JSON
+      )
+
+    override def write(obj: Overrides): JsValue =
+      JsString(obj.toString)
+
+  }
+
 }

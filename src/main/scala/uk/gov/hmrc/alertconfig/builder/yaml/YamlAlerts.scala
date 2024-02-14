@@ -81,6 +81,7 @@ case class YamlMetricsThresholdAlert(
                                       dashboardPanelOverride: String,
                                       runbookUrl: String,
                                       summary: String,
+                                      countOverrides: Map[String, Double]
                                     )
 
 case class YamlTotalHttpRequestThresholdAlert(

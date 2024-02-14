@@ -16,8 +16,20 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, RootJsonFormat}
+import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
 
+case class Overrides(
+  // todo object for overrides
+  dashboardOverride: String = "",
+  dashboardPanelOverride: String = "",
+  runbookUrl: String = "",
+  summary: String = "",
+  countOverrides: Map[String, Double] = Map()
+)
+
+object OverridesProtocol extends DefaultJsonProtocol {
+  implicit val overrides: RootJsonFormat[Overrides] = jsonFormat5(Overrides)
+}
 case class MetricsThreshold(
     name: String,
     query: String,
@@ -28,13 +40,18 @@ case class MetricsThreshold(
     ,
     reducer: String = "mean", // TODO finite set including mean, last
 
-    // todo object for overrides
-    dashboardOverride: String = "",
-    dashboardPanelOverride: String = "",
-    runbookUrl: String = "",
-    summary: String = ""
+    overrides: Overrides = Overrides()
+
+//    // todo object for overrides
+//    dashboardOverride: String = "",
+//    dashboardPanelOverride: String = "",
+//    runbookUrl: String = "",
+//    summary: String = ""
 )
 
 object MetricsThresholdProtocol extends DefaultJsonProtocol {
-  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = jsonFormat11(MetricsThreshold)
+  implicit val thresholdFormat: RootJsonFormat[MetricsThreshold] = {
+    implicit val _overrides: JsonFormat[Overrides] = overridesFormat
+    jsonFormat8(MetricsThreshold)
+  }
 }
