@@ -69,18 +69,18 @@ object GrafanaMigration {
     ),
 
     Environment.Qa -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Sensu,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Sensu,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Sensu,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Sensu,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Sensu,
-      AlertType.Http5xxThreshold -> AlertingPlatform.Sensu,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Sensu,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Sensu,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Sensu,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Sensu,
-      AlertType.MetricsThreshold -> AlertingPlatform.Sensu,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Sensu
+      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana
     ),
 
     Environment.Staging -> Map(
