@@ -125,7 +125,7 @@ object GrafanaMigration {
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Sensu,
       AlertType.LogMessageThreshold -> AlertingPlatform.Sensu,
       AlertType.MetricsThreshold -> AlertingPlatform.Sensu,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Sensu
+      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana
     ),
 
     Environment.Management -> Map(

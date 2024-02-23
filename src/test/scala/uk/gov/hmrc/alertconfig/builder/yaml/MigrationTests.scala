@@ -453,13 +453,13 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
     }
 
-    "TotalHttpRequestThreshold should be disabled by default in production" in {
+    "TotalHttpRequestThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60)
 
       val output = YamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.totalHttpRequestThreshold shouldBe None
+      output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
     }
   }
 }

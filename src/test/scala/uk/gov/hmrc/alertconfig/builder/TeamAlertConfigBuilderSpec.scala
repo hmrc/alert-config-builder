@@ -686,7 +686,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val requestThreshold = 35
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
-        .withTotalHttpRequestsCountThreshold(requestThreshold)
+        .withTotalHttpRequestsCountThreshold(requestThreshold, AlertingPlatform.Grafana)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -695,8 +695,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config: Map[String, JsValue] = configs(0)
       val service2Config: Map[String, JsValue] = configs(1)
 
-      service1Config("total-http-request-threshold") shouldBe JsNumber(requestThreshold)
-      service2Config("total-http-request-threshold") shouldBe JsNumber(requestThreshold)
+      service1Config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with disabled totalHttpRequestThreshold when alerting platform is Grafana" in {
