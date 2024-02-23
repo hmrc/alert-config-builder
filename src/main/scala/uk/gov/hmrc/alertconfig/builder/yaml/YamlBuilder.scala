@@ -22,7 +22,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import uk.gov.hmrc.alertconfig.builder.GrafanaMigration.isGrafanaEnabled
-import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertType, AlertingPlatform, AverageCPUThreshold, ContainerKillThreshold, Environment, ErrorsLoggedThreshold, ExceptionThreshold, Http5xxPercentThreshold, Http5xxThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, LogMessageThreshold, Logger, MetricsThreshold, TotalHttpRequestThreshold}
+import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertType, AverageCPUThreshold, ContainerKillThreshold, Environment, ErrorsLoggedThreshold, ExceptionThreshold, Http5xxPercentThreshold, Http5xxThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, LogMessageThreshold, Logger, MetricsThreshold, TotalHttpRequestThreshold}
 
 import java.io.File
 

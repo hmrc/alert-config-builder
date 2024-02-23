@@ -792,7 +792,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .asJsObject
       .fields
 
-    serviceConfig("total-http-request-threshold") shouldBe JsNumber(500)
+    serviceConfig("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
   }
 
   "disable http 5xx threshold in Sensu when alerting platform is Grafana" in {
