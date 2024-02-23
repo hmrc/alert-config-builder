@@ -783,9 +783,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
   }
 
-  "configure total http request count threshold with given threshold" in {
+  "disable http request count threshold with given threshold when alerting platform is Grafana" in {
     val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-      .withTotalHttpRequestsCountThreshold(500)
+      .withTotalHttpRequestsCountThreshold(500, AlertingPlatform.Grafana)
       .build
       .get
       .parseJson
