@@ -16,36 +16,23 @@
 
 package uk.gov.hmrc.alertconfig.builder.yaml
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import uk.gov.hmrc.alertconfig.builder.GrafanaMigration.isGrafanaEnabled
-import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertType, AverageCPUThreshold, ContainerKillThreshold, Environment, ErrorsLoggedThreshold, ExceptionThreshold, Http5xxPercentThreshold, Http5xxThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, LogMessageThreshold, Logger, MetricsThreshold, TotalHttpRequestThreshold}
+import uk.gov.hmrc.alertconfig.builder._
+import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 
 import java.io.File
 
-object YamlBuilder {
+object AlertsYamlBuilder {
 
   val logger = new Logger()
 
   def run(alertConfigs: Seq[AlertConfig], environment: String): Unit = {
-
     val currentEnvironment = Environment.get(environment)
-    val topLevelConfig     = TopLevelConfig(convert(alertConfigs, currentEnvironment))
-    logger.debug(s"Generating YAML for $currentEnvironment")
-
-    val mapper = new ObjectMapper(
-      new YAMLFactory()
-        .disable(Feature.WRITE_DOC_START_MARKER)
-        .enable(Feature.INDENT_ARRAYS_WITH_INDICATOR)
-    )
-    mapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-    mapper.registerModule(DefaultScalaModule)
+    val topLevelConfig = TopLevelConfig(convert(alertConfigs, currentEnvironment))
+    logger.debug(s"Generating alert config YAML for $currentEnvironment")
 
     mapper.writeValue(new File(s"./target/output/services.yml"), topLevelConfig)
-    logger.debug(s"Done generating YAML for $currentEnvironment")
+    logger.debug(s"Done generating alert config YAML for $currentEnvironment")
   }
 
   def convert(alertConfigs: Seq[AlertConfig], currentEnvironment: Environment): Seq[ServiceConfig] = {
@@ -53,7 +40,7 @@ object YamlBuilder {
   }
 
   def convert(alertConfig: AlertConfig, currentEnvironment: Environment): Seq[ServiceConfig] = {
-    val filtered             = alertConfig.environmentConfig.filter(_.enabledEnvironments.contains(currentEnvironment))
+    val filtered = alertConfig.environmentConfig.filter(_.enabledEnvironments.contains(currentEnvironment))
     val enabledHandlersInEnv = filtered.map(_.handlerName).toSet
     alertConfig.alertConfig.flatMap(convert(_, enabledHandlersInEnv, currentEnvironment))
   }
@@ -102,7 +89,7 @@ object YamlBuilder {
   }
 
   def convertErrorsLoggedThreshold(errorsLoggedThreshold: ErrorsLoggedThreshold, currentEnvironment: Environment): Option[YamlErrorsLoggedThresholdAlert] = {
-    Option.when(isGrafanaEnabled(errorsLoggedThreshold.alertingPlatform , currentEnvironment, AlertType.ErrorsLoggedThreshold) && errorsLoggedThreshold.count < Int.MaxValue)(
+    Option.when(isGrafanaEnabled(errorsLoggedThreshold.alertingPlatform, currentEnvironment, AlertType.ErrorsLoggedThreshold) && errorsLoggedThreshold.count < Int.MaxValue)(
       YamlErrorsLoggedThresholdAlert(errorsLoggedThreshold.count)
     )
   }
@@ -158,8 +145,7 @@ object YamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertHttpStatusPercentThresholdAlerts(
-                                               httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold], currentEnvironment: Environment): Option[Seq[YamlHttpStatusPercentThresholdAlert]] = {
+  def convertHttpStatusPercentThresholdAlerts(httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold], currentEnvironment: Environment): Option[Seq[YamlHttpStatusPercentThresholdAlert]] = {
     val converted = httpStatusPercentThresholds.withFilter(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold)).map { threshold =>
       YamlHttpStatusPercentThresholdAlert(
         percentage = threshold.percentage,

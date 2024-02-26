@@ -34,7 +34,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withAverageCPUThreshold(60, AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(60))
     }
@@ -43,7 +43,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withAverageCPUThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(60))
     }
@@ -52,7 +52,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withAverageCPUThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.averageCPUThreshold shouldBe None
     }
@@ -61,7 +61,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withAverageCPUThreshold(60, AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.averageCPUThreshold shouldBe None
     }
@@ -70,7 +70,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withContainerKillThreshold(60, AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
     }
@@ -79,7 +79,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withContainerKillThreshold(60, AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.containerKillThreshold shouldBe None
     }
@@ -88,7 +88,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withContainerKillThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
     }
@@ -97,7 +97,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withContainerKillThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.containerKillThreshold shouldBe None
     }
@@ -106,7 +106,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60, AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
     }
@@ -115,7 +115,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60, AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.errorsLoggedThreshold shouldBe None
     }
@@ -124,7 +124,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
     }
@@ -133,7 +133,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.errorsLoggedThreshold shouldBe None
     }
@@ -142,7 +142,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withExceptionThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.exceptionThreshold shouldBe Some(YamlExceptionThresholdAlert(60, "critical"))
     }
@@ -151,7 +151,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withExceptionThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.exceptionThreshold shouldBe None
     }
@@ -160,7 +160,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withExceptionThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.exceptionThreshold shouldBe Some(YamlExceptionThresholdAlert(60, "critical"))
     }
@@ -169,7 +169,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withExceptionThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.exceptionThreshold shouldBe None
     }
@@ -178,7 +178,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, "critical"))
     }
@@ -187,7 +187,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.http5xxPercentThreshold shouldBe None
     }
@@ -196,7 +196,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, "critical"))
     }
@@ -205,7 +205,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.http5xxPercentThreshold shouldBe None
     }
@@ -214,7 +214,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.http5xxThreshold shouldBe Some(YamlHttp5xxThresholdAlert(60, "critical"))
     }
@@ -223,7 +223,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.http5xxThreshold shouldBe None
     }
@@ -232,7 +232,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.http5xxThreshold shouldBe Some(YamlHttp5xxThresholdAlert(60, "critical"))
     }
@@ -241,7 +241,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.http5xxThreshold shouldBe None
     }
@@ -250,7 +250,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Grafana))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.httpStatusPercentThresholds shouldBe Some(List(YamlHttpStatusPercentThresholdAlert(60, "ALL_METHODS", 500, "critical")))
     }
@@ -259,7 +259,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Sensu))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.httpStatusPercentThresholds shouldBe None
     }
@@ -268,7 +268,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.httpStatusPercentThresholds shouldBe Some(List(YamlHttpStatusPercentThresholdAlert(60, "ALL_METHODS", 500, "critical")))
     }
@@ -277,7 +277,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.httpStatusPercentThresholds shouldBe None
     }
@@ -286,7 +286,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Grafana))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.httpStatusThresholds shouldBe Some(List(YamlHttpStatusThresholdAlert(60, "ALL_METHODS", 500, "critical")))
     }
@@ -295,7 +295,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Sensu))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.httpStatusThresholds shouldBe None
     }
@@ -304,7 +304,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.httpStatusThresholds shouldBe Some(List(YamlHttpStatusThresholdAlert(60, "ALL_METHODS", 500, "critical")))
     }
@@ -313,7 +313,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.httpStatusThresholds shouldBe None
     }
@@ -322,7 +322,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60), alertingPlatform = AlertingPlatform.Grafana))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.httpTrafficThresholds shouldBe Some(List(YamlHttpTrafficThresholdAlert(60, 5, "critical")))
     }
@@ -331,7 +331,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60), alertingPlatform = AlertingPlatform.Sensu))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.httpTrafficThresholds shouldBe None
     }
@@ -340,7 +340,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60)))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.httpTrafficThresholds shouldBe Some(List(YamlHttpTrafficThresholdAlert(60, 5, "critical")))
     }
@@ -349,7 +349,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60)))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.httpTrafficThresholds shouldBe None
     }
@@ -358,7 +358,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60, alertingPlatform = AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(60, false, "LOG_MESSAGE", "critical")))
     }
@@ -367,7 +367,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60, alertingPlatform = AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.logMessageThresholds shouldBe None
     }
@@ -376,7 +376,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(60, false, "LOG_MESSAGE", "critical")))
     }
@@ -385,7 +385,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.logMessageThresholds shouldBe None
     }
@@ -394,7 +394,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Grafana))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(1, "metric", "a.b.c.d", "critical", false)))
     }
@@ -403,7 +403,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Sensu))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.metricsThresholds shouldBe None
     }
@@ -412,7 +412,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(1, "metric", "a.b.c.d", "critical", false)))
     }
@@ -421,7 +421,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.metricsThresholds shouldBe None
     }
@@ -430,7 +430,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Grafana)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
     }
@@ -439,7 +439,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Sensu)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.totalHttpRequestThreshold shouldBe None
     }
@@ -448,7 +448,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
     }
@@ -457,7 +457,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60)
 
-      val output = YamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
     }
