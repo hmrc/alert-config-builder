@@ -16,23 +16,16 @@
 
 package uk.gov.hmrc.alertconfig.builder.yaml
 
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
-import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.constructor.Constructor
 import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder, Severity}
 
-import java.io.{File, FileInputStream}
+import java.io.File
 import java.nio.file.Files
 import scala.io.Source
 
-class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
-
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
-    val foobat = "a"
-  }
+class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     System.setProperty("app-config-path", "src/test/resources/app-config")
@@ -43,7 +36,6 @@ class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeA
     "create a correctly defined YAML file containing integrations and severities for that env only" in {
       val tmpDir = Files.createTempDirectory("integrations-test")
       val testFile = new File(s"$tmpDir/integrations.yaml")
-      println(Console.RED + s"testFile = ${testFile}" + Console.RESET)
       val currentEnvironment = Environment.Production
 
       val environmentAlertBuilders: Seq[EnvironmentAlertBuilder] = Seq(
@@ -59,16 +51,16 @@ class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeA
 
       yamlFromDisk shouldBe
         """integrations:
-          |  - name: "team-telemetry-both"
+          |  - name: team-telemetry-both
           |    severitiesEnabled:
-          |      - "warning"
-          |      - "critical"
-          |  - name: "team-telemetry-warning-only"
+          |      - warning
+          |      - critical
+          |  - name: team-telemetry-warning-only
           |    severitiesEnabled:
-          |      - "warning"
-          |  - name: "team-telemetry-critical-only"
+          |      - warning
+          |  - name: team-telemetry-critical-only
           |    severitiesEnabled:
-          |      - "critical""""
+          |      - critical"""
           .stripMargin
 
     }
