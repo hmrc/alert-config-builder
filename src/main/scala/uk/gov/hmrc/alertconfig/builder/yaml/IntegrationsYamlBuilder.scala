@@ -18,6 +18,7 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 
 import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder, Logger, Severity}
+import uk.gov.hmrc.alertconfig.builder.Severity._
 
 import java.io.File
 import scala.collection.immutable.Seq
@@ -34,10 +35,7 @@ object IntegrationsYamlBuilder {
         val enabledSeverities = enabledEnvironments(currentEnvironment)
         Integration(
           name = builder.handlerName,
-          SeveritiesEnabled(
-            warning = enabledSeverities.contains(Severity.Warning),
-            critical = enabledSeverities.contains(Severity.Critical)
-          )
+          severitiesEnabled = enabledSeverities.filter(Seq(Critical, Warning).contains(_)).map(_.toString).toSeq
         )
       }
     }.distinct
