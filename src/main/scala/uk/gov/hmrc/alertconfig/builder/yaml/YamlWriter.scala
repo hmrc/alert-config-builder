@@ -27,6 +27,7 @@ object YamlWriter {
   val mapper: ObjectMapper = new ObjectMapper(
     new YAMLFactory()
       .disable(Feature.WRITE_DOC_START_MARKER)
+      .enable(Feature.MINIMIZE_QUOTES)
       .enable(Feature.INDENT_ARRAYS_WITH_INDICATOR)
   )
     .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
