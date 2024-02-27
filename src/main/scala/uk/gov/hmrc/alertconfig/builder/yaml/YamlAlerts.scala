@@ -81,3 +81,9 @@ case class YamlMetricsThresholdAlert(
 case class YamlTotalHttpRequestThresholdAlert(
                                                count: Int
                                              )
+
+case class YamlHttp90PercentileResponseTimeThresholdAlert(
+                                      timePeriod: Int,
+                                      count: Int,
+                                      severity: String
+                                   )

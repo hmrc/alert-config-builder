@@ -72,7 +72,8 @@ object AlertsYamlBuilder {
       httpTrafficThresholds = convertHttpTrafficThresholds(alertConfigBuilder.httpTrafficThresholds, currentEnvironment),
       logMessageThresholds = convertLogMessageThresholdAlerts(alertConfigBuilder.logMessageThresholds, currentEnvironment),
       totalHttpRequestThreshold = convertTotalHttpRequestThreshold(alertConfigBuilder.totalHttpRequestThreshold, currentEnvironment),
-      metricsThresholds = convertMetricsThreshold(alertConfigBuilder.metricsThresholds, currentEnvironment)
+      metricsThresholds = convertMetricsThreshold(alertConfigBuilder.metricsThresholds, currentEnvironment),
+      http90PercentileResponseTimeThreshold = convertHttp90PercentileResponseTimeThreshold(alertConfigBuilder.http90PercentileResponseTimeThresholds, currentEnvironment)
     )
   }
 
@@ -209,6 +210,33 @@ object AlertsYamlBuilder {
               query = threshold.query,
               severity = "critical",
               invert = threshold.invert
+            )
+          }
+        ).flatten
+      } else {
+        Seq.empty
+      }
+    }
+    Option.when(converted.nonEmpty)(converted)
+  }
+
+
+  def convertHttp90PercentileResponseTimeThreshold(http90PercentileResponseTimeThreshold: Seq[Http90PercentileResponseTimeThreshold], currentEnvironment: Environment): Option[Seq[YamlHttp90PercentileResponseTimeThresholdAlert]] = {
+    val converted = http90PercentileResponseTimeThreshold.flatMap { threshold =>
+      if (isGrafanaEnabled(threshold.alertingPlatform, currentEnvironment, AlertType.Http90PercentileResponseTimeThreshold)) {
+        Seq(
+          threshold.warning.map { warningCount =>
+            YamlHttp90PercentileResponseTimeThresholdAlert(
+              count = warningCount,
+              timePeriod = threshold.timePeriod,
+              severity = "warning"
+            )
+          },
+          threshold.critical.map { criticalCount =>
+            YamlHttp90PercentileResponseTimeThresholdAlert(
+              count = criticalCount,
+              timePeriod = threshold.timePeriod,
+              severity = "critical"
             )
           }
         ).flatten

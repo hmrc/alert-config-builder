@@ -21,7 +21,8 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 case class Http90PercentileResponseTimeThreshold(
     warning: Option[Int],
     critical: Option[Int],
-    timePeriod: Int = 15
+    timePeriod: Int = 15,
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object Http90PercentileResponseTimeThresholdProtocol {
@@ -29,7 +30,7 @@ object Http90PercentileResponseTimeThresholdProtocol {
   import DefaultJsonProtocol._
 
   implicit val thresholdPercentileFormat: JsonFormat[Http90PercentileResponseTimeThreshold] = {
-    jsonFormat3(Http90PercentileResponseTimeThreshold)
+    jsonFormat4(Http90PercentileResponseTimeThreshold)
   }
 
 }
