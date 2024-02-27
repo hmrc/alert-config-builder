@@ -525,7 +525,26 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsObject("warning" -> JsNumber(10), "critical" -> JsNumber(5), "timePeriod" -> JsNumber(10))
+      val expected = JsObject("alertingPlatform" -> JsString("Default"), "warning" -> JsNumber(10), "critical" -> JsNumber(5), "timePeriod" -> JsNumber(10))
+
+      service1Config("http90PercentileResponseTimeThresholds") shouldBe expected
+      service2Config("http90PercentileResponseTimeThresholds") shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with correct http90PercentileResponseTimeThreshold with alerting platform set to Grafana" in {
+      val threshold = Http90PercentileResponseTimeThreshold(Some(10), Some(5), timePeriod = 10, alertingPlatform = AlertingPlatform.Grafana)
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .withHttp90PercentileResponseTimeThreshold(threshold)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+      val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+
+      configs.size shouldBe 2
+      val service1Config = configs(0)
+      val service2Config = configs(1)
+
+      val expected = JsObject("alertingPlatform" -> JsString("Grafana"), "warning" -> JsNumber(10), "critical" -> JsNumber(5), "timePeriod" -> JsNumber(10))
 
       service1Config("http90PercentileResponseTimeThresholds") shouldBe expected
       service2Config("http90PercentileResponseTimeThresholds") shouldBe expected

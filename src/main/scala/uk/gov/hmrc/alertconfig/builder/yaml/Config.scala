@@ -32,7 +32,8 @@ case class Alerts(
                    httpStatusThresholds: Option[Seq[YamlHttpStatusThresholdAlert]] = None,
                    httpTrafficThresholds: Option[Seq[YamlHttpTrafficThresholdAlert]] = None,
                    totalHttpRequestThreshold: Option[YamlTotalHttpRequestThresholdAlert] = None,
-                   metricsThresholds: Option[Seq[YamlMetricsThresholdAlert]] = None
+                   metricsThresholds: Option[Seq[YamlMetricsThresholdAlert]] = None,
+                   http90PercentileResponseTimeThreshold: Option[Seq[YamlHttp90PercentileResponseTimeThresholdAlert]] = None,
                  )
 
 case class PagerDuty(
