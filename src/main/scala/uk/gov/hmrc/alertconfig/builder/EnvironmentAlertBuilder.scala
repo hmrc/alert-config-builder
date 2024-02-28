@@ -23,7 +23,7 @@ sealed trait Severity {
 }
 
 object Severity {
-  object Info       extends Severity
+  object Info     extends Severity
   object Ok       extends Severity
   object Warning  extends Severity
   object Critical extends Severity
