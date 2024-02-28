@@ -35,7 +35,7 @@ object IntegrationsYamlBuilder {
         val enabledSeverities = enabledEnvironments(currentEnvironment)
         Integration(
           name = builder.handlerName,
-          severitiesEnabled = enabledSeverities.filter(Seq(Critical, Warning).contains(_)).map(_.toString).toSeq
+          severitiesEnabled = enabledSeverities.filter(Seq(Critical, Warning, Info).contains(_)).map(_.toString).toSeq
         )
       }
     }.distinct

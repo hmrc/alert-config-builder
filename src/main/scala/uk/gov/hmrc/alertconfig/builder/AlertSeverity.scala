@@ -19,6 +19,7 @@ package uk.gov.hmrc.alertconfig.builder
 sealed trait AlertSeverity
 
 object AlertSeverity {
+  object Info  extends AlertSeverity { override def toString: String = "info"  }
   object Warning  extends AlertSeverity { override def toString: String = "warning"  }
   object Critical extends AlertSeverity { override def toString: String = "critical" }
 }
