@@ -16,7 +16,5 @@
 
 package uk.gov.hmrc.alertconfig.builder.yaml
 
-import uk.gov.hmrc.alertconfig.builder.Severity
-
 case class Integration(name: String, severitiesEnabled: Seq[String])
 case class Integrations(integrations: Seq[Integration])

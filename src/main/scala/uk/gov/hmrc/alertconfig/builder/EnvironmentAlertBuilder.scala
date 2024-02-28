@@ -76,12 +76,12 @@ object AllEnvironmentAlertConfigBuilder {
 case class EnvironmentAlertBuilder(
     handlerName: String,
     command: Option[JsValue] = None,
-    enabledEnvironments: Map[Environment, Set[Severity]] = Map((Environment.Production, Set(Severity.Ok, Severity.Info, Severity.Warning, Severity.Critical))),
+    enabledEnvironments: Map[Environment, Set[Severity]] = Map((Environment.Production, Set(Severity.Ok, Severity.Warning, Severity.Critical))),
     customEnvironmentNames: Map[Environment, String] = Map((Environment.Production, "aws_production")),
     handlerFilters: Map[Environment, JsValue] = Map((Environment.Production, JsString("occurrences")))
 ) {
 
-  private val defaultSeverities: Set[Severity] = Set(Severity.Ok, Severity.Info, Severity.Warning, Severity.Critical)
+  private val defaultSeverities: Set[Severity] = Set(Severity.Ok, Severity.Warning, Severity.Critical)
   private val defaultFilter: JsValue           = JsString("occurrences")
   private val defaultMgmtFilter: JsValue       = JsArray(JsString("occurrences"), JsString("kitchen_filter"), JsString("packer_filter"))
 

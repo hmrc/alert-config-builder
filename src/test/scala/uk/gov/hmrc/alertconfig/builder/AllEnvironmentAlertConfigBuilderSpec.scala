@@ -27,7 +27,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
     JsObject(
       "command"    -> JsString("/etc/sensu/handlers/noop.rb"),
       "type"       -> JsString("pipe"),
-      "severities" -> JsArray(JsString("ok"), JsString("info"), JsString("warning"), JsString("critical")),
+      "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
       "filter"     -> JsString("occurrences")
     )
 
@@ -35,7 +35,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
     JsObject(
       "command"    -> JsString(s"/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team $service -e $environment"),
       "type"       -> JsString("pipe"),
-      "severities" -> JsArray(JsString("ok"), JsString("info"), JsString("warning"), JsString("critical")),
+      "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
       "filter"     -> JsString("occurrences")
     )
 
