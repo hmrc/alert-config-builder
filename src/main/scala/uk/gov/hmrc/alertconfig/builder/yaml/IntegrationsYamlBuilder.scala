@@ -17,7 +17,7 @@
 package uk.gov.hmrc.alertconfig.builder.yaml
 
 import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
-import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder, Logger, Severity}
+import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder, Logger}
 import uk.gov.hmrc.alertconfig.builder.Severity._
 
 import java.io.File
@@ -33,10 +33,24 @@ object IntegrationsYamlBuilder {
       val enabledEnvironments = builder.enabledEnvironments
       Option.when(enabledEnvironments.contains(currentEnvironment)) {
         val enabledSeverities = enabledEnvironments(currentEnvironment)
-        Integration(
-          name = builder.handlerName,
-          severitiesEnabled = enabledSeverities.filter(Seq(Critical, Warning, Info).contains(_)).map(_.toString).toSeq
-        )
+        // This is a clumsy implementation of adding the INFO status.
+        //
+        // It must only be added for:
+        // 1. the "team-telemetry-heartbeat" handler
+        // 2. in YAML (for Grafana)
+        //
+        // If we turn it on in Sensu, the entirety of Sensu crashes HARD! see TEL-4404
+        if (builder.handlerName.equals("team-telemetry-heartbeat")) {
+          Integration(
+            name = builder.handlerName,
+            severitiesEnabled = Seq(Critical, Warning, Info).map(_.toString)
+          )
+        } else {
+          Integration(
+            name = builder.handlerName,
+            severitiesEnabled = enabledSeverities.filter(Seq(Critical, Warning, Info).contains(_)).map(_.toString).toSeq
+          )
+        }
       }
     }.distinct
 
