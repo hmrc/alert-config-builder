@@ -104,7 +104,7 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
         )
     }
 
-    "create config with integration enabled with custom severities" in {
+    "create config with integration enabled with custom severities ignores info" in {
       EnvironmentAlertBuilder("team-telemetry")
         .inIntegration(Set(Severity.Ok, Severity.Info, Severity.Warning, Severity.Critical, Severity.Unknown))
         .alertConfigFor(Environment.Integration) shouldBe
@@ -112,7 +112,7 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
         JsObject(
           "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team team-telemetry -e aws_integration"),
           "type"       -> JsString("pipe"),
-          "severities" -> JsArray(JsString("info"), JsString("critical"), JsString("unknown"), JsString("warning"), JsString("ok")),
+          "severities" -> JsArray(JsString("critical"), JsString("unknown"), JsString("warning"), JsString("ok")),
           "filter"     -> JsString("occurrences")
         )
     }
