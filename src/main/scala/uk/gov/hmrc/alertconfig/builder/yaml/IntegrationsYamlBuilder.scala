@@ -40,7 +40,7 @@ object IntegrationsYamlBuilder {
         // 2. in YAML (for Grafana)
         //
         // If we turn it on in Sensu, the entirety of Sensu crashes HARD! see TEL-4404
-        if (builder.handlerName.equals("team-telemetry-heartbeat")) {
+        if (builder.handlerName.equals("team-telemetry-heartbeat") && currentEnvironment.toString.equals("aws_integration")) {
           Integration(
             name = builder.handlerName,
             severitiesEnabled = Seq(Critical, Warning, Info).map(_.toString)

@@ -192,6 +192,8 @@ case class EnvironmentAlertBuilder(
       JsString("/etc/sensu/handlers/noop.rb")
 
   private def severitiesFor(environment: Environment) =
-    JsArray(enabledEnvironments.getOrElse(environment, defaultSeverities).map(s => JsString(s.toString)).toVector)
+    JsArray(enabledEnvironments.getOrElse(environment, defaultSeverities)
+      .filter(s => !s.toString.equalsIgnoreCase("info"))
+      .map(s => JsString(s.toString)).toVector)
 
 }
