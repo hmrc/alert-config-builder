@@ -68,8 +68,7 @@ object GrafanaMigration {
       AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
       AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
       AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
-
+      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
 
     Environment.Qa -> Map(
@@ -85,7 +84,7 @@ object GrafanaMigration {
       AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
       AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
       AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
+      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
 
     Environment.Staging -> Map(
@@ -101,7 +100,7 @@ object GrafanaMigration {
       AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
       AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
       AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
+      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
 
     Environment.ExternalTest -> Map(
@@ -149,7 +148,7 @@ object GrafanaMigration {
       AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
       AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
       AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
+      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     )
   )
     def isGrafanaEnabled(alertingPlatform: AlertingPlatform, currentEnvironment: Environment, alertType: AlertType): Boolean = {
