@@ -21,7 +21,6 @@ import uk.gov.hmrc.alertconfig.builder.GrafanaMigration.isGrafanaEnabled
 
 import java.io.{File, FileInputStream, FileNotFoundException}
 import scala.jdk.CollectionConverters._
-import scala.util.{Failure, Success, Try}
 
 trait Builder[T] {
   def build: T
@@ -138,25 +137,13 @@ case class AlertConfigBuilder(
     import HttpStatusThresholdProtocol._
     import HttpStatusPercentThresholdProtocol._
     import DefaultJsonProtocol._
+    import AppConfigValidator._
 
-    val appConfigPath      = System.getProperty("app-config-path", "../app-config")
-    val appConfigDirectory = new File(appConfigPath)
-    val appConfigFile      = new File(appConfigDirectory, s"${serviceName}.yaml")
     val currentEnvironment = Environment.get(System.getenv().getOrDefault("ENVIRONMENT", "production"))
 
 
-    if (!appConfigDirectory.exists)
-      throw new FileNotFoundException(s"Could not find app-config repository: $appConfigPath")
-
-    appConfigFile match {
-      case file if !platformService && !file.exists =>
-        logger.info(s"No app-config file found for service: '${serviceName}'. File was expected at: '${file.getAbsolutePath}'")
-        None
-      case file if !platformService && getZone(file).isEmpty =>
-        logger.warn(s"app-config file for service: '${serviceName}' does not contain 'zone' key.")
-        None
-      case file =>
-        val serviceDomain = getZone(file, platformService)
+    getAppConfigFileForService(serviceName, platformService).flatMap { file =>
+        val serviceDomain = getZone(serviceName, file, platformService)
 
         def printSeq[A](a: Seq[A])(implicit writer: JsonFormat[A]): String =
           a.toJson.compactPrint
@@ -249,24 +236,6 @@ case class AlertConfigBuilder(
         }
     }
   }
-
-  def getZone(appConfigFile: File, platformService: Boolean = false): Option[String] =
-    if (platformService)
-      None
-    else {
-      def parseAppConfigFile: Try[java.util.Map[String, java.util.Map[String, String]]] =
-        Try(new Yaml().load(new FileInputStream(appConfigFile)).asInstanceOf[java.util.Map[String, java.util.Map[String, String]]])
-
-      parseAppConfigFile match {
-        case Failure(exception) =>
-          logger.warn(
-            s"app-config file ${appConfigFile} for service: '${serviceName}' is not valid YAML and could not be parsed. Parsing Exception: ${exception.getMessage}")
-          None
-        case Success(appConfig) =>
-          val versionObject = appConfig.asScala.toMap.view.mapValues(_.asScala.toMap)("0.0.0")
-          versionObject.get("zone")
-      }
-    }
 
 }
 
