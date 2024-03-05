@@ -23,7 +23,7 @@ import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 import java.io.File
 
 object AlertsYamlBuilder {
-
+  import AppConfigValidator._
   val logger = new Logger()
 
   def run(alertConfigs: Seq[AlertConfig], environment: String): Unit = {
@@ -47,7 +47,7 @@ object AlertsYamlBuilder {
 
   def convert(alertConfigBuilder: AlertConfigBuilder, environmentDefinedHandlers: Set[String], currentEnvironment: Environment): Option[ServiceConfig] = {
     val enabledHandlers = alertConfigBuilder.handlers.toSet.intersect(environmentDefinedHandlers)
-    if (enabledHandlers.isEmpty) {
+    if (enabledHandlers.isEmpty || !serviceDeployedInEnv(alertConfigBuilder.serviceName, alertConfigBuilder.platformService)) {
       None
     } else {
       Some(

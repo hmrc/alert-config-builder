@@ -34,6 +34,17 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
   }
 
+  "convert(AlertConfig, Environment)" should {
+    "filter out alerting configuration for services without an entry in app-config-env (meaning they are undeployed)" in {
+      val config = AlertConfigBuilder("service-without-app-config-entry", handlers = Seq("h1", "h2"))
+        .withContainerKillThreshold(10, AlertingPlatform.Grafana)
+
+      val res    = AlertsYamlBuilder.convert(alertConfigBuilder = config, environmentDefinedHandlers = Set("h1"), currentEnvironment = Environment.Production)
+
+      res shouldBe None
+    }
+  }
+
   "convertAlerts(alertConfigBuilder)" should {
     "containerKillThreshold should be set to defined threshold" in {
       val threshold = 56

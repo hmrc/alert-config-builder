@@ -360,7 +360,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(60, false, "LOG_MESSAGE", "critical")))
+      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(count = 60, lessThanMode = false, message = "LOG_MESSAGE", severity = "critical")))
     }
 
     "LogMessageThreshold should be disabled if alertingPlatform is Sensu" in {
@@ -378,7 +378,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(60, false, "LOG_MESSAGE", "critical")))
+      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(count = 60, lessThanMode = false, message = "LOG_MESSAGE", severity = "critical")))
     }
 
     "LogMessageThreshold should be disabled by default in production" in {
@@ -396,7 +396,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(1, "metric", "a.b.c.d", "critical", false)))
+      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
     }
 
     "MetricsThreshold should be disabled if alertingPlatform is Sensu" in {
@@ -414,7 +414,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(1, "metric", "a.b.c.d", "critical", false)))
+      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
     }
 
     "MetricsThreshold should be disabled by default in production" in {
