@@ -19,7 +19,7 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.{AlertConfigBuilder, AlertingPlatform, Environment}
+import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertSeverity, AlertingPlatform, Environment, EnvironmentAlertBuilder, ErrorsLoggedThreshold, Http5xxRateIncrease, Http90PercentileResponseTimeThreshold, HttpAbsolutePercentSplitDownstreamHodThreshold, HttpAbsolutePercentSplitDownstreamServiceThreshold, HttpAbsolutePercentSplitThreshold, HttpStatus, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold, Severity, TotalHttpRequestThreshold}
 
 class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -34,14 +34,131 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
   }
 
-  "convert(AlertConfig, Environment)" should {
+  "convert()" should {
     "filter out alerting configuration for services without an entry in app-config-env (meaning they are undeployed)" in {
       val config = AlertConfigBuilder("service-without-app-config-entry", handlers = Seq("h1", "h2"))
         .withContainerKillThreshold(10, AlertingPlatform.Grafana)
 
-      val res    = AlertsYamlBuilder.convert(alertConfigBuilder = config, environmentDefinedHandlers = Set("h1"), currentEnvironment = Environment.Production)
+      val res    = AlertsYamlBuilder.convert(alertConfigBuilder = config, environmentDefinedHandlers = Set("h1"), currentEnvironment = Environment.Production, handlerSeveritiesForEnv = Map("h1" -> Set(Severity.Warning, Severity.Critical)))
 
       res shouldBe None
+    }
+  }
+
+  "If alert type is defined with a warning severity and handler foo, and environment config says foo can only receive critical alerts" should {
+    "not create the alerts defined with a warning severity" in {
+
+      val envConfig = Seq(
+        EnvironmentAlertBuilder("handler-non-prod", enabledEnvironments = Map(Environment.Qa -> Set(Severity.Critical))),
+      )
+
+      val alertConfigBuilders = Seq(
+        AlertConfigBuilder(
+          serviceName = "service1",
+          handlers = Seq("handler-non-prod")
+        )
+          .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
+          .withExceptionThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withHttp5xxRateIncrease(Http5xxRateIncrease("rate1", 1, 2))
+          .withHttp5xxThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning = Some(1), critical = None))
+          .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(severity = AlertSeverity.Warning))
+          .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(severity = AlertSeverity.Warning))
+          .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(severity = AlertSeverity.Warning))
+          .withContainerKillThreshold(2, AlertingPlatform.Grafana)
+          .withHttpTrafficThreshold(HttpTrafficThreshold(warning = Some(1), critical = Some(2), alertingPlatform = AlertingPlatform.Grafana))
+          .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
+          .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
+          .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
+          .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = None))
+          .withLogMessageThreshold("HelloWorld", 1,false, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withTotalHttpRequestsCountThreshold(2, AlertingPlatform.Grafana)
+          .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
+      )
+
+      val fakeConfig = new AlertConfig {
+        override def alertConfig: Seq[AlertConfigBuilder] = alertConfigBuilders
+        override def environmentConfig: Seq[EnvironmentAlertBuilder] = envConfig
+      }
+
+      val res = AlertsYamlBuilder.convert(fakeConfig, Environment.Qa)
+      res shouldBe Seq(
+        ServiceConfig(
+          service = "service1",
+          alerts = Alerts(
+            averageCPUThreshold = Some(YamlAverageCPUThresholdAlert(1)),
+            containerKillThreshold = Some(YamlContainerKillThresholdAlert(2)),
+            errorsLoggedThreshold = Some(YamlErrorsLoggedThresholdAlert(4)),
+            exceptionThreshold = None,
+            logMessageThresholds = None,
+            http5xxThreshold = None,
+            http5xxPercentThreshold = None,
+            httpStatusPercentThresholds = None,
+            httpStatusThresholds = Some(Seq(YamlHttpStatusThresholdAlert(1, "ALL_METHODS", 501, "critical" ))),
+            httpTrafficThresholds = Some(Seq(YamlHttpTrafficThresholdAlert(2, 5, "critical"))),
+            totalHttpRequestThreshold = Some(YamlTotalHttpRequestThresholdAlert(2)),
+            metricsThresholds = None,
+            http90PercentileResponseTimeThreshold = None
+          ),
+          pagerduty = Seq(
+            PagerDuty(integrationKeyName = "handler-non-prod")
+          )
+        )
+      )
+
+    }
+  }
+
+  "If handler 'foo' is enabled in an env for severities warning AND critical, and handler 'bar' is enabled in the same env for only critical alerts" should {
+    "still create alerts defined with a warning severity" in {
+
+      val envConfig = Seq(
+        EnvironmentAlertBuilder("foo", enabledEnvironments = Map(Environment.Qa -> Set(Severity.Critical, Severity.Warning))),
+        EnvironmentAlertBuilder("bar", enabledEnvironments = Map(Environment.Qa -> Set(Severity.Critical))),
+      )
+
+      val alertConfigBuilders = Seq(
+        AlertConfigBuilder(
+          serviceName = "service1",
+          handlers = Seq("foo", "bar")
+        )
+          .withExceptionThreshold(9, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(Int.MaxValue, AlertSeverity.Warning, AlertingPlatform.Grafana)
+      )
+
+      val fakeConfig = new AlertConfig {
+        override def alertConfig: Seq[AlertConfigBuilder] = alertConfigBuilders
+        override def environmentConfig: Seq[EnvironmentAlertBuilder] = envConfig
+      }
+
+      val res = AlertsYamlBuilder.convert(fakeConfig, Environment.Qa)
+      res shouldBe Seq(
+        ServiceConfig(
+          service = "service1",
+          alerts = Alerts(
+            averageCPUThreshold = None,
+            containerKillThreshold = None,
+            errorsLoggedThreshold = None,
+            exceptionThreshold = Some(YamlExceptionThresholdAlert(9, "warning")),
+            logMessageThresholds = None,
+            http5xxThreshold = None,
+            http5xxPercentThreshold = None,
+            httpStatusPercentThresholds = None,
+            httpStatusThresholds = None,
+            httpTrafficThresholds = None,
+            totalHttpRequestThreshold = None,
+            metricsThresholds = None,
+            http90PercentileResponseTimeThreshold = None
+          ),
+          pagerduty = Seq(
+            PagerDuty(integrationKeyName = "foo"),
+            PagerDuty(integrationKeyName = "bar")
+          )
+        )
+      )
+
     }
   }
 
