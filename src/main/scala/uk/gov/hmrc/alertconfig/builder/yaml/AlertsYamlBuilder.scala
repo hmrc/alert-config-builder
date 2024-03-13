@@ -42,22 +42,56 @@ object AlertsYamlBuilder {
   def convert(alertConfig: AlertConfig, currentEnvironment: Environment): Seq[ServiceConfig] = {
     val filtered = alertConfig.environmentConfig.filter(_.enabledEnvironments.contains(currentEnvironment))
     val enabledHandlersInEnv = filtered.map(_.handlerName).toSet
-    alertConfig.alertConfig.flatMap(convert(_, enabledHandlersInEnv, currentEnvironment))
+    val handlerSeveritiesForEnv = filtered
+      .map(builder => builder.handlerName -> builder.enabledEnvironments.getOrElse(currentEnvironment, Set()))
+      .toMap
+
+    alertConfig.alertConfig.flatMap(convert(_, enabledHandlersInEnv, currentEnvironment, handlerSeveritiesForEnv))
   }
 
-  def convert(alertConfigBuilder: AlertConfigBuilder, environmentDefinedHandlers: Set[String], currentEnvironment: Environment): Option[ServiceConfig] = {
+  def convert(alertConfigBuilder: AlertConfigBuilder, environmentDefinedHandlers: Set[String], currentEnvironment: Environment, handlerSeveritiesForEnv: Map[String, Set[Severity]]): Option[ServiceConfig] = {
     val enabledHandlers = alertConfigBuilder.handlers.toSet.intersect(environmentDefinedHandlers)
     if (enabledHandlers.isEmpty || !serviceDeployedInEnv(alertConfigBuilder.serviceName, alertConfigBuilder.platformService)) {
       None
     } else {
+      val finalAlertConfigBuilder = removeUnusedAlerts(alertConfigBuilder, handlerSeveritiesForEnv)
       Some(
         ServiceConfig(
-          service = alertConfigBuilder.serviceName.trim.toLowerCase.replaceAll(" ", "-"),
-          alerts = convertAlerts(alertConfigBuilder, currentEnvironment),
+          service   = finalAlertConfigBuilder.serviceName.trim.toLowerCase.replaceAll(" ", "-"),
+          alerts    = convertAlerts(finalAlertConfigBuilder, currentEnvironment),
           pagerduty = enabledHandlers.map(handler => PagerDuty(integrationKeyName = handler)).toSeq
         ))
     }
   }
+
+  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, handlerSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder = {
+    val uniqueEnabledSeveritiesForServiceInEnv = handlerSeveritiesForEnv.values.flatten.toSet
+      if ( uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Critical) && !uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning)) {
+        removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Warning)
+      } else if (
+        uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning) && !uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Critical)
+      ) {
+        removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Critical)
+      } else {
+        alertConfigBuilder
+      }
+  }
+
+  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, severityToRemove: AlertSeverity): AlertConfigBuilder =
+    alertConfigBuilder.copy(
+      exceptionThreshold                                  = if(alertConfigBuilder.exceptionThreshold.severity      == severityToRemove) ExceptionThreshold(count = Int.MaxValue)           else alertConfigBuilder.exceptionThreshold,
+      http5xxThreshold                                    = if(alertConfigBuilder.http5xxThreshold.severity        == severityToRemove) Http5xxThreshold(count = Int.MaxValue)             else alertConfigBuilder.http5xxThreshold,
+      http5xxPercentThreshold                             = if(alertConfigBuilder.http5xxPercentThreshold.severity == severityToRemove) Http5xxPercentThreshold(percentage = Int.MaxValue) else alertConfigBuilder.http5xxPercentThreshold,
+      http90PercentileResponseTimeThresholds              = alertConfigBuilder.http90PercentileResponseTimeThresholds             .map(threshold => if(severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None) else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None) else threshold),
+      httpAbsolutePercentSplitThresholds                  = alertConfigBuilder.httpAbsolutePercentSplitThresholds                 .filterNot(_.severity == severityToRemove),
+      httpAbsolutePercentSplitDownstreamServiceThresholds = alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds.filterNot(_.severity == severityToRemove),
+      httpAbsolutePercentSplitDownstreamHodThresholds     = alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds    .filterNot(_.severity == severityToRemove),
+      httpTrafficThresholds                               = alertConfigBuilder.httpTrafficThresholds                              .map(threshold => if(severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None) else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None) else threshold),
+      httpStatusThresholds                                = alertConfigBuilder.httpStatusThresholds                               .filterNot(_.severity == severityToRemove),
+      httpStatusPercentThresholds                         = alertConfigBuilder.httpStatusPercentThresholds                        .filterNot(_.severity == severityToRemove),
+      metricsThresholds                                   = alertConfigBuilder.metricsThresholds                                  .map(threshold => if(severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None) else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None) else threshold),
+      logMessageThresholds                                = alertConfigBuilder.logMessageThresholds                               .filterNot(_.severity == severityToRemove)
+    )
 
   def convertAlerts(alertConfigBuilder: AlertConfigBuilder, currentEnvironment: Environment): Alerts = {
     Alerts(
