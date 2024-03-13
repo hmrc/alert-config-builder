@@ -54,7 +54,7 @@ object AlertsYamlBuilder {
     if (enabledHandlers.isEmpty || !serviceDeployedInEnv(alertConfigBuilder.serviceName, alertConfigBuilder.platformService)) {
       None
     } else {
-      val finalAlertConfigBuilder = removeUnusedWarningAlerts(alertConfigBuilder, handlerSeveritiesForEnv)
+      val finalAlertConfigBuilder = removeUnusedAlerts(alertConfigBuilder, handlerSeveritiesForEnv)
       Some(
         ServiceConfig(
           service   = finalAlertConfigBuilder.serviceName.trim.toLowerCase.replaceAll(" ", "-"),
@@ -64,26 +64,37 @@ object AlertsYamlBuilder {
     }
   }
 
-  def removeUnusedWarningAlerts(alertConfigBuilder: AlertConfigBuilder, handlerSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder = {
-      if (alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Warning))) {
-        alertConfigBuilder
-      } else {
-        alertConfigBuilder.copy(
-          exceptionThreshold                                  = if(alertConfigBuilder.exceptionThreshold.severity      == AlertSeverity.Warning) ExceptionThreshold(count = Int.MaxValue)      else alertConfigBuilder.exceptionThreshold,
-          http5xxThreshold                                    = if(alertConfigBuilder.http5xxThreshold.severity        == AlertSeverity.Warning) Http5xxThreshold(count = Int.MaxValue)        else alertConfigBuilder.http5xxThreshold,
-          http5xxPercentThreshold                             = if(alertConfigBuilder.http5xxPercentThreshold.severity == AlertSeverity.Warning) Http5xxPercentThreshold(percentage = Int.MaxValue) else alertConfigBuilder.http5xxPercentThreshold,
-          http90PercentileResponseTimeThresholds              = alertConfigBuilder.http90PercentileResponseTimeThresholds             .map(_.copy(warning = None)),
-          httpAbsolutePercentSplitThresholds                  = alertConfigBuilder.httpAbsolutePercentSplitThresholds                 .filterNot(_.severity == AlertSeverity.Warning),
-          httpAbsolutePercentSplitDownstreamServiceThresholds = alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds.filterNot(_.severity == AlertSeverity.Warning),
-          httpAbsolutePercentSplitDownstreamHodThresholds     = alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds    .filterNot(_.severity == AlertSeverity.Warning),
-          httpTrafficThresholds                               = alertConfigBuilder.httpTrafficThresholds                              .map(_.copy(warning = None)),
-          httpStatusThresholds                                = alertConfigBuilder.httpStatusThresholds                               .filterNot(_.severity == AlertSeverity.Warning),
-          httpStatusPercentThresholds                         = alertConfigBuilder.httpStatusPercentThresholds                        .filterNot(_.severity == AlertSeverity.Warning),
-          metricsThresholds                                   = alertConfigBuilder.metricsThresholds                                  .map(_.copy(warning = None)),
-          logMessageThresholds                                = alertConfigBuilder.logMessageThresholds                               .filterNot(_.severity == AlertSeverity.Warning)
-        )
+  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, handlerSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder =
+      if (alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Critical)) &&
+        !alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Warning))
+      ) {
+        removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Warning)
       }
-  }
+      else if (
+        alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Warning)) &&
+          !alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Critical))
+      ) {
+        removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Critical)
+      }
+      else {
+        alertConfigBuilder
+      }
+
+  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, severityToRemove: AlertSeverity): AlertConfigBuilder =
+    alertConfigBuilder.copy(
+      exceptionThreshold                                  = if(alertConfigBuilder.exceptionThreshold.severity      == severityToRemove) ExceptionThreshold(count = Int.MaxValue)           else alertConfigBuilder.exceptionThreshold,
+      http5xxThreshold                                    = if(alertConfigBuilder.http5xxThreshold.severity        == severityToRemove) Http5xxThreshold(count = Int.MaxValue)             else alertConfigBuilder.http5xxThreshold,
+      http5xxPercentThreshold                             = if(alertConfigBuilder.http5xxPercentThreshold.severity == severityToRemove) Http5xxPercentThreshold(percentage = Int.MaxValue) else alertConfigBuilder.http5xxPercentThreshold,
+      http90PercentileResponseTimeThresholds              = alertConfigBuilder.http90PercentileResponseTimeThresholds             .map(threshold => if(severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None) else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None) else threshold),
+      httpAbsolutePercentSplitThresholds                  = alertConfigBuilder.httpAbsolutePercentSplitThresholds                 .filterNot(_.severity == severityToRemove),
+      httpAbsolutePercentSplitDownstreamServiceThresholds = alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds.filterNot(_.severity == severityToRemove),
+      httpAbsolutePercentSplitDownstreamHodThresholds     = alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds    .filterNot(_.severity == severityToRemove),
+      httpTrafficThresholds                               = alertConfigBuilder.httpTrafficThresholds                              .map(threshold => if(severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None) else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None) else threshold),
+      httpStatusThresholds                                = alertConfigBuilder.httpStatusThresholds                               .filterNot(_.severity == severityToRemove),
+      httpStatusPercentThresholds                         = alertConfigBuilder.httpStatusPercentThresholds                        .filterNot(_.severity == severityToRemove),
+      metricsThresholds                                   = alertConfigBuilder.metricsThresholds                                  .map(threshold => if(severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None) else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None) else threshold),
+      logMessageThresholds                                = alertConfigBuilder.logMessageThresholds                               .filterNot(_.severity == severityToRemove)
+    )
 
   def convertAlerts(alertConfigBuilder: AlertConfigBuilder, currentEnvironment: Environment): Alerts = {
     Alerts(
