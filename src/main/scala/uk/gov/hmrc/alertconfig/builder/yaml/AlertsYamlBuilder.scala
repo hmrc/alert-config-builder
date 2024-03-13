@@ -64,21 +64,18 @@ object AlertsYamlBuilder {
     }
   }
 
-  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, handlerSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder =
-      if (alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Critical)) &&
-        !alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Warning))
-      ) {
+  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, handlerSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder = {
+    val uniqueEnabledSeveritiesForServiceInEnv = handlerSeveritiesForEnv.values.flatten.toSet
+      if ( uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Critical) && !uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning)) {
         removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Warning)
-      }
-      else if (
-        alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Warning)) &&
-          !alertConfigBuilder.handlers.exists(handler => handlerSeveritiesForEnv.getOrElse(handler, Set()).contains(Severity.Critical))
+      } else if (
+        uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning) && !uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Critical)
       ) {
         removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Critical)
-      }
-      else {
+      } else {
         alertConfigBuilder
       }
+  }
 
   def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, severityToRemove: AlertSeverity): AlertConfigBuilder =
     alertConfigBuilder.copy(
