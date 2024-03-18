@@ -7,7 +7,7 @@ The artifact produced by this project is used in the `alert-config` project. The
 
 # Dependencies
 
-**Java** : 11\
+**Java** : 21\
 **Scala** : 2.13.*\
 **SBT** : 1.9.7\
 **app-config** : Depends on the **app-config** Git repository for the environment for which the alert config is being generated e.g. **app-config-qa**.\
