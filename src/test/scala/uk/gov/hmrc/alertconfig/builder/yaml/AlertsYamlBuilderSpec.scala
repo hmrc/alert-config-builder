@@ -19,7 +19,7 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertSeverity, AlertingPlatform, Environment, EnvironmentAlertBuilder, ErrorsLoggedThreshold, Http5xxRateIncrease, Http90PercentileResponseTimeThreshold, HttpAbsolutePercentSplitDownstreamHodThreshold, HttpAbsolutePercentSplitDownstreamServiceThreshold, HttpAbsolutePercentSplitThreshold, HttpStatus, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold, Severity, TotalHttpRequestThreshold}
+import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertSeverity, AlertingPlatform, Environment, EnvironmentAlertBuilder, Http5xxRateIncrease, Http90PercentileResponseTimeThreshold, HttpAbsolutePercentSplitDownstreamHodThreshold, HttpAbsolutePercentSplitDownstreamServiceThreshold, HttpAbsolutePercentSplitThreshold, HttpStatus, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold, Severity}
 
 class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -72,7 +72,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
           .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = None))
-          .withLogMessageThreshold("HelloWorld", 1,false, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Warning, AlertingPlatform.Grafana)
           .withTotalHttpRequestsCountThreshold(2, AlertingPlatform.Grafana)
           .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
       )
