@@ -31,7 +31,6 @@ case class AlertConfigBuilder(
     handlers: Seq[String] = Seq("noop"),
     errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
     exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
-    http5xxRateIncrease: Seq[Http5xxRateIncrease] = Nil,
     http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
     http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
     http90PercentileResponseTimeThresholds: Seq[Http90PercentileResponseTimeThreshold] = Nil,
@@ -104,9 +103,6 @@ case class AlertConfigBuilder(
 
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
-
-  def withHttp5xxRateIncrease(rateIncrease: Http5xxRateIncrease) =
-    this.copy(http5xxRateIncrease = http5xxRateIncrease :+ rateIncrease)
 
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
@@ -219,7 +215,6 @@ case class AlertConfigBuilder(
              |"httpTrafficThresholds" : ${httpTrafficThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpTrafficThreshold)).toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusThreshold)).toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold)).toJson.compactPrint},
-             |"http5xxRateIncrease" : ${printSeq(http5xxRateIncrease)(Http5xxRateIncreaseProtocol.rateIncreaseFormat)},
              |"metricsThresholds" : ${printSeq(metricsThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.MetricsThreshold)))(
               MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
@@ -254,7 +249,6 @@ case class TeamAlertConfigBuilder(
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
     httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
-    http5xxRateIncrease: Seq[Http5xxRateIncrease] = Nil,
     metricsThresholds: Seq[MetricsThreshold] = Nil,
     logMessageThresholds: Seq[LogMessageThreshold] = Nil,
     totalHttpRequestThreshold: TotalHttpRequestThreshold = TotalHttpRequestThreshold(),
@@ -321,9 +315,6 @@ case class TeamAlertConfigBuilder(
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
 
-  def withHttp5xxRateIncrease(rateIncrease: Http5xxRateIncrease) =
-    this.copy(http5xxRateIncrease = http5xxRateIncrease :+ rateIncrease)
-
   def withMetricsThreshold(threshold: MetricsThreshold) =
     this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
@@ -350,7 +341,6 @@ case class TeamAlertConfigBuilder(
         handlers,
         errorsLoggedThreshold,
         exceptionThreshold,
-        http5xxRateIncrease,
         http5xxThreshold,
         http5xxPercentThreshold,
         http90PercentileResponseTimeThresholds,
