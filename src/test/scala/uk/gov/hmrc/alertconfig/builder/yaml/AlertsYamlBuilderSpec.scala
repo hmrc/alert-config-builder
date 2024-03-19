@@ -19,7 +19,7 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertSeverity, AlertingPlatform, Environment, EnvironmentAlertBuilder, Http5xxRateIncrease, Http90PercentileResponseTimeThreshold, HttpAbsolutePercentSplitDownstreamHodThreshold, HttpAbsolutePercentSplitDownstreamServiceThreshold, HttpAbsolutePercentSplitThreshold, HttpStatus, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold, Severity}
+import uk.gov.hmrc.alertconfig.builder.{AlertConfig, AlertConfigBuilder, AlertSeverity, AlertingPlatform, Environment, EnvironmentAlertBuilder, Http90PercentileResponseTimeThreshold, HttpAbsolutePercentSplitDownstreamHodThreshold, HttpAbsolutePercentSplitDownstreamServiceThreshold, HttpAbsolutePercentSplitThreshold, HttpStatus, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold, Severity}
 
 class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -59,7 +59,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
         )
           .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
           .withExceptionThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
-          .withHttp5xxRateIncrease(Http5xxRateIncrease("rate1", 1, 2))
           .withHttp5xxThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
           .withHttp5xxPercentThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
           .withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning = Some(1), critical = None))
@@ -228,7 +227,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
         )
           .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
           .withExceptionThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
-          .withHttp5xxRateIncrease(Http5xxRateIncrease("rate1", 1, 2))
           .withHttp5xxThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
           .withHttp5xxPercentThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
           .withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning = Some(2), critical = Some(1)))
