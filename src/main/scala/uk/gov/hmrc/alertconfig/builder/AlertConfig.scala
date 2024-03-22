@@ -23,3 +23,4 @@ trait AlertConfig {
 
   implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
 }
+
