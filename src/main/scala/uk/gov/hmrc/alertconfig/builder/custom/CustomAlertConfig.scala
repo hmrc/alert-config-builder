@@ -16,5 +16,7 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-// TODO Generate YAML HERE?
+trait CustomAlertConfig {
+  def customAlerts: Seq[CustomAlert]
 
+}

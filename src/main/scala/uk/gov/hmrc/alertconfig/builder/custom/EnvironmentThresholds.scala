@@ -16,5 +16,16 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-// TODO Generate YAML HERE?
-
+/**
+ * Define thresholds for any environments you want this custom
+ * alert to be active in.
+ */
+case class EnvironmentThresholds(
+                                  development: Option[Int] = None,
+                                  externalTest: Option[Int] = None,
+                                  integration: Option[Int] = None,
+                                  management: Option[Int] = None,
+                                  production: Option[Int] = None,
+                                  qa: Option[Int] = None,
+                                  staging: Option[Int] = None
+                                )

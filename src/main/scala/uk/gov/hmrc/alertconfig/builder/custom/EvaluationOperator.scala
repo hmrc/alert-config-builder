@@ -16,5 +16,14 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-// TODO Generate YAML HERE?
+sealed trait EvaluationOperator
 
+object LessThan extends EvaluationOperator {
+  override def toString: String = "lt"
+}
+
+object GreaterThan extends EvaluationOperator {
+  override def toString: String = "gt"
+}
+
+// TODO Create custom serialiser https://techbuddy.dev/java-snakeyaml-guide-yaml-serialization-deserialization ?
