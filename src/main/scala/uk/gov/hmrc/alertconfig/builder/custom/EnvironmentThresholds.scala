@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
+import uk.gov.hmrc.alertconfig.builder.Environment
+
 /**
  * Define thresholds for any environments you want this custom
  * alert to be active in.
@@ -28,4 +30,29 @@ case class EnvironmentThresholds(
                                   production: Option[Int] = None,
                                   qa: Option[Int] = None,
                                   staging: Option[Int] = None
-                                )
+                                ) {
+  def isEnvironmentDefined(environment: Environment): Boolean = {
+    environment match {
+      case Environment.Development => development.isDefined
+      case Environment.ExternalTest => externalTest.isDefined
+      case Environment.Integration => integration.isDefined
+      case Environment.Management => management.isDefined
+      case Environment.Production => production.isDefined
+      case Environment.Qa => qa.isDefined
+      case Environment.Staging => staging.isDefined
+    }
+  }
+
+  def getThresholdForEnvironment(environment: Environment): EnvironmentThresholds = {
+    environment match {
+      case Environment.Development => EnvironmentThresholds(development = development)
+      case Environment.ExternalTest => EnvironmentThresholds(externalTest = externalTest)
+      case Environment.Integration => EnvironmentThresholds(integration = integration)
+      case Environment.Management => EnvironmentThresholds(management = management)
+      case Environment.Production => EnvironmentThresholds(production = production)
+      case Environment.Qa => EnvironmentThresholds(qa = qa)
+      case Environment.Staging => EnvironmentThresholds(staging = staging)
+    }
+  }
+
+}

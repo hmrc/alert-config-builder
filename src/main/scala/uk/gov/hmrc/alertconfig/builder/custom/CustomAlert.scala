@@ -16,4 +16,8 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-trait CustomAlert
+//case class CustomAlert(alertType: String)
+
+trait CustomAlert {
+  def thresholds: EnvironmentThresholds
+}

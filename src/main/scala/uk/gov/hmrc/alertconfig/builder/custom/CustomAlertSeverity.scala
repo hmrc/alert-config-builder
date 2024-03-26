@@ -16,5 +16,9 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-// TODO Generate YAML HERE?
+object CustomAlertSeverity {
+  type AlertSeverity = String
 
+  val WARNING = "warning"
+  val CRITICAL = "critical"
+}
