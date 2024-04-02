@@ -20,22 +20,21 @@ import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
 
 /**
+ * Graphite metric based alert.
  *
- * @param dashboardUrl
- * @param integrations
- * @param name
- * @param operator
- * @param query
- * @param ruleGroupName
- * @param runbookUrl
- * @param severity
- * @param summary
- * @param thresholds
+ * @param dashboardUrl  Grafana or Kibana dashboard to link to
+ * @param integrations  Which PagerDuty integrations to direct this alert to
+ * @param operator      Whether to evaluate the metric as greater than or less than
+ * @param query         Graphite query you're running
+ * @param ruleGroupName Which Grafana Alerting rule group this belongs to
+ * @param runbookUrl    Runbook for when this alert fires
+ * @param severity      The severity of this alert. E.g. Warning or Critical
+ * @param summary       The description to populate in PagerDuty when the alert fires
+ * @param thresholds    Trigger point for each environment
  */
 case class CustomMetricAlert(
                               dashboardUrl: Option[String],
                               integrations: Seq[String],
-                              name: String,
                               operator: EvaluationOperator,
                               query: String,
                               ruleGroupName: String,

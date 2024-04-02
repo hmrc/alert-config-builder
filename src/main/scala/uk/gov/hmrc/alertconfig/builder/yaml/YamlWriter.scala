@@ -33,5 +33,4 @@ object YamlWriter {
     .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
     .registerModule(DefaultScalaModule)
 
-
 }

@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.alertconfig.builder.yaml
 
+import uk.gov.hmrc.alertconfig.builder.Severity._
+import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertConfig
 import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder, Logger}
-import uk.gov.hmrc.alertconfig.builder.Severity._
 
 import java.io.File
 import scala.collection.immutable.Seq
@@ -27,7 +28,7 @@ object IntegrationsYamlBuilder {
 
   val logger = new Logger()
 
-  def generate(environmentAlertBuilders: Seq[EnvironmentAlertBuilder], currentEnvironment: Environment, saveLocation: File): Unit = {
+  def generate(environmentAlertBuilders: Seq[EnvironmentAlertBuilder], customAlertConfigs: Seq[CustomAlertConfig], currentEnvironment: Environment, saveLocation: File): Unit = {
     logger.debug(s"Generating integrations YAML for $currentEnvironment")
     val enabledIntegrations = environmentAlertBuilders.flatMap { builder =>
       val enabledEnvironments = builder.enabledEnvironments

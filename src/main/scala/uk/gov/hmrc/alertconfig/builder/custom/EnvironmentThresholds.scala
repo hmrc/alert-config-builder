@@ -31,6 +31,9 @@ case class EnvironmentThresholds(
                                   qa: Option[Int] = None,
                                   staging: Option[Int] = None
                                 ) {
+  /**
+   * Checks if the given environment has a threshold defined.
+   */
   def isEnvironmentDefined(environment: Environment): Boolean = {
     environment match {
       case Environment.Development => development.isDefined
@@ -43,7 +46,10 @@ case class EnvironmentThresholds(
     }
   }
 
-  def getThresholdForEnvironment(environment: Environment): EnvironmentThresholds = {
+  /**
+   * Removes the thresholds for all environments other than the one requested.
+   */
+  def removeAllOtherEnvironmentThresholds(environment: Environment): EnvironmentThresholds = {
     environment match {
       case Environment.Development => EnvironmentThresholds(development = development)
       case Environment.ExternalTest => EnvironmentThresholds(externalTest = externalTest)

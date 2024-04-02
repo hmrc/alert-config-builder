@@ -19,6 +19,8 @@ package uk.gov.hmrc.alertconfig.builder.custom
 object CustomAlertSeverity {
   type AlertSeverity = String
 
+  val INFO = "info"
   val WARNING = "warning"
   val CRITICAL = "critical"
+
 }

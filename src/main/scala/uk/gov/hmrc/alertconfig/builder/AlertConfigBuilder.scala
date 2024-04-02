@@ -59,14 +59,6 @@ case class AlertConfigBuilder(
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold, alertingPlatform))
 
-  /**
-   * Some explanation of what this alert thing even does
-   *
-   * @param exceptionThreshold The threshold at which to alert
-   * @param severity one of warning or critical
-   * @param alertingPlatform Sensu or Grafana
-   * @return updated alert config object
-   */
   def withExceptionThreshold(exceptionThreshold: Int,
                              severity: AlertSeverity = AlertSeverity.Critical,
                              alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
