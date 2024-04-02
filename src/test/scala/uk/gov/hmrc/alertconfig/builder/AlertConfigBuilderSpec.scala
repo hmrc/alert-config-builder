@@ -381,22 +381,6 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       serviceConfig("absolute-percentage-split-threshold") shouldBe expected
     }
 
-    "configure http5xxRateIncrease with given thresholds" in {
-      val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttp5xxRateIncrease(Http5xxRateIncrease(name = "alert_custom_name_1", simple_threshold = 10, complex_threshold = 100))
-        .withHttp5xxRateIncrease(Http5xxRateIncrease(name = "alert_custom_name_2", simple_threshold = 20, complex_threshold = 200))
-        .build
-        .get
-        .parseJson
-        .asJsObject
-        .fields
-
-      serviceConfig("http5xxRateIncrease") shouldBe JsArray(
-        JsObject("name" -> JsString("alert_custom_name_1"), "simple_threshold" -> JsNumber(10), "complex_threshold" -> JsNumber(100)),
-        JsObject("name" -> JsString("alert_custom_name_2"), "simple_threshold" -> JsNumber(20), "complex_threshold" -> JsNumber(200))
-      )
-    }
-
     "configure metrics threshold with given warning and critical levels" in {
       val query = "some_function(over.some.query.for.anything.like*)"
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
