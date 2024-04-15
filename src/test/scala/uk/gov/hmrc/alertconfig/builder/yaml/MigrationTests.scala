@@ -20,7 +20,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.alertconfig.builder.HttpStatus.HTTP_STATUS
-import uk.gov.hmrc.alertconfig.builder.{AlertConfigBuilder, AlertingPlatform, Environment, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold}
+import uk.gov.hmrc.alertconfig.builder.{AlertConfigBuilder, AlertSeverity, AlertingPlatform, Environment, HttpAbsolutePercentSplitThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold}
 
 class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -244,6 +244,41 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
       output.http5xxThreshold shouldBe None
+    }
+
+    "httpAbsolutePercentSplitThreshold should be enabled if alertPlatform is Grafana" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(
+          percentThreshold = 50,
+          crossOver = 1,
+          absoluteThreshold = 2,
+          hysteresis = 1,
+          excludeSpikes = 2,
+          errorFilter = "status:>501",
+          severity = AlertSeverity.Critical,
+          alertingPlatform = AlertingPlatform.Grafana
+        ))
+
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
+
+      output.httpAbsolutePercentSplitThreshold shouldBe Some(List(YamlHttpAbsolutePercentSplitThresholdAlert(50, 1, 2, 1, 2, "status:>501", "critical")))
+    }
+
+    "httpAbsolutePercentSplitThreshold should be disabled if alertPlatform is Sensu" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(
+          percentThreshold = 50,
+          crossOver = 1,
+          absoluteThreshold = 2,
+          hysteresis = 1,
+          excludeSpikes = 2,
+          errorFilter = "status:>501",
+          severity = AlertSeverity.Critical,
+          alertingPlatform = AlertingPlatform.Sensu
+        ))
+
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
+      output.httpAbsolutePercentSplitThreshold shouldBe None
     }
 
     "HttpStatusPercentThreshold should be enabled if alertingPlatform is Grafana" in {

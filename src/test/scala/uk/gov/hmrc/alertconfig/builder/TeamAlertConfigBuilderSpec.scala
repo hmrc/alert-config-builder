@@ -173,8 +173,9 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "excludeSpikes"     -> JsNumber(spikes),
           "hysteresis"        -> JsNumber(hysteresis),
           "percentThreshold"  -> JsNumber(percent),
-          "severity"          -> JsString(severity.toString)
-        ))
+          "severity"          -> JsString(severity.toString),
+          "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
+      ))
 
       service1Config("absolute-percentage-split-threshold") shouldBe expected
       service2Config("absolute-percentage-split-threshold") shouldBe expected

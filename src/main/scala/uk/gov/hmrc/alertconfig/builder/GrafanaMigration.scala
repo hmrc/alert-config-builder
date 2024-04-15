@@ -27,6 +27,7 @@ object AlertType {
   object ExceptionThreshold extends AlertType
   object Http5xxPercentThreshold extends AlertType
   object Http5xxThreshold extends AlertType
+  object HttpAbsolutePercentSplitThreshold extends AlertType
   object HttpStatusPercentThreshold extends AlertType
   object HttpStatusThreshold extends AlertType
   object HttpTrafficThreshold extends AlertType
@@ -46,6 +47,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
@@ -62,6 +64,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
@@ -78,6 +81,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
@@ -94,6 +98,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
@@ -110,6 +115,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
@@ -126,6 +132,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold -> AlertingPlatform.Sensu,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Sensu,
       AlertType.Http5xxThreshold -> AlertingPlatform.Sensu,
+      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Sensu,
@@ -142,6 +149,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
       AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,

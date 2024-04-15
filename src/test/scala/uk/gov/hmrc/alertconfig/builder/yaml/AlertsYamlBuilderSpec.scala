@@ -338,6 +338,14 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
       output.http5xxThreshold shouldBe None
     }
 
+    "httpAbsolutePercentSplitThreshold should be disabled by default" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.httpAbsolutePercentSplitThreshold shouldBe None
+    }
+
     "HttpStatusPercentThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
 

@@ -101,6 +101,7 @@ object AlertsYamlBuilder {
       exceptionThreshold = convertExceptionThreshold(alertConfigBuilder.exceptionThreshold, currentEnvironment),
       http5xxPercentThreshold = convertHttp5xxPercentThresholds(alertConfigBuilder.http5xxPercentThreshold, currentEnvironment),
       http5xxThreshold = convertHttp5xxThreshold(alertConfigBuilder.http5xxThreshold, currentEnvironment),
+      httpAbsolutePercentSplitThreshold = convertHttpAbsolutePercentSplitThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitThresholds, currentEnvironment),
       httpStatusPercentThresholds = convertHttpStatusPercentThresholdAlerts(alertConfigBuilder.httpStatusPercentThresholds, currentEnvironment),
       httpStatusThresholds = convertHttpStatusThresholds(alertConfigBuilder.httpStatusThresholds, currentEnvironment),
       httpTrafficThresholds = convertHttpTrafficThresholds(alertConfigBuilder.httpTrafficThresholds, currentEnvironment),
@@ -154,6 +155,21 @@ object AlertsYamlBuilder {
         severity = http5xxThreshold.severity.toString
       )
     )
+  }
+  def convertHttpAbsolutePercentSplitThresholdAlert(httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold], currentEnvironment: Environment): Option[Seq[YamlHttpAbsolutePercentSplitThresholdAlert]] = {
+    val converted =  httpAbsolutePercentSplitThresholds.withFilter(alert => isGrafanaEnabled(alert.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitThreshold) && alert.absoluteThreshold < Int.MaxValue).map {
+      threshold =>
+        YamlHttpAbsolutePercentSplitThresholdAlert(
+          percentThreshold  = threshold.percentThreshold,
+          crossover         = threshold.crossOver,
+          absoluteThreshold = threshold.absoluteThreshold,
+          hysteresis        = threshold.hysteresis,
+          excludeSpikes     = threshold.excludeSpikes,
+          errorFilter       = threshold.errorFilter,
+          severity          = threshold.severity.toString
+        )
+    }
+    Option.when(converted.nonEmpty)(converted)
   }
 
   def convertHttpStatusThresholds(httpStatusThresholds: Seq[HttpStatusThreshold], currentEnvironment: Environment): Option[Seq[YamlHttpStatusThresholdAlert]] = {
