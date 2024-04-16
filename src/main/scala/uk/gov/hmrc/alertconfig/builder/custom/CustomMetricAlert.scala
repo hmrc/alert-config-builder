@@ -22,20 +22,22 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
 /**
  * Graphite metric based alert.
  *
- * @param alertName     Name that the alert will be created with
- * @param dashboardUri  Grafana uri to link to. This should just be the uri path and not include the domain
- * @param integrations  Which PagerDuty integrations to direct this alert to
- * @param operator      Whether to evaluate the metric as greater than or less than
- * @param query         Graphite query you're running
- * @param ruleGroupName Which Grafana Alerting rule group this belongs to
- * @param runbookUrl    Runbook for when this alert fires
- * @param severity      The severity of this alert. E.g. Warning or Critical
- * @param summary       The description to populate in PagerDuty when the alert fires
- * @param thresholds    Trigger point for each environment
+ * @param alertName        Name that the alert will be created with
+ * @param dashboardUri     Grafana uri to link to. This should just be the uri path and not include the domain
+ * @param dashboardPanelId Specific panel to deep link to that is specific to this alert
+ * @param integrations     Which PagerDuty integrations to direct this alert to
+ * @param operator         Whether to evaluate the metric as greater than or less than
+ * @param query            Graphite query you're running
+ * @param ruleGroupName    Which Grafana Alerting rule group this belongs to
+ * @param runbookUrl       Runbook for when this alert fires
+ * @param severity         The severity of this alert. E.g. Warning or Critical
+ * @param summary          The description to populate in PagerDuty when the alert fires
+ * @param thresholds       Trigger point for each environment
  */
 case class CustomMetricAlert(
                               alertName: String,
                               dashboardUri: Option[String],
+                              dashboardPanelId: Option[Int],
                               integrations: Seq[String],
                               operator: EvaluationOperator,
                               query: String,
