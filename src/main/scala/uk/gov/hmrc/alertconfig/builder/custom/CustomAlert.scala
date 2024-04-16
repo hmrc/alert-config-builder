@@ -16,6 +16,13 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
+import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
+
 trait CustomAlert {
+
+  def integrations: Seq[String]
+
   def thresholds: EnvironmentThresholds
+
+  def severity: AlertSeverity
 }
