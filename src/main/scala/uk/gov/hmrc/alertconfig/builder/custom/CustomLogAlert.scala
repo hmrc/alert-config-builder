@@ -23,15 +23,18 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
 // This specific alert type is here to allow us to figure out how different types of
 // custom alerts will work. This one isn't as well defined as the Metrics one so will
 // need extending at some point.
+
 /**
  * Generate custom alerts that are based on logs in Elasticsearch.
  *
+ * @param alertName    Name that the alert will be created with
  * @param logMessage   The exact string that you are searching for
  * @param severity     The severity of this alert.
  * @param thresholds   Trigger point for each environment
  * @param integrations Which PagerDuty integrations to direct this alert to
  */
 case class CustomLogAlert(
+                           alertName: String,
                            logMessage: String,
                            operator: EvaluationOperator,
                            severity: AlertSeverity,
