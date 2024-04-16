@@ -375,8 +375,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "excludeSpikes"     -> JsNumber(0),
           "hysteresis"        -> JsNumber(1.0),
           "percentThreshold"  -> JsNumber(100.0),
-          "severity"          -> JsString("critical")
-        ))
+          "severity"          -> JsString("critical"),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+      ))
 
       serviceConfig("absolute-percentage-split-threshold") shouldBe expected
     }
@@ -475,8 +476,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         "excludeSpikes"     -> JsNumber(excludeSpikes),
         "hysteresis"        -> JsNumber(hysteresis),
         "percentThreshold"  -> JsNumber(percent),
-        "severity"          -> JsString("warning")
-      ))
+        "severity"          -> JsString("warning"),
+        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString))
+    )
 
     serviceConfig("absolute-percentage-split-threshold") shouldBe expected
   }

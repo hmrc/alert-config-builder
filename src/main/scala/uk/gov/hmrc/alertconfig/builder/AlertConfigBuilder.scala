@@ -220,8 +220,7 @@ case class AlertConfigBuilder(
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
              |"log-message-thresholds" : ${logMessageThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.LogMessageThreshold)).toJson.compactPrint},
              |"average-cpu-threshold" : $updatedAverageCPUThreshold,
-             |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds)(
-              HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
+             |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitThreshold)))(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
              |"absolute-percentage-split-downstream-service-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamServiceThresholds)(
               HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)},
              |"absolute-percentage-split-downstream-hod-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamHodThresholds)(
