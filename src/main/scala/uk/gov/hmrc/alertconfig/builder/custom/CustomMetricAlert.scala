@@ -23,7 +23,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
  * Graphite metric based alert.
  *
  * @param alertName     Name that the alert will be created with
- * @param dashboardUrl  Grafana or Kibana dashboard to link to
+ * @param dashboardUri  Grafana uri to link to. This should just be the uri path and not include the domain
  * @param integrations  Which PagerDuty integrations to direct this alert to
  * @param operator      Whether to evaluate the metric as greater than or less than
  * @param query         Graphite query you're running
@@ -35,7 +35,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
  */
 case class CustomMetricAlert(
                               alertName: String,
-                              dashboardUrl: Option[String],
+                              dashboardUri: Option[String],
                               integrations: Seq[String],
                               operator: EvaluationOperator,
                               query: String,
