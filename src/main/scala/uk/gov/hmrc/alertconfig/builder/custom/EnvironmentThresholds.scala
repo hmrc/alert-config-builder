@@ -24,7 +24,7 @@ import uk.gov.hmrc.alertconfig.builder.Environment
  */
 case class EnvironmentThresholds(
                                   development: Option[Int] = None,
-                                  externalTest: Option[Int] = None,
+                                  externaltest: Option[Int] = None,
                                   integration: Option[Int] = None,
                                   management: Option[Int] = None,
                                   production: Option[Int] = None,
@@ -37,7 +37,7 @@ case class EnvironmentThresholds(
   def isEnvironmentDefined(environment: Environment): Boolean = {
     environment match {
       case Environment.Development => development.isDefined
-      case Environment.ExternalTest => externalTest.isDefined
+      case Environment.ExternalTest => externaltest.isDefined
       case Environment.Integration => integration.isDefined
       case Environment.Management => management.isDefined
       case Environment.Production => production.isDefined
@@ -52,7 +52,7 @@ case class EnvironmentThresholds(
   def removeAllOtherEnvironmentThresholds(environment: Environment): EnvironmentThresholds = {
     environment match {
       case Environment.Development => EnvironmentThresholds(development = development)
-      case Environment.ExternalTest => EnvironmentThresholds(externalTest = externalTest)
+      case Environment.ExternalTest => EnvironmentThresholds(externaltest = externaltest)
       case Environment.Integration => EnvironmentThresholds(integration = integration)
       case Environment.Management => EnvironmentThresholds(management = management)
       case Environment.Production => EnvironmentThresholds(production = production)
