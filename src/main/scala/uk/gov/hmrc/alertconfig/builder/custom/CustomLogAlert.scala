@@ -30,6 +30,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
  * @param alertName    Name that the alert will be created with
  * @param logMessage   The exact string that you are searching for
  * @param severity     The severity of this alert.
+ * @param teamName     All alerts are prefixed with the team name
  * @param thresholds   Trigger point for each environment
  * @param integrations Which PagerDuty integrations to direct this alert to
  */
@@ -38,6 +39,7 @@ case class CustomLogAlert(
                            logMessage: String,
                            operator: EvaluationOperator,
                            severity: AlertSeverity,
+                           teamName: String,
                            thresholds: EnvironmentThresholds,
                            integrations: Seq[String]
                          ) extends CustomAlert

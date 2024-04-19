@@ -28,7 +28,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
  * @param integrations     Which PagerDuty integrations to direct this alert to
  * @param operator         Whether to evaluate the metric as greater than or less than
  * @param query            Graphite query you're running
- * @param ruleGroupName    Which Grafana Alerting rule group this belongs to
+ * @param teamName         All alerts are prefixed with the team name
  * @param runbookUrl       Runbook for when this alert fires
  * @param severity         The severity of this alert. E.g. Warning or Critical
  * @param summary          The description to populate in PagerDuty when the alert fires
@@ -41,7 +41,7 @@ case class CustomMetricAlert(
                               integrations: Seq[String],
                               operator: EvaluationOperator,
                               query: String,
-                              ruleGroupName: String,
+                              teamName: String,
                               runbookUrl: Option[String],
                               severity: AlertSeverity,
                               summary: String,

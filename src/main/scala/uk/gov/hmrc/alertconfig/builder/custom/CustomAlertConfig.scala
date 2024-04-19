@@ -19,5 +19,4 @@ package uk.gov.hmrc.alertconfig.builder.custom
 trait CustomAlertConfig {
   def customAlerts: Seq[CustomAlert]
 
-  def alertGroup: String
 }
