@@ -180,7 +180,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, "critical"))
+      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, 0, "critical"))
     }
 
     "Http5xxPercentThreshold should be disabled if alertingPlatform is Sensu" in {
@@ -198,7 +198,16 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, "critical"))
+      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, 0, "critical"))
+    }
+
+    "Http5xxPercentThreshold should be enabled by default in integration, supporting minimumHttp5xxCountThreshold" in {
+      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+        .withHttp5xxPercentThreshold(60, 5)
+
+      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+
+      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(60, 5, "critical"))
     }
 
     "Http5xxPercentThreshold should be disabled by default in production" in {

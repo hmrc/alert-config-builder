@@ -35,6 +35,7 @@ case class YamlExceptionThresholdAlert(
 
 case class YamlHttp5xxPercentThresholdAlert(
   percentage: Double,
+  minimumHttp5xxCountThreshold: Int,
   severity: String
 )
 
