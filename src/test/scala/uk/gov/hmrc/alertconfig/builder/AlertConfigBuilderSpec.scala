@@ -54,6 +54,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
       config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
         "percentage"       -> JsNumber(100),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
@@ -660,6 +661,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"         -> JsString("critical"),
+      "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
       "percentage"       -> JsNumber(threshold),
       "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
     )
@@ -678,6 +680,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"         -> JsString("critical"),
+      "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
       "percentage"       -> JsNumber(disabledThreshold),
       "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
     )

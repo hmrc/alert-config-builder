@@ -272,11 +272,13 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
         "percentage"       -> JsNumber(threshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
         "percentage"       -> JsNumber(threshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
@@ -298,11 +300,13 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
         "percentage"       -> JsNumber(disabledThreshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
         "percentage"       -> JsNumber(disabledThreshold),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
@@ -749,6 +753,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "percentage"       -> JsNumber(12.2),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
         "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
@@ -769,6 +774,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
         "percentage"       -> JsNumber(disabledThreshold),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(-1),
         "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
