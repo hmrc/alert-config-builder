@@ -38,7 +38,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Default)
       alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Default)
       alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
-      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, AlertSeverity.Critical)
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, severity = AlertSeverity.Critical)
       alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue, AlertSeverity.Critical)
       alertConfigBuilder.http90PercentileResponseTimeThresholds shouldBe List()
       alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
@@ -131,9 +131,9 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     "return TeamAlertConfigBuilder with correct 5xxPercentThreshold" in {
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
-        .withHttp5xxPercentThreshold(19.2, AlertSeverity.Warning)
+        .withHttp5xxPercentThreshold(19.2, severity = AlertSeverity.Warning)
 
-      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(19.2, AlertSeverity.Warning)
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(19.2, severity = AlertSeverity.Warning)
     }
 
     "return TeamAlertConfigBuilder with correct handlers" in {
@@ -741,7 +741,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .teamAlerts(Seq("service1"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
-        .withHttp5xxPercentThreshold(12.2, AlertSeverity.Warning)
+        .withHttp5xxPercentThreshold(12.2, severity = AlertSeverity.Warning)
 
       alertConfigBuilder.services shouldBe Seq("service1")
       val configs                              = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -761,7 +761,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .teamAlerts(Seq("service1"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
-        .withHttp5xxPercentThreshold(threshold, AlertSeverity.Warning, AlertingPlatform.Grafana)
+        .withHttp5xxPercentThreshold(threshold, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
 
       alertConfigBuilder.services shouldBe Seq("service1")
       val configs                              = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)

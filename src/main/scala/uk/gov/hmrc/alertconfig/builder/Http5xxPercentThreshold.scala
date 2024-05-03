@@ -20,6 +20,7 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
 
 case class Http5xxPercentThreshold(
     percentage: Double = 100.0,
+    optionalMinimumHttp5xxCountThreshold: Int = -1,
     severity: AlertSeverity = AlertSeverity.Critical,
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
@@ -29,7 +30,7 @@ object Http5xxPercentThresholdProtocol {
 
   implicit val thresholdFormat: JsonFormat[Http5xxPercentThreshold] = {
     implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
-    jsonFormat3(Http5xxPercentThreshold)
+    jsonFormat4(Http5xxPercentThreshold)
   }
 
 }
