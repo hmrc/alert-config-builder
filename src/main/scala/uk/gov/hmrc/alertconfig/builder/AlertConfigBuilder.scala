@@ -73,6 +73,7 @@ case class AlertConfigBuilder(
    * @param minimumHttp5xxCountThreshold The minimum count of 5xxs that must be present for the percentThreshold check to kick in.
    * Optional.  If you want to create a 5xxPercentThreshold alert but only if you have a given count of 5xxs, this is the method
    * to use. You want to use this parameter if, for example, you don't want to alert on just a one-off 5xx in the middle of the night
+   * Defaults to 1, which would mean the parameter has no effec
    * @param severity How severe the alert is
    * @param alertingPlatform Which platform to direct the alert to
    * @return Configured threshold object
@@ -286,7 +287,7 @@ case class TeamAlertConfigBuilder(
    * @param minimumHttp5xxCountThreshold The minimum count of 5xxs that must be present for the percentThreshold check to kick in.
    * Optional.  If you want to create a 5xxPercentThreshold alert but only if you have a given count of 5xxs, this is the method
    * to use. You want to use this parameter if, for example, you don't want to alert on just a one-off 5xx in the middle of the night.
-   * Defaults to -1.
+   * Defaults to 1, which would mean the parameter has no effect.
    * @param severity How severe the alert is
    * @param alertingPlatform Which platform to direct the alert to
    * @return Configured threshold object
