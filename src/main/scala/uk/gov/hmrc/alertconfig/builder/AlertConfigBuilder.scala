@@ -78,7 +78,7 @@ case class AlertConfigBuilder(
    * @return Configured threshold object
    */
   def withHttp5xxPercentThreshold(percentThreshold: Double,
-                                  minimumHttp5xxCountThreshold: Int = -1,
+                                  minimumHttp5xxCountThreshold: Int = 1,
                                   severity: AlertSeverity = AlertSeverity.Critical,
                                   alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity, alertingPlatform))
@@ -292,7 +292,7 @@ case class TeamAlertConfigBuilder(
    * @return Configured threshold object
    */
   def withHttp5xxPercentThreshold(percentThreshold: Double,
-                                  minimumHttp5xxCountThreshold: Int = -1,
+                                  minimumHttp5xxCountThreshold: Int = 1,
                                   severity: AlertSeverity = AlertSeverity.Critical,
                                   alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity, alertingPlatform))
