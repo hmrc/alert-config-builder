@@ -54,6 +54,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
       config("5xx-percent-threshold") shouldBe JsObject(
         "severity"         -> JsString("critical"),
+        "minimumHttp5xxCountThreshold" -> JsNumber(0),
         "percentage"       -> JsNumber(100),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
@@ -660,6 +661,25 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"         -> JsString("critical"),
+      "minimumHttp5xxCountThreshold" -> JsNumber(0),
+      "percentage"       -> JsNumber(threshold),
+      "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+    )
+  }
+
+  "configure http5xxPercentThreshold with count and percentage thresholds when the alerting platform is Sensu" in {
+    val threshold = 13.3
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      .withHttp5xxPercentThreshold(threshold, 10)
+      .build
+      .get
+      .parseJson
+      .asJsObject
+      .fields
+
+    serviceConfig("5xx-percent-threshold") shouldBe JsObject(
+      "severity"         -> JsString("critical"),
+      "minimumHttp5xxCountThreshold" -> JsNumber(10),
       "percentage"       -> JsNumber(threshold),
       "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
     )
@@ -678,6 +698,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"         -> JsString("critical"),
+      "minimumHttp5xxCountThreshold" -> JsNumber(0),
       "percentage"       -> JsNumber(disabledThreshold),
       "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
     )

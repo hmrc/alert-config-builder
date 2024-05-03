@@ -60,7 +60,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
           .withExceptionThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
           .withHttp5xxThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(1, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
           .withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning = Some(1), critical = None))
           .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(severity = AlertSeverity.Warning))
           .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(severity = AlertSeverity.Warning))
@@ -71,7 +71,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
           .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = None))
-          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
           .withTotalHttpRequestsCountThreshold(2, AlertingPlatform.Grafana)
           .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
       )
@@ -124,7 +124,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
         )
           .withExceptionThreshold(9, AlertSeverity.Warning, AlertingPlatform.Grafana)
           .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(Int.MaxValue, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(Int.MaxValue, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
       )
 
       val fakeConfig = new AlertConfig {
@@ -176,7 +176,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
         )
           .withExceptionThreshold(9, AlertSeverity.Critical, AlertingPlatform.Grafana)
           .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(Int.MaxValue, AlertSeverity.Warning, AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(Int.MaxValue, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
       )
 
       val fakeConfig = new AlertConfig {
@@ -228,7 +228,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
           .withExceptionThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
           .withHttp5xxThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(1, severity = AlertSeverity.Critical, alertingPlatform = AlertingPlatform.Grafana)
           .withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning = Some(2), critical = Some(1)))
           .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(severity = AlertSeverity.Critical))
           .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(severity = AlertSeverity.Critical))
@@ -239,7 +239,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Critical))
           .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = Some(1)))
-          .withLogMessageThreshold("HelloWorld", 1,lessThanMode = false, AlertSeverity.Critical, AlertingPlatform.Grafana)
+          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Critical, alertingPlatform = AlertingPlatform.Grafana)
           .withTotalHttpRequestsCountThreshold(2, AlertingPlatform.Grafana)
           .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
       )
