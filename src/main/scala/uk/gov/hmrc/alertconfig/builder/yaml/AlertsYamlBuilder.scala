@@ -143,6 +143,7 @@ object AlertsYamlBuilder {
     Option.when(isGrafanaEnabled(http5xxPercentThreshold.alertingPlatform, currentEnvironment, AlertType.Http5xxPercentThreshold) && http5xxPercentThreshold.percentage <= 100.0)(
       YamlHttp5xxPercentThresholdAlert(
         percentage = http5xxPercentThreshold.percentage,
+        minimumHttp5xxCountThreshold = http5xxPercentThreshold.minimumHttp5xxCountThreshold,
         severity = http5xxPercentThreshold.severity.toString
       )
     )

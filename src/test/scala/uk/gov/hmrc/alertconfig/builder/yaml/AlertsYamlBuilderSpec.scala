@@ -124,7 +124,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
         )
           .withExceptionThreshold(9, AlertSeverity.Warning, AlertingPlatform.Grafana)
           .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(Int.MaxValue, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
       )
 
       val fakeConfig = new AlertConfig {
@@ -176,7 +176,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
         )
           .withExceptionThreshold(9, AlertSeverity.Critical, AlertingPlatform.Grafana)
           .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(Int.MaxValue, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
+          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
       )
 
       val fakeConfig = new AlertConfig {
@@ -327,7 +327,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(100.0, "critical"))
+      output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(100.0, 0, "critical"))
     }
 
     "Http5xxThreshold should be disabled by default" in {
