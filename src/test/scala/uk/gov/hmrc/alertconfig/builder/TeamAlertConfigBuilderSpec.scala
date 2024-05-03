@@ -759,6 +759,25 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       )
     }
 
+    "return TeamAlertConfigBuilder with correct withHttp5xxPercentThreshold using optional minimum 5xx count" in {
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1"))
+        .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
+        .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
+        .withHttp5xxPercentThreshold(12.2, minimumHttp5xxCountThreshold = 15, severity = AlertSeverity.Warning)
+
+      alertConfigBuilder.services shouldBe Seq("service1")
+      val configs                              = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val service1Config: Map[String, JsValue] = configs(0)
+
+      service1Config("5xx-percent-threshold") shouldBe JsObject(
+        "percentage"       -> JsNumber(12.2),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(15),
+        "severity"         -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+      )
+    }
+
     "return TeamAlertConfigBuilder with disabled withHttp5xxPercentThreshold when alerting platform is Grafana" in {
       val threshold          = 19.9
       val disabledThreshold  = 333.33
@@ -779,6 +798,28 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
+
+    "return TeamAlertConfigBuilder with disabled withHttp5xxPercentThreshold when alerting platform is Grafana supplying optional minimum http 5xx count" in {
+      val threshold          = 19.9
+      val disabledThreshold  = 333.33
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1"))
+        .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
+        .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
+        .withHttp5xxPercentThreshold(threshold, minimumHttp5xxCountThreshold = 12, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
+
+      alertConfigBuilder.services shouldBe Seq("service1")
+      val configs                              = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
+      val service1Config: Map[String, JsValue] = configs(0)
+
+      service1Config("5xx-percent-threshold") shouldBe JsObject(
+        "percentage"       -> JsNumber(disabledThreshold),
+        "optionalMinimumHttp5xxCountThreshold" -> JsNumber(12),
+        "severity"         -> JsString("warning"),
+        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+      )
+    }
+
 
     "return TeamAlertConfigBuilder with correct logMessageThresholds" in {
       val alertConfigBuilder = TeamAlertConfigBuilder
