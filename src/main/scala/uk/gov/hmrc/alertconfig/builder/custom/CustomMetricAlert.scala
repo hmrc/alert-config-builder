@@ -18,6 +18,7 @@ package uk.gov.hmrc.alertconfig.builder.custom
 
 import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
+import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
 
 /**
  * Graphite metric based alert.
@@ -29,6 +30,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
  * @param operator         Whether to evaluate the metric as greater than or less than
  * @param query            Graphite query you're running
  * @param teamName         All alerts are prefixed with the team name
+ * @param reducerFunction  Function to use when manipulate data returned from query
  * @param runbookUrl       Runbook for when this alert fires
  * @param severity         The severity of this alert. E.g. Warning or Critical
  * @param summary          The description to populate in PagerDuty when the alert fires
@@ -42,6 +44,7 @@ case class CustomMetricAlert(
                               operator: EvaluationOperator,
                               query: String,
                               teamName: String,
+                              reducerFunction: Option[ReducerFunction] = Some(ReducerFunction.LAST),
                               runbookUrl: Option[String],
                               severity: AlertSeverity,
                               summary: String,
