@@ -180,30 +180,17 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     }
 
-    "configure http status percent threshold with given thresholds and severities" in {
+    "disable http status percent threshold with given thresholds and severities, when alerting platform is Grafana" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post, alertingPlatform = AlertingPlatform.Grafana))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4, alertingPlatform = AlertingPlatform.Grafana))
         .build
         .get
         .parseJson
         .asJsObject
         .fields
 
-      serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
-        JsObject(
-          "httpStatus"       -> JsNumber(502),
-          "percentage"       -> JsNumber(2.2),
-          "severity"         -> JsString("warning"),
-          "httpMethod"       -> JsString("POST"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
-        JsObject(
-          "httpStatus"       -> JsNumber(504),
-          "percentage"       -> JsNumber(4.4),
-          "severity"         -> JsString("critical"),
-          "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
-      )
+      serviceConfig("httpStatusPercentThresholds") shouldBe JsArray()
     }
 
     "disable http status percent threshold when alerting platform is Grafana" in {
@@ -219,23 +206,16 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       serviceConfig("httpStatusPercentThresholds") shouldBe JsArray()
     }
 
-    "configure http status percent threshold with given status code using default threshold" in {
+    "disable http status percent threshold with given status code using default threshold, when alerting platform is grafana" in {
       val serviceConfig = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(404)))
+        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(404), alertingPlatform = AlertingPlatform.Grafana))
         .build
         .get
         .parseJson
         .asJsObject
         .fields
 
-      serviceConfig("httpStatusPercentThresholds") shouldBe JsArray(
-        JsObject(
-          "httpStatus"       -> JsNumber(404),
-          "percentage"       -> JsNumber(100.0),
-          "severity"         -> JsString("critical"),
-          "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
-      )
+      serviceConfig("httpStatusPercentThresholds") shouldBe JsArray()
     }
 
     "disable http 5xx threshold in Sensu when alerting platform is Grafana" in {
