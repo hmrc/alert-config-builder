@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
+/**
+ * An enumeration of sorts that encapsulates all the possible alert severities supported
+ * by alert-config
+ */
 sealed trait AlertSeverity
 
 object AlertSeverity {

@@ -18,6 +18,12 @@ package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
+/**
+ * This alert will notify when the number of http responses returning a 5xx http status code exceeds a given threshold within a 15-minute window.
+ * @param count The number of all http responses with a 5xx status code to alert on
+ * @param severity Whether to raise the alert as critical or warning
+ * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
+ */
 case class Http5xxThreshold(
     count: Int = Int.MaxValue,
     severity: AlertSeverity = AlertSeverity.Critical,

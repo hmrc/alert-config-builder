@@ -37,6 +37,12 @@ object AlertType {
   object Http90PercentileResponseTimeThreshold extends AlertType
 }
 
+/**
+ * This class determines which standard alerts go where in each environment.
+ *
+ * This is so that the Telemetry team can safely migrate alerts gradually rather
+ * than "big bang"ing them out
+ */
 object GrafanaMigration {
 
   val config = Map(
@@ -159,11 +165,20 @@ object GrafanaMigration {
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     )
   )
-    def isGrafanaEnabled(alertingPlatform: AlertingPlatform, currentEnvironment: Environment, alertType: AlertType): Boolean = {
-      alertingPlatform match {
-        case AlertingPlatform.Sensu => false
-        case AlertingPlatform.Grafana => true
-        case _ => config(currentEnvironment)(alertType) == AlertingPlatform.Grafana
-      }
+
+  /**
+   *
+   * @param alertingPlatform Alerting platform to test for Grafana being enabled
+   * @param currentEnvironment env to test for Grafana being enabled
+   * @param alertType alert type to test for Grafana being enabled
+   * @return True if the alerting platform matches the data { alertingPlatform, currentEnvironment, alertType }.
+   *         All 3 must be matches for the stated alert in the stated env at the states severity to be Grafana-ised.
+   */
+  def isGrafanaEnabled(alertingPlatform: AlertingPlatform, currentEnvironment: Environment, alertType: AlertType): Boolean = {
+    alertingPlatform match {
+      case AlertingPlatform.Sensu => false
+      case AlertingPlatform.Grafana => true
+      case _ => config(currentEnvironment)(alertType) == AlertingPlatform.Grafana
     }
+  }
 }
