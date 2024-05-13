@@ -16,6 +16,12 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
+/**
+ * This alert will notify when your microservice receives a given number of requests within a 15-minute window.
+ *
+ * @param count The number of all http requests to alert on
+ * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
+ */
 case class TotalHttpRequestThreshold(
     count: Int = Int.MaxValue,
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default

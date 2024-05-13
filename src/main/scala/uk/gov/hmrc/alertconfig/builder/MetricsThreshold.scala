@@ -18,6 +18,18 @@ package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
+/**
+ * This alert will notify when a given metric query exceeds a given threshold within a 15-minute window.
+ *
+ * One or both of warning and critical must be given.
+ *
+ * @param name A unique name to give this alert, which will be used as the name of the alert in PagerDuty
+ * @param query The metric path to use to trigger this alert
+ * @param warning The response time in millisecond above which a warning level alert will be raised
+ * @param critical The response time in millisecond above which a critical level alert will be raised
+ * @param invert Set to true to invert the threshold (trigger on below instead of above)
+ * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
+ */
 case class MetricsThreshold(
     name: String,
     query: String,

@@ -16,6 +16,13 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
+/**
+ * All microservices are deployed to MDTP inside docker containers. If the docker container runs out of memory then the container will be killed with an out-of-memory exception.
+ * This alert will notify when a specified number of containers are killed within a 15-minute window.
+ *
+ * @param count The number of container kills to alert on
+ * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
+ */
 case class ContainerKillThreshold(
     count: Int = Int.MaxValue,
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default
