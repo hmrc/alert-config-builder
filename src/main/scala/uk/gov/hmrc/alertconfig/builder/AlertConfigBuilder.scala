@@ -613,6 +613,19 @@ case class TeamAlertConfigBuilder(
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
 
+  /**
+   * All microservices are deployed to MDTP inside docker containers. If the docker container runs out of memory then the container will be killed with an out-of-memory exception.
+   * This alert will notify when a specified number of containers are killed within a 15-minute window.
+   *
+   * @param containerCrashThreshold The number of container kills to alert on
+   * @param alertingPlatform The that platform this alert should go to (Sensu or Grafana)
+   * @return
+   * <pre>
+   * {@code
+   * .withContainerKillThreshold(5) # alert if 5 microservice instances are killed with an out-of-memory exception in a 15-minute window
+   * }
+   * </pre>
+   */
   def withContainerKillThreshold(containerKillThreshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(containerKillThreshold = ContainerKillThreshold(containerKillThreshold, alertingPlatform))
 
