@@ -24,7 +24,11 @@ import java.io.File
 
 case class CustomAlertsTopLevel(alerts: CustomAlerts)
 
-case class CustomAlerts(customLogAlerts: Seq[CustomLogAlert], customMetricAlerts: Seq[CustomMetricAlert])
+case class CustomAlerts(
+                         customLogAlerts: Seq[CustomLogAlert],
+                         customMetricAlerts: Seq[CustomMetricAlert],
+                         customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
+                       )
 
 object CustomAlertConfigYamlBuilder {
   def run(customAlertConfigs: Seq[CustomAlertConfig], environment: String, saveLocation: File): Unit = {
@@ -36,7 +40,7 @@ object CustomAlertConfigYamlBuilder {
     val customLogAlerts: Seq[CustomLogAlert] = activeAlerts.collect {
       case alert: CustomLogAlert => alert
     }.map { alert =>
-      alert.copy(thresholds =  alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
+      alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
     }
 
     val customMetricAlerts: Seq[CustomMetricAlert] = activeAlerts.collect {
@@ -45,7 +49,13 @@ object CustomAlertConfigYamlBuilder {
       alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
     }
 
-    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customLogAlerts, customMetricAlerts))
+    val customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert] = activeAlerts.collect {
+      case alert: CustomCloudWatchMetricAlert => alert
+    }.map { alert =>
+      alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
+    }
+
+    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customLogAlerts, customMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
