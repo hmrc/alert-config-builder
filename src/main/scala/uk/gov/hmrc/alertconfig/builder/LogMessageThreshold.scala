@@ -18,7 +18,17 @@ package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
-// By default we alert if the count of messages is >= threshold. If lessThanMode is set we alert if < threshold
+/**
+ * This alert will notify when the count of a given log message is logged exceeds a given threshold within a 15-minute window.
+ *
+ * By default we alert if the count of messages is >= threshold. If lessThanMode is set we alert if < threshold
+ *
+ * @param message The substring to search for in the log message
+ * @param count The threshold above which an alert will be raised
+ * @param lessThanMode If true, flips the logic so that an alert is raised if less than the threshold amount is detected
+ * @param severity The severity to set for this check in PagerDuty
+ * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
+ */
 case class LogMessageThreshold(
     message: String,
     count: Int,

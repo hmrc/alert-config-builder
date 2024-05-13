@@ -16,7 +16,19 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
+/**
+ * This alert will notify when the average CPU used by all instances of your microservice exceeds a given threshold within a 5-minute window.
+ * @param count The average percentage CPU used by all instances of your microservice
+ * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
+ */
 case class AverageCPUThreshold(
+    /**
+     * The average percentage CPU used by all instances of your microservice
+     */
     count: Int = Int.MaxValue,
+
+    /**
+     * The platform this alert will target. We are migrating towards Grafana and away from Sensu
+     */
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
