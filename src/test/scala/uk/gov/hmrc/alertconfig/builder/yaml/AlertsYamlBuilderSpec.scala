@@ -36,26 +36,26 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
 
   "convert()" should {
     "filter out alerting configuration for services without an entry in app-config-env (meaning they are undeployed)" in {
-      val config = AlertConfigBuilder("service-without-app-config-entry", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service-without-app-config-entry", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(10, AlertingPlatform.Grafana)
 
-      val res    = AlertsYamlBuilder.convert(alertConfigBuilder = config, environmentDefinedHandlers = Set("h1"), currentEnvironment = Environment.Production, handlerSeveritiesForEnv = Map("h1" -> Set(Severity.Warning, Severity.Critical)))
+      val res    = AlertsYamlBuilder.convert(alertConfigBuilder = config, environmentDefinedIntegrations = Set("h1"), currentEnvironment = Environment.Production, integrationSeveritiesForEnv = Map("h1" -> Set(Severity.Warning, Severity.Critical)))
 
       res shouldBe None
     }
   }
 
-  "If alert type is defined with a warning severity and handler foo, and environment config says foo can only receive critical alerts" should {
+  "If alert type is defined with a warning severity and integration foo, and environment config says foo can only receive critical alerts" should {
     "not create the alerts defined with a warning severity" in {
 
       val envConfig = Seq(
-        EnvironmentAlertBuilder("handler-non-prod", enabledEnvironments = Map(Environment.Qa -> Set(Severity.Critical))),
+        EnvironmentAlertBuilder("integration-non-prod", enabledEnvironments = Map(Environment.Qa -> Set(Severity.Critical))),
       )
 
       val alertConfigBuilders = Seq(
         AlertConfigBuilder(
           serviceName = "service1",
-          handlers = Seq("handler-non-prod")
+          integrations = Seq("integration-non-prod")
         )
           .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
           .withExceptionThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
@@ -101,7 +101,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
             http90PercentileResponseTimeThreshold = None
           ),
           pagerduty = Seq(
-            PagerDuty(integrationKeyName = "handler-non-prod")
+            PagerDuty(integrationKeyName = "integration-non-prod")
           )
         )
       )
@@ -109,7 +109,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
   }
 
-  "If handler 'foo' is enabled in an env for severities warning AND critical, and handler 'bar' is enabled in the same env for only critical alerts" should {
+  "If integration 'foo' is enabled in an env for severities warning AND critical, and integration 'bar' is enabled in the same env for only critical alerts" should {
     "still create alerts defined with a warning severity" in {
 
       val envConfig = Seq(
@@ -120,7 +120,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
       val alertConfigBuilders = Seq(
         AlertConfigBuilder(
           serviceName = "service1",
-          handlers = Seq("foo", "bar")
+          integrations = Seq("foo", "bar")
         )
           .withExceptionThreshold(9, AlertSeverity.Warning, AlertingPlatform.Grafana)
           .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
@@ -161,7 +161,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
   }
 
-  "If handler 'foo' is enabled in an env for severities warning AND critical, and handler 'bar' is enabled in the same env for only warning alerts" should {
+  "If integration 'foo' is enabled in an env for severities warning AND critical, and integration 'bar' is enabled in the same env for only warning alerts" should {
     "still create alerts defined with a critical severity" in {
 
       val envConfig = Seq(
@@ -172,7 +172,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
       val alertConfigBuilders = Seq(
         AlertConfigBuilder(
           serviceName = "service1",
-          handlers = Seq("foo", "bar")
+          integrations = Seq("foo", "bar")
         )
           .withExceptionThreshold(9, AlertSeverity.Critical, AlertingPlatform.Grafana)
           .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
@@ -213,17 +213,17 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
   }
 
-  "If alert type is defined with a critical severity and handler foo, and environment config says foo can only receive warning alerts" should {
+  "If alert type is defined with a critical severity and integration foo, and environment config says foo can only receive warning alerts" should {
     "not create the alerts defined with a critical severity" in {
 
       val envConfig = Seq(
-        EnvironmentAlertBuilder("handler-non-prod", enabledEnvironments = Map(Environment.Qa -> Set(Severity.Warning))),
+        EnvironmentAlertBuilder("integration-non-prod", enabledEnvironments = Map(Environment.Qa -> Set(Severity.Warning))),
       )
 
       val alertConfigBuilders = Seq(
         AlertConfigBuilder(
           serviceName = "service1",
-          handlers = Seq("handler-non-prod")
+          integrations = Seq("integration-non-prod")
         )
           .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
           .withExceptionThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
@@ -269,7 +269,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
             http90PercentileResponseTimeThreshold = Some(Seq(YamlHttp90PercentileResponseTimeThresholdAlert(15, 2, "warning")))
           ),
           pagerduty = Seq(
-            PagerDuty(integrationKeyName = "handler-non-prod")
+            PagerDuty(integrationKeyName = "integration-non-prod")
           )
         )
       )
@@ -280,7 +280,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
   "convertAlerts(alertConfigBuilder)" should {
     "containerKillThreshold should be set to defined threshold" in {
       val threshold = 56
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(threshold, AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -289,7 +289,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "averageCPUThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -298,7 +298,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
 
     "averageCPUThreshold should be set to defined threshold" in {
       val threshold = 60
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withAverageCPUThreshold(threshold)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -307,7 +307,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "ErrorsLoggedThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -315,7 +315,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "ExceptionThreshold should be 2 by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -323,7 +323,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "Http5xxPercentThreshold should be 100% by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -331,7 +331,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "Http5xxThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -339,7 +339,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "httpAbsolutePercentSplitThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -347,7 +347,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "HttpStatusPercentThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -355,7 +355,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "HttpStatusThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -363,7 +363,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "HttpTrafficThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -371,7 +371,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "LogMessageThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -379,7 +379,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "MetricsThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -387,7 +387,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     }
 
     "TotalHttpRequestThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 

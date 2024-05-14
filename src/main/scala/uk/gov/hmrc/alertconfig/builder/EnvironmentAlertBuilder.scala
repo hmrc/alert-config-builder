@@ -74,11 +74,11 @@ object AllEnvironmentAlertConfigBuilder {
 }
 
 case class EnvironmentAlertBuilder(
-    handlerName: String,
+    integrationName: String,
     command: Option[JsValue] = None,
     enabledEnvironments: Map[Environment, Set[Severity]] = Map((Environment.Production, Set(Severity.Ok, Severity.Warning, Severity.Critical))),
     customEnvironmentNames: Map[Environment, String] = Map((Environment.Production, "aws_production")),
-    handlerFilters: Map[Environment, JsValue] = Map((Environment.Production, JsString("occurrences")))
+    integrationFilters: Map[Environment, JsValue] = Map((Environment.Production, JsString("occurrences")))
 ) {
 
   private val defaultSeverities: Set[Severity] = Set(Severity.Ok, Severity.Warning, Severity.Critical)
@@ -93,7 +93,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Integration       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Integration -> customEnv),
-      handlerFilters = handlerFilters + (Environment.Integration                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Integration                 -> customFilter)
     )
 
   def inDevelopment(
@@ -104,7 +104,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Development       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Development -> customEnv),
-      handlerFilters = handlerFilters + (Environment.Development                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Development                 -> customFilter)
     )
 
   def inQa(
@@ -115,7 +115,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Qa       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Qa -> customEnv),
-      handlerFilters = handlerFilters + (Environment.Qa                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Qa                 -> customFilter)
     )
 
   def inStaging(
@@ -126,7 +126,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Staging       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Staging -> customEnv),
-      handlerFilters = handlerFilters + (Environment.Staging                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Staging                 -> customFilter)
     )
 
   def inExternalTest(
@@ -137,7 +137,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.ExternalTest       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.ExternalTest -> customEnv),
-      handlerFilters = handlerFilters + (Environment.ExternalTest                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.ExternalTest                 -> customFilter)
     )
 
   def inManagement(
@@ -148,7 +148,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Management       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Management -> customEnv),
-      handlerFilters = handlerFilters + (Environment.Management                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Management                 -> customFilter)
     )
 
   def inProduction(
@@ -159,7 +159,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Production       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Production -> customEnv),
-      handlerFilters = handlerFilters + (Environment.Production                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Production                 -> customFilter)
     )
 
   def disableProduction(): EnvironmentAlertBuilder =
@@ -170,17 +170,17 @@ case class EnvironmentAlertBuilder(
 
   def alertConfigFor(environment: Environment): (String, JsObject) = {
     val filterType: String =
-      if (handlerFilters.getOrElse(environment, defaultFilter).isInstanceOf[JsArray])
+      if (integrationFilters.getOrElse(environment, defaultFilter).isInstanceOf[JsArray])
         "filters"
       else
         "filter"
 
-    handlerName ->
+    integrationName ->
       JsObject(
-        "command"      -> commandFor(handlerName, environment),
+        "command"      -> commandFor(integrationName, environment),
         "type"         -> JsString("pipe"),
         "severities"   -> severitiesFor(environment),
-        s"$filterType" -> handlerFilters.getOrElse(environment, defaultFilter)
+        s"$filterType" -> integrationFilters.getOrElse(environment, defaultFilter)
       )
   }
 

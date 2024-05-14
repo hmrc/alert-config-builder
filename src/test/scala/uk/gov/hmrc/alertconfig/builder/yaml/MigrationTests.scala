@@ -31,7 +31,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
   "convertAlerts(alertConfigBuilder)" should {
     "averageCPUThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withAverageCPUThreshold(60, AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -40,7 +40,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "averageCPUThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withAverageCPUThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -49,7 +49,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "averageCPUThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withAverageCPUThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -58,7 +58,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "averageCPUThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withAverageCPUThreshold(60, AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -67,7 +67,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "containerKillThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(60, AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -76,7 +76,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "containerKillThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(60, AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -85,7 +85,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "containerKillThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -94,7 +94,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "containerKillThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -103,7 +103,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ErrorsLoggedThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60, AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -112,7 +112,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ErrorsLoggedThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60, AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -121,7 +121,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ErrorsLoggedThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -130,7 +130,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ErrorsLoggedThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -139,7 +139,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ExceptionThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withExceptionThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -148,7 +148,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ExceptionThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withExceptionThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -157,7 +157,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ExceptionThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withExceptionThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -166,7 +166,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "ExceptionThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withExceptionThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -175,7 +175,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxPercentThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -184,7 +184,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxPercentThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -193,7 +193,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxPercentThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -202,7 +202,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxPercentThreshold should be enabled by default in integration, supporting minimumHttp5xxCountThreshold" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60, 5)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -211,7 +211,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxPercentThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -220,7 +220,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxThreshold(60, alertingPlatform = AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -229,7 +229,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxThreshold(60, alertingPlatform = AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -238,7 +238,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -247,7 +247,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "Http5xxThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttp5xxPercentThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -256,7 +256,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "httpAbsolutePercentSplitThreshold should be enabled if alertPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(
           percentThreshold = 50,
           crossOver = 1,
@@ -274,7 +274,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "httpAbsolutePercentSplitThreshold should be disabled if alertPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(
           percentThreshold = 50,
           crossOver = 1,
@@ -291,7 +291,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusPercentThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Grafana))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -300,7 +300,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusPercentThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Sensu))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -309,7 +309,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusPercentThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -318,7 +318,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusPercentThreshold should be enabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS(500), 60))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -327,7 +327,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Grafana))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -336,7 +336,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60, alertingPlatform = AlertingPlatform.Sensu))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -345,7 +345,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -354,7 +354,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpStatusThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -363,7 +363,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpTrafficThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60), alertingPlatform = AlertingPlatform.Grafana))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -372,7 +372,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpTrafficThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60), alertingPlatform = AlertingPlatform.Sensu))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -381,7 +381,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpTrafficThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60)))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -390,7 +390,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "HttpTrafficThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60)))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -399,7 +399,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "LogMessageThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60, alertingPlatform = AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -408,7 +408,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "LogMessageThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60, alertingPlatform = AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -417,7 +417,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "LogMessageThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -426,7 +426,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "LogMessageThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -435,7 +435,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "MetricsThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Grafana))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -444,7 +444,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "MetricsThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Sensu))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -453,7 +453,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "MetricsThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -462,7 +462,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "MetricsThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -471,7 +471,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "TotalHttpRequestThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
@@ -480,7 +480,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "TotalHttpRequestThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -489,7 +489,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "TotalHttpRequestThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
@@ -498,7 +498,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
     }
 
     "TotalHttpRequestThreshold should be enabled by default in production" in {
-      val config = AlertConfigBuilder("service1", handlers = Seq("h1", "h2"))
+      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withTotalHttpRequestsCountThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
