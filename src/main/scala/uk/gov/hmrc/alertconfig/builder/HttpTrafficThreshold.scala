@@ -18,16 +18,19 @@ package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
-/**
- * This alert will notify you when the total number of requests received by the microservice is below a certain threshold.
- *
- * One or both of warning and critical must be given.
- *
- * @param warning The number of http requests below which a warning level alert will be raised
- * @param critical The number of http requests below which a critical level alert will be raised
- * @param maxMinutesBelowThreshold The number of minutes over which the threshold breaching triggers an alert
- * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
- */
+/** This alert will notify you when the total number of requests received by the microservice is below a certain threshold.
+  *
+  * One or both of warning and critical must be given.
+  *
+  * @param warning
+  *   The number of http requests below which a warning level alert will be raised
+  * @param critical
+  *   The number of http requests below which a critical level alert will be raised
+  * @param maxMinutesBelowThreshold
+  *   The number of minutes over which the threshold breaching triggers an alert
+  * @param alertingPlatform
+  *   The platform this alert will target. We are migrating towards Grafana and away from Sensu
+  */
 case class HttpTrafficThreshold(
     warning: Option[Int],
     critical: Option[Int],

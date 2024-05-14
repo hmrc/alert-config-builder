@@ -31,7 +31,8 @@ class ObjectScannerSpec extends AnyWordSpec with Matchers {
 
   "ClassScanner" should {
     "load all the singleton subtypes of a type in given package" in {
-      ObjectScanner.loadAll[SuperType](this.getClass.getPackage.getName) should contain.only (A, B)
+      ObjectScanner.loadAll[SuperType](this.getClass.getPackage.getName) should contain.only(A, B)
     }
   }
+
 }

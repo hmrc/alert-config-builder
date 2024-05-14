@@ -28,7 +28,10 @@ object IntegrationsYamlBuilder {
 
   val logger = new Logger()
 
-  def generate(environmentAlertBuilders: Seq[EnvironmentAlertBuilder], customAlertConfigs: Seq[CustomAlertConfig], currentEnvironment: Environment, saveLocation: File): Unit = {
+  def generate(environmentAlertBuilders: Seq[EnvironmentAlertBuilder],
+               customAlertConfigs: Seq[CustomAlertConfig],
+               currentEnvironment: Environment,
+               saveLocation: File): Unit = {
     logger.debug(s"Generating integrations YAML for $currentEnvironment")
     val enabledIntegrations = environmentAlertBuilders.flatMap { builder =>
       val enabledEnvironments = builder.enabledEnvironments

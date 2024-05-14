@@ -19,8 +19,8 @@ package uk.gov.hmrc.alertconfig.builder.custom
 object CloudWatchSource {
   type CloudWatchSource = String
 
-  val CLOUDWATCH = "CLOUDWATCH"
+  val CLOUDWATCH           = "CLOUDWATCH"
   val CLOUDWATCH_BUILD_LAB = "CLOUDWATCH_BUILD_LAB"
-  val CLOUDWATCH_CIP = "CLOUDWATCH_CIP"
+  val CLOUDWATCH_CIP       = "CLOUDWATCH_CIP"
   val CLOUDWATCH_TELEMETRY = "CLOUDWATCH_TELEMETRY"
 }

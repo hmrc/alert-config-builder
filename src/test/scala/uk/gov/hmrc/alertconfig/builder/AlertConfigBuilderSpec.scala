@@ -53,10 +53,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"         -> JsString("critical"),
+        "severity"                     -> JsString("critical"),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "percentage"       -> JsNumber(100),
-        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        "percentage"                   -> JsNumber(100),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
       )
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
       config("containerKillThreshold") shouldBe JsNumber(56)
@@ -182,7 +182,13 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "disable http status percent threshold with given thresholds and severities, when alerting platform is Grafana" in {
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post, alertingPlatform = AlertingPlatform.Grafana))
+        .withHttpStatusPercentThreshold(
+          HttpStatusPercentThreshold(
+            HttpStatus.HTTP_STATUS_502,
+            2.2,
+            AlertSeverity.Warning,
+            HttpMethod.Post,
+            alertingPlatform = AlertingPlatform.Grafana))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4, alertingPlatform = AlertingPlatform.Grafana))
         .build
         .get
@@ -195,7 +201,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     "disable http status percent threshold when alerting platform is Grafana" in {
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post, AlertingPlatform.Grafana))
+        .withHttpStatusPercentThreshold(
+          HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 2.2, AlertSeverity.Warning, HttpMethod.Post, AlertingPlatform.Grafana))
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_504, 4.4, alertingPlatform = AlertingPlatform.Grafana))
         .build
         .get
@@ -357,8 +364,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "hysteresis"        -> JsNumber(1.0),
           "percentThreshold"  -> JsNumber(100.0),
           "severity"          -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-      ))
+          "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
+        ))
 
       serviceConfig("absolute-percentage-split-threshold") shouldBe expected
     }
@@ -378,31 +385,35 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
       serviceConfig("metricsThresholds") shouldBe JsArray(
         JsObject(
-          "name"        -> JsString("alert1"),
-          "query"       -> JsString(query),
-          "warning"     -> JsNumber(65.0),
-          "critical"    -> JsNumber(88.0),
-          "invert"      -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
+          "name"             -> JsString("alert1"),
+          "query"            -> JsString(query),
+          "warning"          -> JsNumber(65.0),
+          "critical"         -> JsNumber(88.0),
+          "invert"           -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        ),
         JsObject(
-          "name" -> JsString("alert1-warning-only"),
-          "query"  -> JsString(query),
-          "warning"  -> JsNumber(44.0),
-          "invert" -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
+          "name"             -> JsString("alert1-warning-only"),
+          "query"            -> JsString(query),
+          "warning"          -> JsNumber(44.0),
+          "invert"           -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        ),
         JsObject(
-          "name" -> JsString("alert1-critical-only"),
-          "query" -> JsString(query),
-          "critical" -> JsNumber(45.0),
-          "invert" -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)),
+          "name"             -> JsString("alert1-critical-only"),
+          "query"            -> JsString(query),
+          "critical"         -> JsNumber(45.0),
+          "invert"           -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        ),
         JsObject(
-          "name"     -> JsString("alert2"),
-          "query"    -> JsString(query),
-          "warning"  -> JsNumber(30.03),
-          "critical" -> JsNumber(12.21),
-          "invert"   -> JsBoolean(true),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
+          "name"             -> JsString("alert2"),
+          "query"            -> JsString(query),
+          "warning"          -> JsNumber(30.03),
+          "critical"         -> JsNumber(12.21),
+          "invert"           -> JsBoolean(true),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        )
       )
     }
 
@@ -410,9 +421,18 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       val query = "some_function(over.some.query.for.anything.like*)"
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withMetricsThreshold(MetricsThreshold(name = "alert1", query = query, warning = Some(65), critical = Some(88)))
-        .withMetricsThreshold(MetricsThreshold(name = "alert1-warning-only", query = query, warning = Some(44), alertingPlatform = AlertingPlatform.Grafana))
-        .withMetricsThreshold(MetricsThreshold(name = "alert1-critical-only", query = query, critical = Some(45), alertingPlatform = AlertingPlatform.Grafana))
-        .withMetricsThreshold(MetricsThreshold(name = "alert2", query = query, warning = Some(30.03), critical = Some(12.21), invert = true, alertingPlatform = AlertingPlatform.Grafana))
+        .withMetricsThreshold(
+          MetricsThreshold(name = "alert1-warning-only", query = query, warning = Some(44), alertingPlatform = AlertingPlatform.Grafana))
+        .withMetricsThreshold(
+          MetricsThreshold(name = "alert1-critical-only", query = query, critical = Some(45), alertingPlatform = AlertingPlatform.Grafana))
+        .withMetricsThreshold(
+          MetricsThreshold(
+            name = "alert2",
+            query = query,
+            warning = Some(30.03),
+            critical = Some(12.21),
+            invert = true,
+            alertingPlatform = AlertingPlatform.Grafana))
         .build
         .get
         .parseJson
@@ -421,12 +441,13 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
       serviceConfig("metricsThresholds") shouldBe JsArray(
         JsObject(
-          "name" -> JsString("alert1"),
-          "query" -> JsString(query),
-          "warning" -> JsNumber(65.0),
-          "critical" -> JsNumber(88.0),
-          "invert" -> JsBoolean(false),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)))
+          "name"             -> JsString("alert1"),
+          "query"            -> JsString(query),
+          "warning"          -> JsNumber(65.0),
+          "critical"         -> JsNumber(88.0),
+          "invert"           -> JsBoolean(false),
+          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        ))
     }
 
   }
@@ -458,7 +479,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         "hysteresis"        -> JsNumber(hysteresis),
         "percentThreshold"  -> JsNumber(percent),
         "severity"          -> JsString("warning"),
-        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString))
+        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
+      )
     )
 
     serviceConfig("absolute-percentage-split-threshold") shouldBe expected
@@ -640,10 +662,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
-      "severity"         -> JsString("critical"),
+      "severity"                     -> JsString("critical"),
       "minimumHttp5xxCountThreshold" -> JsNumber(0),
-      "percentage"       -> JsNumber(threshold),
-      "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+      "percentage"                   -> JsNumber(threshold),
+      "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
     )
   }
 
@@ -658,10 +680,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
-      "severity"         -> JsString("critical"),
+      "severity"                     -> JsString("critical"),
       "minimumHttp5xxCountThreshold" -> JsNumber(10),
-      "percentage"       -> JsNumber(threshold),
-      "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+      "percentage"                   -> JsNumber(threshold),
+      "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
     )
   }
 
@@ -677,10 +699,10 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
-      "severity"         -> JsString("critical"),
+      "severity"                     -> JsString("critical"),
       "minimumHttp5xxCountThreshold" -> JsNumber(0),
-      "percentage"       -> JsNumber(disabledThreshold),
-      "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+      "percentage"                   -> JsNumber(disabledThreshold),
+      "alertingPlatform"             -> JsString(AlertingPlatform.Grafana.toString)
     )
   }
 

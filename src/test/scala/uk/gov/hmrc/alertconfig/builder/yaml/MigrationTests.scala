@@ -20,7 +20,17 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.alertconfig.builder.HttpStatus.HTTP_STATUS
-import uk.gov.hmrc.alertconfig.builder.{AlertConfigBuilder, AlertSeverity, AlertingPlatform, Environment, HttpAbsolutePercentSplitThreshold, HttpStatusPercentThreshold, HttpStatusThreshold, HttpTrafficThreshold, MetricsThreshold}
+import uk.gov.hmrc.alertconfig.builder.{
+  AlertConfigBuilder,
+  AlertSeverity,
+  AlertingPlatform,
+  Environment,
+  HttpAbsolutePercentSplitThreshold,
+  HttpStatusPercentThreshold,
+  HttpStatusThreshold,
+  HttpTrafficThreshold,
+  MetricsThreshold
+}
 
 class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -270,7 +280,8 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.httpAbsolutePercentSplitThreshold shouldBe Some(List(YamlHttpAbsolutePercentSplitThresholdAlert(50, 1, 2, 1, 2, "status:>501", "critical")))
+      output.httpAbsolutePercentSplitThreshold shouldBe Some(
+        List(YamlHttpAbsolutePercentSplitThresholdAlert(50, 1, 2, 1, 2, "status:>501", "critical")))
     }
 
     "httpAbsolutePercentSplitThreshold should be disabled if alertPlatform is Sensu" in {
@@ -404,7 +415,8 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(count = 60, lessThanMode = false, message = "LOG_MESSAGE", severity = "critical")))
+      output.logMessageThresholds shouldBe Some(
+        List(YamlLogMessageThresholdAlert(count = 60, lessThanMode = false, message = "LOG_MESSAGE", severity = "critical")))
     }
 
     "LogMessageThreshold should be disabled if alertingPlatform is Sensu" in {
@@ -422,7 +434,8 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.logMessageThresholds shouldBe Some(List(YamlLogMessageThresholdAlert(count = 60, lessThanMode = false, message = "LOG_MESSAGE", severity = "critical")))
+      output.logMessageThresholds shouldBe Some(
+        List(YamlLogMessageThresholdAlert(count = 60, lessThanMode = false, message = "LOG_MESSAGE", severity = "critical")))
     }
 
     "LogMessageThreshold should be disabled by default in production" in {
@@ -440,7 +453,8 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
+      output.metricsThresholds shouldBe Some(
+        List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
     }
 
     "MetricsThreshold should be disabled if alertingPlatform is Sensu" in {
@@ -458,7 +472,8 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
-      output.metricsThresholds shouldBe Some(List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
+      output.metricsThresholds shouldBe Some(
+        List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
     }
 
     "MetricsThreshold should be disabled by default in production" in {
@@ -506,4 +521,5 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.totalHttpRequestThreshold shouldBe Some(YamlTotalHttpRequestThresholdAlert(60))
     }
   }
+
 }

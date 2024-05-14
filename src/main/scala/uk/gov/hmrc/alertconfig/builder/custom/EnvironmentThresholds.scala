@@ -18,60 +18,56 @@ package uk.gov.hmrc.alertconfig.builder.custom
 
 import uk.gov.hmrc.alertconfig.builder.Environment
 
-/**
- * Define thresholds for any environments you want this custom
- * alert to be active in.
- */
+/** Define thresholds for any environments you want this custom alert to be active in.
+  */
 case class EnvironmentThresholds(
-                                  development: Option[Int] = None,
-                                  externaltest: Option[Int] = None,
-                                  integration: Option[Int] = None,
-                                  management: Option[Int] = None,
-                                  production: Option[Int] = None,
-                                  qa: Option[Int] = None,
-                                  staging: Option[Int] = None
-                                ) {
-  /**
-   * Checks if the given environment has a threshold defined.
-   */
+    development: Option[Int] = None,
+    externaltest: Option[Int] = None,
+    integration: Option[Int] = None,
+    management: Option[Int] = None,
+    production: Option[Int] = None,
+    qa: Option[Int] = None,
+    staging: Option[Int] = None
+) {
+
+  /** Checks if the given environment has a threshold defined.
+    */
   def isEnvironmentDefined(environment: Environment): Boolean = {
     environment match {
-      case Environment.Development => development.isDefined
+      case Environment.Development  => development.isDefined
       case Environment.ExternalTest => externaltest.isDefined
-      case Environment.Integration => integration.isDefined
-      case Environment.Management => management.isDefined
-      case Environment.Production => production.isDefined
-      case Environment.Qa => qa.isDefined
-      case Environment.Staging => staging.isDefined
+      case Environment.Integration  => integration.isDefined
+      case Environment.Management   => management.isDefined
+      case Environment.Production   => production.isDefined
+      case Environment.Qa           => qa.isDefined
+      case Environment.Staging      => staging.isDefined
     }
   }
 
-  /**
-   * Removes the thresholds for all environments other than the one requested.
-   */
+  /** Removes the thresholds for all environments other than the one requested.
+    */
   def removeAllOtherEnvironmentThresholds(environment: Environment): EnvironmentThresholds = {
     environment match {
-      case Environment.Development => EnvironmentThresholds(development = development)
+      case Environment.Development  => EnvironmentThresholds(development = development)
       case Environment.ExternalTest => EnvironmentThresholds(externaltest = externaltest)
-      case Environment.Integration => EnvironmentThresholds(integration = integration)
-      case Environment.Management => EnvironmentThresholds(management = management)
-      case Environment.Production => EnvironmentThresholds(production = production)
-      case Environment.Qa => EnvironmentThresholds(qa = qa)
-      case Environment.Staging => EnvironmentThresholds(staging = staging)
+      case Environment.Integration  => EnvironmentThresholds(integration = integration)
+      case Environment.Management   => EnvironmentThresholds(management = management)
+      case Environment.Production   => EnvironmentThresholds(production = production)
+      case Environment.Qa           => EnvironmentThresholds(qa = qa)
+      case Environment.Staging      => EnvironmentThresholds(staging = staging)
     }
   }
 
 }
 
-/**
- * Set common threshold for all environments
- */
+/** Set common threshold for all environments
+  */
 object EnvironmentThresholds {
 
-  /**
-   * @param threshold An integer to be set as threshold for all seven environments
-   * @return
-   */
+  /** @param threshold
+    *   An integer to be set as threshold for all seven environments
+    * @return
+    */
   def forAllEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold),
@@ -82,19 +78,19 @@ object EnvironmentThresholds {
     management = Some(threshold)
   )
 
-  /**
-   * @param threshold An integer to be set for externaltest and production environments
-   * @return
-   */
+  /** @param threshold
+    *   An integer to be set for externaltest and production environments
+    * @return
+    */
   def forAllPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold)
   )
 
-  /**
-   * @param threshold An integer to be set as threshold for all non-production
-   * @return
-   */
+  /** @param threshold
+    *   An integer to be set as threshold for all non-production
+    * @return
+    */
   def forAllNonPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     staging = Some(threshold),
     qa = Some(threshold),
@@ -102,4 +98,5 @@ object EnvironmentThresholds {
     integration = Some(threshold),
     management = Some(threshold)
   )
+
 }

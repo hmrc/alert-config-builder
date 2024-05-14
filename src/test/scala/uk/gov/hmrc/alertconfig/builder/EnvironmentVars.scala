@@ -17,6 +17,7 @@
 package uk.gov.hmrc.alertconfig.builder
 
 object EnvironmentVars {
+
   def setEnv(key: String, value: String) = {
     val field = System.getenv().getClass.getDeclaredField("m")
     field.setAccessible(true)
@@ -30,4 +31,5 @@ object EnvironmentVars {
     val map = field.get(System.getenv()).asInstanceOf[java.util.Map[java.lang.String, java.lang.String]]
     map.remove(key)
   }
+
 }

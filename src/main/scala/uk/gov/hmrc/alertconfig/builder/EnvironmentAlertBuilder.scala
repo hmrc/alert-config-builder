@@ -54,6 +54,7 @@ object Environment {
       case "production"   => Production
     }
   }
+
 }
 
 object AllEnvironmentAlertConfigBuilder {
@@ -192,11 +193,14 @@ case class EnvironmentAlertBuilder(
       JsString("/etc/sensu/handlers/noop.rb")
 
   private def severitiesFor(environment: Environment) =
-    JsArray(enabledEnvironments.getOrElse(environment, defaultSeverities)
-      // Temporary filter as part of TEL-4408 to ensure that info level
-      // notifications can't be enabled. They are only added to specific YAML
-      // files. Yes this is a hack, and when Sensu is gone, it can go too!
-      .filter(s => !s.toString.equalsIgnoreCase("info"))
-      .map(s => JsString(s.toString)).toVector)
+    JsArray(
+      enabledEnvironments
+        .getOrElse(environment, defaultSeverities)
+        // Temporary filter as part of TEL-4408 to ensure that info level
+        // notifications can't be enabled. They are only added to specific YAML
+        // files. Yes this is a hack, and when Sensu is gone, it can go too!
+        .filter(s => !s.toString.equalsIgnoreCase("info"))
+        .map(s => JsString(s.toString))
+        .toVector)
 
 }

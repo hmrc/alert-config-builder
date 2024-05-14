@@ -21,50 +21,58 @@ import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 
 import java.io.File
 
-
 case class CustomAlertsTopLevel(alerts: CustomAlerts)
 
 case class CustomAlerts(
-                         customLogAlerts: Seq[CustomLogAlert],
-                         customMetricAlerts: Seq[CustomMetricAlert],
-                         customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
-                       )
+    customLogAlerts: Seq[CustomLogAlert],
+    customMetricAlerts: Seq[CustomMetricAlert],
+    customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
+)
 
 object CustomAlertConfigYamlBuilder {
+
   def run(customAlertConfigs: Seq[CustomAlertConfig], environment: String, saveLocation: File): Unit = {
 
-    val customAlerts = customAlertConfigs.flatMap(_.customAlerts)
+    val customAlerts                    = customAlertConfigs.flatMap(_.customAlerts)
     val currentEnvironment: Environment = Environment.get(environment)
-    val activeAlerts: Seq[CustomAlert] = filterDisabledAlerts(customAlerts, currentEnvironment)
+    val activeAlerts: Seq[CustomAlert]  = filterDisabledAlerts(customAlerts, currentEnvironment)
 
-    val customLogAlerts: Seq[CustomLogAlert] = activeAlerts.collect {
-      case alert: CustomLogAlert => alert
-    }.map { alert =>
-      alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
-    }
+    val customLogAlerts: Seq[CustomLogAlert] = activeAlerts
+      .collect { case alert: CustomLogAlert =>
+        alert
+      }
+      .map { alert =>
+        alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
+      }
 
-    val customMetricAlerts: Seq[CustomMetricAlert] = activeAlerts.collect {
-      case alert: CustomMetricAlert => alert
-    }.map { alert =>
-      alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
-    }
+    val customMetricAlerts: Seq[CustomMetricAlert] = activeAlerts
+      .collect { case alert: CustomMetricAlert =>
+        alert
+      }
+      .map { alert =>
+        alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
+      }
 
-    val customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert] = activeAlerts.collect {
-      case alert: CustomCloudWatchMetricAlert => alert
-    }.map { alert =>
-      alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
-    }
+    val customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert] = activeAlerts
+      .collect { case alert: CustomCloudWatchMetricAlert =>
+        alert
+      }
+      .map { alert =>
+        alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
+      }
 
     val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customLogAlerts, customMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
 
-  /**
-   * @param customAlerts       Custom Alerts to filter
-   * @param currentEnvironment Environment we're generating YAML for
-   * @return customAlerts list passed in minus any alerts that don't have a threshold defined for this environment
-   */
+  /** @param customAlerts
+    *   Custom Alerts to filter
+    * @param currentEnvironment
+    *   Environment we're generating YAML for
+    * @return
+    *   customAlerts list passed in minus any alerts that don't have a threshold defined for this environment
+    */
   private def filterDisabledAlerts(customAlerts: Seq[CustomAlert], currentEnvironment: Environment): Seq[CustomAlert] = {
     customAlerts.filter(_.thresholds.isEnvironmentDefined(currentEnvironment))
   }
