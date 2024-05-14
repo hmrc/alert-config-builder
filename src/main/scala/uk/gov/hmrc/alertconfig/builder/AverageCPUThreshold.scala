@@ -22,13 +22,6 @@ package uk.gov.hmrc.alertconfig.builder
  * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
  */
 case class AverageCPUThreshold(
-    /**
-     * The average percentage CPU used by all instances of your microservice
-     */
     count: Int = Int.MaxValue,
-
-    /**
-     * The platform this alert will target. We are migrating towards Grafana and away from Sensu
-     */
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
