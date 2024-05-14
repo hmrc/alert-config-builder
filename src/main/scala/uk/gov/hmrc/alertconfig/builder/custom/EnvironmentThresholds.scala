@@ -19,6 +19,21 @@ package uk.gov.hmrc.alertconfig.builder.custom
 import uk.gov.hmrc.alertconfig.builder.Environment
 
 /** Define thresholds for any environments you want this custom alert to be active in.
+  *
+  * @param development
+  *   The threshold for the development environment.
+  * @param externaltest
+  *   The threshold for the external test environment.
+  * @param integration
+  *   The threshold for the integration environment.
+  * @param management
+  *   The threshold for the management environment.
+  * @param production
+  *   The threshold for the production environment.
+  * @param qa
+  *   The threshold for the quality assurance environment.
+  * @param staging
+  *   The threshold for the staging environment.
   */
 case class EnvironmentThresholds(
     development: Option[Int] = None,
@@ -31,6 +46,11 @@ case class EnvironmentThresholds(
 ) {
 
   /** Checks if the given environment has a threshold defined.
+    *
+    * @param environment
+    *   The environment to check.
+    * @return
+    *   True if the threshold for the given environment is defined, otherwise false.
     */
   def isEnvironmentDefined(environment: Environment): Boolean = {
     environment match {
@@ -45,6 +65,11 @@ case class EnvironmentThresholds(
   }
 
   /** Removes the thresholds for all environments other than the one requested.
+    *
+    * @param environment
+    *   The environment to keep the threshold for.
+    * @return
+    *   EnvironmentThresholds with thresholds for only the specified environment.
     */
   def removeAllOtherEnvironmentThresholds(environment: Environment): EnvironmentThresholds = {
     environment match {
@@ -64,9 +89,12 @@ case class EnvironmentThresholds(
   */
 object EnvironmentThresholds {
 
-  /** @param threshold
-    *   An integer to be set as threshold for all seven environments
+  /** Creates EnvironmentThresholds with the same threshold for all environments.
+    *
+    * @param threshold
+    *   An integer to be set as the threshold for all seven environments.
     * @return
+    *   EnvironmentThresholds with the same threshold for all environments.
     */
   def forAllEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
@@ -78,18 +106,24 @@ object EnvironmentThresholds {
     management = Some(threshold)
   )
 
-  /** @param threshold
-    *   An integer to be set for externaltest and production environments
+  /** Creates EnvironmentThresholds with the same threshold for production and external test environments.
+    *
+    * @param threshold
+    *   An integer to be set for the production and external test environments.
     * @return
+    *   EnvironmentThresholds with the same threshold for production and external test environments.
     */
   def forAllPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold)
   )
 
-  /** @param threshold
-    *   An integer to be set as threshold for all non-production
+  /** Creates EnvironmentThresholds with the same threshold for all non-production environments.
+    *
+    * @param threshold
+    *   An integer to be set as the threshold for all non-production environments.
     * @return
+    *   EnvironmentThresholds with the same threshold for all non-production environments.
     */
   def forAllNonPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     staging = Some(threshold),
