@@ -67,9 +67,35 @@ case class EnvironmentThresholds(
  * Set common threshold for all environments
  */
 object EnvironmentThresholds {
+
+  /**
+   * @param threshold An integer to be set as threshold for all seven environments
+   * @return
+   */
   def forAllEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold),
+    staging = Some(threshold),
+    qa = Some(threshold),
+    development = Some(threshold),
+    integration = Some(threshold),
+    management = Some(threshold)
+  )
+
+  /**
+   * @param threshold An integer to be set for externaltest and production environments
+   * @return
+   */
+  def forAllPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+    production = Some(threshold),
+    externaltest = Some(threshold)
+  )
+
+  /**
+   * @param threshold An integer to be set as threshold for all non-production
+   * @return
+   */
+  def forAllNonPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     staging = Some(threshold),
     qa = Some(threshold),
     development = Some(threshold),
