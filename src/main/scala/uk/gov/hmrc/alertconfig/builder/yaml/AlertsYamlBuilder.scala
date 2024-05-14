@@ -41,31 +41,31 @@ object AlertsYamlBuilder {
 
   def convert(alertConfig: AlertConfig, currentEnvironment: Environment): Seq[ServiceConfig] = {
     val filtered = alertConfig.environmentConfig.filter(_.enabledEnvironments.contains(currentEnvironment))
-    val enabledHandlersInEnv = filtered.map(_.handlerName).toSet
-    val handlerSeveritiesForEnv = filtered
-      .map(builder => builder.handlerName -> builder.enabledEnvironments.getOrElse(currentEnvironment, Set()))
+    val enabledIntegrationsInEnv = filtered.map(_.integrationName).toSet
+    val integrationSeveritiesForEnv = filtered
+      .map(builder => builder.integrationName -> builder.enabledEnvironments.getOrElse(currentEnvironment, Set()))
       .toMap
 
-    alertConfig.alertConfig.flatMap(convert(_, enabledHandlersInEnv, currentEnvironment, handlerSeveritiesForEnv))
+    alertConfig.alertConfig.flatMap(convert(_, enabledIntegrationsInEnv, currentEnvironment, integrationSeveritiesForEnv))
   }
 
-  def convert(alertConfigBuilder: AlertConfigBuilder, environmentDefinedHandlers: Set[String], currentEnvironment: Environment, handlerSeveritiesForEnv: Map[String, Set[Severity]]): Option[ServiceConfig] = {
-    val enabledHandlers = alertConfigBuilder.handlers.toSet.intersect(environmentDefinedHandlers)
-    if (enabledHandlers.isEmpty || !serviceDeployedInEnv(alertConfigBuilder.serviceName, alertConfigBuilder.platformService)) {
+  def convert(alertConfigBuilder: AlertConfigBuilder, environmentDefinedIntegrations: Set[String], currentEnvironment: Environment, integrationSeveritiesForEnv: Map[String, Set[Severity]]): Option[ServiceConfig] = {
+    val enabledIntegrations = alertConfigBuilder.integrations.toSet.intersect(environmentDefinedIntegrations)
+    if (enabledIntegrations.isEmpty || !serviceDeployedInEnv(alertConfigBuilder.serviceName, alertConfigBuilder.platformService)) {
       None
     } else {
-      val finalAlertConfigBuilder = removeUnusedAlerts(alertConfigBuilder, handlerSeveritiesForEnv)
+      val finalAlertConfigBuilder = removeUnusedAlerts(alertConfigBuilder, integrationSeveritiesForEnv)
       Some(
         ServiceConfig(
           service   = finalAlertConfigBuilder.serviceName.trim.toLowerCase.replaceAll(" ", "-"),
           alerts    = convertAlerts(finalAlertConfigBuilder, currentEnvironment),
-          pagerduty = enabledHandlers.map(handler => PagerDuty(integrationKeyName = handler)).toSeq
+          pagerduty = enabledIntegrations.map(integration => PagerDuty(integrationKeyName = integration)).toSeq
         ))
     }
   }
 
-  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, handlerSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder = {
-    val uniqueEnabledSeveritiesForServiceInEnv = handlerSeveritiesForEnv.values.flatten.toSet
+  def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, integrationSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder = {
+    val uniqueEnabledSeveritiesForServiceInEnv = integrationSeveritiesForEnv.values.flatten.toSet
       if ( uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Critical) && !uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning)) {
         removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Warning)
       } else if (

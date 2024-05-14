@@ -23,7 +23,7 @@ import spray.json.{JsArray, JsObject, JsString}
 
 class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers with BeforeAndAfterEach {
 
-  def defaultNoopHandlerConfig: JsObject =
+  def defaultNoopIntegrationConfig: JsObject =
     JsObject(
       "command"    -> JsString("/etc/sensu/handlers/noop.rb"),
       "type"       -> JsString("pipe"),
@@ -31,7 +31,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
       "filter"     -> JsString("occurrences")
     )
 
-  def defaultEnabledHandlerConfig(service: String, environment: Environment): JsObject =
+  def defaultEnabledIntegrationConfig(service: String, environment: Environment): JsObject =
     JsObject(
       "command"    -> JsString(s"/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team $service -e $environment"),
       "type"       -> JsString("pipe"),
@@ -48,8 +48,8 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
         environmentConfigMap(e) shouldBe
           JsObject(
             "handlers" -> JsObject(
-              "infra"          -> defaultNoopHandlerConfig,
-              "team-telemetry" -> defaultNoopHandlerConfig
+              "infra"          -> defaultNoopIntegrationConfig,
+              "team-telemetry" -> defaultNoopIntegrationConfig
             ))
       }
     }
@@ -61,8 +61,8 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
     environmentConfigMap(Environment.Production) shouldBe
       JsObject(
         "handlers" -> JsObject(
-          "infra"          -> defaultEnabledHandlerConfig("infra", Environment.Production),
-          "team-telemetry" -> defaultEnabledHandlerConfig("team-telemetry", Environment.Production)
+          "infra"          -> defaultEnabledIntegrationConfig("infra", Environment.Production),
+          "team-telemetry" -> defaultEnabledIntegrationConfig("team-telemetry", Environment.Production)
         ))
   }
 

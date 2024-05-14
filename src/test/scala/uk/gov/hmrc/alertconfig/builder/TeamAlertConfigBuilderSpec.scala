@@ -34,7 +34,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val alertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
-      alertConfigBuilder.handlers shouldBe Seq("noop")
+      alertConfigBuilder.integrations shouldBe Seq("noop")
       alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue, AlertingPlatform.Default)
       alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1, AlertingPlatform.Default)
       alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
@@ -136,13 +136,13 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(19.2, severity = AlertSeverity.Warning)
     }
 
-    "return TeamAlertConfigBuilder with correct handlers" in {
-      val handlers = Seq("a", "b")
+    "return TeamAlertConfigBuilder with correct integrations" in {
+      val integrations = Seq("a", "b")
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
-        .withHandlers(handlers: _*)
+        .withIntegrations(integrations: _*)
 
-      alertConfigBuilder.handlers shouldBe handlers
+      alertConfigBuilder.integrations shouldBe integrations
     }
 
     "return TeamAlertConfigBuilder with correct AbsolutePercentSplitThresholds" in {

@@ -28,7 +28,7 @@ trait Builder[T] {
 
 case class AlertConfigBuilder(
     serviceName: String,
-    handlers: Seq[String] = Seq("noop"),
+    integrations: Seq[String] = Seq("noop"),
     errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
     exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
     http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
@@ -53,12 +53,12 @@ case class AlertConfigBuilder(
   val logger = new Logger()
 
   /**
-   * Sets handlers for the configuration, e.g. .withHandlers("dass-cyclone")
+   * Sets integrations for the configuration, e.g. .withIntegrations("dass-cyclone")
    * @param string The name of your pagerduty integration. This integration must already exist in PagerDuty;
    *               alert-config will not create it for you.
    */
-  def withHandlers(handlers: String*) =
-    this.copy(handlers = handlers)
+  def withIntegrations(integrations: String*) =
+    this.copy(integrations = integrations)
 
   /**
    * This alert will notify when your microservice logs a specified number of logs at ERROR log level within a 15-minute window.
@@ -421,7 +421,7 @@ case class AlertConfigBuilder(
           s"""
              |{
              |"app": "$serviceName.$serviceDomain",
-             |"handlers": ${handlers.toJson.compactPrint},
+             |"handlers": ${integrations.toJson.compactPrint},
              |"errors-logged-threshold":$updatedErrorsLoggedThreshold,
              |"exception-threshold":${exceptionThreshold
               .copy(count = updatedExceptionThreshold)
@@ -462,7 +462,7 @@ case class AlertConfigBuilder(
 
 case class TeamAlertConfigBuilder(
     services: Seq[String],
-    handlers: Seq[String] = Seq("noop"),
+    integrations: Seq[String] = Seq("noop"),
     errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
     exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
     http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
@@ -483,12 +483,12 @@ case class TeamAlertConfigBuilder(
 ) extends Builder[Seq[AlertConfigBuilder]] {
 
   /**
-   * Sets handlers for the configuration, e.g. .withHandlers("dass-cyclone")
+   * Sets integrations for the configuration, e.g. .withIntegrations("dass-cyclone")
    * @param string The name of your pagerduty integration. This integration must already exist in PagerDuty;
    *               alert-config will not create it for you.
    */
-  def withHandlers(handlers: String*) =
-    this.copy(handlers = handlers)
+  def withIntegrations(integrations: String*) =
+    this.copy(integrations = integrations)
 
   /**
    * This alert will notify when your microservice logs a specified number of logs at ERROR log level within a 15-minute window.
@@ -771,7 +771,7 @@ case class TeamAlertConfigBuilder(
     services.map(service =>
       AlertConfigBuilder(
         service,
-        handlers,
+        integrations,
         errorsLoggedThreshold,
         exceptionThreshold,
         http5xxThreshold,
