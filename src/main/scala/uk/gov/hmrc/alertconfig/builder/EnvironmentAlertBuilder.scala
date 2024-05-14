@@ -93,7 +93,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Integration       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Integration -> customEnv),
-      integrationFilters = integrationFilters + (Environment.Integration                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Integration         -> customFilter)
     )
 
   def inDevelopment(
@@ -104,7 +104,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Development       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Development -> customEnv),
-      integrationFilters = integrationFilters + (Environment.Development                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Development         -> customFilter)
     )
 
   def inQa(
@@ -115,7 +115,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Qa       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Qa -> customEnv),
-      integrationFilters = integrationFilters + (Environment.Qa                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Qa         -> customFilter)
     )
 
   def inStaging(
@@ -126,7 +126,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Staging       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Staging -> customEnv),
-      integrationFilters = integrationFilters + (Environment.Staging                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Staging         -> customFilter)
     )
 
   def inExternalTest(
@@ -137,7 +137,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.ExternalTest       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.ExternalTest -> customEnv),
-      integrationFilters = integrationFilters + (Environment.ExternalTest                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.ExternalTest         -> customFilter)
     )
 
   def inManagement(
@@ -148,7 +148,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Management       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Management -> customEnv),
-      integrationFilters = integrationFilters + (Environment.Management                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Management         -> customFilter)
     )
 
   def inProduction(
@@ -159,7 +159,7 @@ case class EnvironmentAlertBuilder(
     this.copy(
       enabledEnvironments = enabledEnvironments + (Environment.Production       -> severities),
       customEnvironmentNames = customEnvironmentNames + (Environment.Production -> customEnv),
-      integrationFilters = integrationFilters + (Environment.Production                 -> customFilter)
+      integrationFilters = integrationFilters + (Environment.Production         -> customFilter)
     )
 
   def disableProduction(): EnvironmentAlertBuilder =
