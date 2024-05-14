@@ -62,3 +62,18 @@ case class EnvironmentThresholds(
   }
 
 }
+
+/**
+ * Set common threshold for all environments
+ */
+object EnvironmentThresholds {
+  def forAllEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+    production = Some(threshold),
+    externaltest = Some(threshold),
+    staging = Some(threshold),
+    qa = Some(threshold),
+    development = Some(threshold),
+    integration = Some(threshold),
+    management = Some(threshold)
+  )
+}
