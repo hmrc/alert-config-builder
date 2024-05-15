@@ -114,30 +114,30 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Sensu,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
       AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
       AlertType.LogMessageThreshold                   -> AlertingPlatform.Grafana,
       AlertType.MetricsThreshold                      -> AlertingPlatform.Grafana,
       AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
-      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
+      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
     Environment.Production -> Map(
       AlertType.AverageCPUThreshold                   -> AlertingPlatform.Sensu,
       AlertType.ContainerKillThreshold                -> AlertingPlatform.Sensu,
-      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Sensu,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
       AlertType.ExceptionThreshold                    -> AlertingPlatform.Sensu,
       AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Sensu, // see TEL-4446 - when we put this live, announce the new feature
       AlertType.Http5xxThreshold                      -> AlertingPlatform.Sensu,
-      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Sensu,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
       AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold                   -> AlertingPlatform.Sensu,
-      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Sensu,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
       AlertType.LogMessageThreshold                   -> AlertingPlatform.Sensu,
       AlertType.MetricsThreshold                      -> AlertingPlatform.Sensu,
       AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
-      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
+      AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
     Environment.Management -> Map(
       AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,

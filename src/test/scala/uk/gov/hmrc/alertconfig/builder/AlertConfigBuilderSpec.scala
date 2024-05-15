@@ -301,7 +301,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     }
 
-    "configure httpTrafficThreshold with given thresholds when alerting platform is Sensu" in {
+    "disable httpTrafficThreshold with given thresholds when alerting platform is Sensu" in {
       val threshold = HttpTrafficThreshold(Some(10), Some(5), 35)
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(threshold)
@@ -311,14 +311,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("httpTrafficThresholds") shouldBe JsArray(
-        JsObject(
-          "warning"                  -> JsNumber(10),
-          "critical"                 -> JsNumber(5),
-          "maxMinutesBelowThreshold" -> JsNumber(35),
-          "alertingPlatform"         -> JsString(AlertingPlatform.Default.toString)
-        )
-      )
+      serviceConfig("httpTrafficThresholds") shouldBe JsArray()
     }
 
     "disable httpTrafficThreshold in Sensu when alerting platform is Grafana" in {
@@ -367,7 +360,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
         ))
 
-      serviceConfig("absolute-percentage-split-threshold") shouldBe expected
+      serviceConfig("absolute-percentage-split-threshold") shouldBe JsArray()
     }
 
     "configure metrics threshold with given warning and critical levels" in {
@@ -483,7 +476,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     )
 
-    serviceConfig("absolute-percentage-split-threshold") shouldBe expected
+    serviceConfig("absolute-percentage-split-threshold") shouldBe JsArray()
   }
 
   "configure HttpAbsolutePercentSplitDownstreamServiceThreshold with given thresholds" in {
@@ -625,7 +618,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("exception-threshold") shouldBe expected
   }
 
-  "configure ErrorsLoggedThreshold with given thresholds when the alerting platform is Sensu" in {
+  "configure ErrorsLoggedThreshold with max thresholds when the alerting platform is Sensu" in {
     val threshold = 12
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withErrorsLoggedThreshold(threshold)
@@ -635,7 +628,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .asJsObject
       .fields
 
-    serviceConfig("errors-logged-threshold") shouldBe JsNumber(threshold)
+    serviceConfig("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
   }
 
   "disable ErrorsLoggedThreshold in Sensu when the alerting platform is Grafana" in {

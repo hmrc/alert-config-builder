@@ -179,8 +179,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
         ))
 
-      service1Config("absolute-percentage-split-threshold") shouldBe expected
-      service2Config("absolute-percentage-split-threshold") shouldBe expected
+      service1Config("absolute-percentage-split-threshold") shouldBe JsArray()
+      service2Config("absolute-percentage-split-threshold") shouldBe JsArray()
     }
 
     "return TeamAlertConfigBuilder with correct AbsolutePercentSplitDownstreamServiceThresholds" in {
@@ -364,7 +364,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       )
     }
 
-    "return TeamAlertConfigBuilder with correct ErrorsLoggedThreshold" in {
+    "return TeamAlertConfigBuilder with maxxed out ErrorsLoggedThreshold" in {
       val threshold = 13
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
@@ -377,8 +377,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("errors-logged-threshold") shouldBe JsNumber(threshold)
-      service2Config("errors-logged-threshold") shouldBe JsNumber(threshold)
+      service1Config("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with disabled ErrorsLoggedThreshold when alerting platform is Grafana" in {
@@ -590,8 +590,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         )
       )
 
-      service1Config("httpTrafficThresholds") shouldBe expected
-      service2Config("httpTrafficThresholds") shouldBe expected
+      service1Config("httpTrafficThresholds") shouldBe JsArray()
+      service2Config("httpTrafficThresholds") shouldBe JsArray()
     }
 
     "return TeamAlertConfigBuilder with empty httpTrafficThreshold when alerting platform is Grafana" in {

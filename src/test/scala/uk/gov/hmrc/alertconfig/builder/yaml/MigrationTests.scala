@@ -139,13 +139,13 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
     }
 
-    "ErrorsLoggedThreshold should be disabled by default in production" in {
+    "ErrorsLoggedThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.errorsLoggedThreshold shouldBe None
+      output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
     }
 
     "ExceptionThreshold should be enabled if alertingPlatform is Grafana" in {
@@ -400,13 +400,14 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.httpTrafficThresholds shouldBe Some(List(YamlHttpTrafficThresholdAlert(60, 5, "critical")))
     }
 
-    "HttpTrafficThreshold should be disabled by default in production" in {
+    "HttpTrafficThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, Some(60)))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.httpTrafficThresholds shouldBe None
+      output.httpTrafficThresholds shouldBe Some(
+        List(YamlHttpTrafficThresholdAlert(count = 60, maxMinutesBelowThreshold = 5, severity = "critical")))
     }
 
     "LogMessageThreshold should be enabled if alertingPlatform is Grafana" in {
