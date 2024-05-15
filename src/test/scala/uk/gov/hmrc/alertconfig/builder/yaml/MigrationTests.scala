@@ -139,13 +139,13 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
     }
 
-    "ErrorsLoggedThreshold should be disabled by default in production" in {
+    "ErrorsLoggedThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withErrorsLoggedThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.errorsLoggedThreshold shouldBe None
+      output.errorsLoggedThreshold shouldBe Some(YamlErrorsLoggedThresholdAlert(60))
     }
 
     "ExceptionThreshold should be enabled if alertingPlatform is Grafana" in {

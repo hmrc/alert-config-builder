@@ -364,7 +364,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       )
     }
 
-    "return TeamAlertConfigBuilder with correct ErrorsLoggedThreshold" in {
+    "return TeamAlertConfigBuilder with maxxed out ErrorsLoggedThreshold" in {
       val threshold = 13
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
@@ -377,8 +377,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("errors-logged-threshold") shouldBe JsNumber(threshold)
-      service2Config("errors-logged-threshold") shouldBe JsNumber(threshold)
+      service1Config("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with disabled ErrorsLoggedThreshold when alerting platform is Grafana" in {

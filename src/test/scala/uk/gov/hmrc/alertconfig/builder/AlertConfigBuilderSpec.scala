@@ -618,7 +618,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("exception-threshold") shouldBe expected
   }
 
-  "configure ErrorsLoggedThreshold with given thresholds when the alerting platform is Sensu" in {
+  "configure ErrorsLoggedThreshold with max thresholds when the alerting platform is Sensu" in {
     val threshold = 12
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withErrorsLoggedThreshold(threshold)
@@ -628,7 +628,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .asJsObject
       .fields
 
-    serviceConfig("errors-logged-threshold") shouldBe JsNumber(threshold)
+    serviceConfig("errors-logged-threshold") shouldBe JsNumber(Int.MaxValue)
   }
 
   "disable ErrorsLoggedThreshold in Sensu when the alerting platform is Grafana" in {

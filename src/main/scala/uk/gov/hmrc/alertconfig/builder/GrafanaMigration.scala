@@ -126,7 +126,7 @@ object GrafanaMigration {
     Environment.Production -> Map(
       AlertType.AverageCPUThreshold                   -> AlertingPlatform.Sensu,
       AlertType.ContainerKillThreshold                -> AlertingPlatform.Sensu,
-      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Sensu,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
       AlertType.ExceptionThreshold                    -> AlertingPlatform.Sensu,
       AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Sensu, // see TEL-4446 - when we put this live, announce the new feature
       AlertType.Http5xxThreshold                      -> AlertingPlatform.Sensu,
