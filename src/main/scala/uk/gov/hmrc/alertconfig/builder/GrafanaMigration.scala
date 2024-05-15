@@ -124,7 +124,7 @@ object GrafanaMigration {
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
     Environment.Production -> Map(
-      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Sensu,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,
       AlertType.ContainerKillThreshold                -> AlertingPlatform.Sensu,
       AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
       AlertType.ExceptionThreshold                    -> AlertingPlatform.Sensu,
