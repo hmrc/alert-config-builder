@@ -18,12 +18,14 @@ package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
-/**
- *This alert will notify when your microservice throws a specified number of exceptions, at log level ERROR, within a 15-minute window.
- * @param count The number of exceptions thrown that this alert will trigger on
- * @param severity Whether to raise the alert as critical or warning
- * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
- */
+/** This alert will notify when your microservice throws a specified number of exceptions, at log level ERROR, within a 15-minute window.
+  * @param count
+  *   The number of exceptions thrown that this alert will trigger on
+  * @param severity
+  *   Whether to raise the alert as critical or warning
+  * @param alertingPlatform
+  *   The platform this alert will target. We are migrating towards Grafana and away from Sensu
+  */
 case class ExceptionThreshold(
     count: Int = 2,
     severity: AlertSeverity = AlertSeverity.Critical,

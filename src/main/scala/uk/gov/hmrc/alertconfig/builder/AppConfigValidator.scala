@@ -22,14 +22,13 @@ import java.io.{File, FileInputStream, FileNotFoundException}
 import scala.util.{Failure, Success, Try}
 import scala.jdk.CollectionConverters._
 
-
 object AppConfigValidator {
   val logger = new Logger()
 
   def getAppConfigFileForService(serviceName: String, platformService: Boolean): Option[File] = {
-    val appConfigPath = System.getProperty("app-config-path", "../app-config")
+    val appConfigPath      = System.getProperty("app-config-path", "../app-config")
     val appConfigDirectory = new File(appConfigPath)
-    val appConfigFile = new File(appConfigDirectory, s"${serviceName}.yaml")
+    val appConfigFile      = new File(appConfigDirectory, s"${serviceName}.yaml")
 
     if (!appConfigDirectory.exists)
       throw new FileNotFoundException(s"Could not find app-config repository: $appConfigPath")
@@ -51,7 +50,7 @@ object AppConfigValidator {
       case None       => false
     }
 
-  def getZone(serviceName:String, appConfigFile: File, platformService: Boolean = false): Option[String] =
+  def getZone(serviceName: String, appConfigFile: File, platformService: Boolean = false): Option[String] =
     if (platformService)
       None
     else {
@@ -68,4 +67,5 @@ object AppConfigValidator {
           versionObject.get("zone")
       }
     }
+
 }

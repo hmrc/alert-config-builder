@@ -50,17 +50,18 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
 
     "result in identical defaults to AlertConfigBuilder" in {
       val teamAlertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"))
-      val alertConfigBuilder = AlertConfigBuilder("service1")
+      val alertConfigBuilder     = AlertConfigBuilder("service1")
 
       val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
-      val configs = alertConfigBuilder.build.get.parseJson.asJsObject.fields
+      val configs     = alertConfigBuilder.build.get.parseJson.asJsObject.fields
 
       teamConfigs shouldBe List(configs)
     }
 
     "result in identical config to AlertConfigBuilder" in {
-      val teamAlertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"
-        )).withAverageCPUThreshold(50)
+      val teamAlertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1"))
+        .withAverageCPUThreshold(50)
         .withContainerKillThreshold(2)
         .withErrorsLoggedThreshold(5)
         .withExceptionThreshold(3)
@@ -68,7 +69,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withHttp5xxThreshold(15)
         .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 90))
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
-        .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical=Some(1000)))
+        .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
         .withLogMessageThreshold("BLAH", 1)
         .withTotalHttpRequestsCountThreshold(2000)
 
@@ -86,7 +87,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withTotalHttpRequestsCountThreshold(2000)
 
       val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
-      val configs = alertConfigBuilder.build.get.parseJson.asJsObject.fields
+      val configs     = alertConfigBuilder.build.get.parseJson.asJsObject.fields
 
       teamConfigs shouldBe List(configs)
     }
@@ -94,8 +95,9 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     "result in identical config to AlertConfigBuilder in migrated environment" in {
       EnvironmentVars.setEnv("ENVIRONMENT", "integration")
 
-      val teamAlertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1"
-        )).withAverageCPUThreshold(50)
+      val teamAlertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1"))
+        .withAverageCPUThreshold(50)
         .withContainerKillThreshold(2)
         .withErrorsLoggedThreshold(5)
         .withExceptionThreshold(3)
@@ -121,7 +123,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withTotalHttpRequestsCountThreshold(2000)
 
       val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
-      val configs = alertConfigBuilder.build.get.parseJson.asJsObject.fields
+      val configs     = alertConfigBuilder.build.get.parseJson.asJsObject.fields
 
       teamConfigs shouldBe List(configs)
 
@@ -175,7 +177,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "percentThreshold"  -> JsNumber(percent),
           "severity"          -> JsString(severity.toString),
           "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
-      ))
+        ))
 
       service1Config("absolute-percentage-split-threshold") shouldBe expected
       service2Config("absolute-percentage-split-threshold") shouldBe expected
@@ -271,22 +273,22 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"         -> JsString("critical"),
+        "severity"                     -> JsString("critical"),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "percentage"       -> JsNumber(threshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        "percentage"                   -> JsNumber(threshold),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"         -> JsString("critical"),
+        "severity"                     -> JsString("critical"),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "percentage"       -> JsNumber(threshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        "percentage"                   -> JsNumber(threshold),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
       )
     }
 
     "return TeamAlertConfigBuilder with disabled Http5xxPercentThreshold when alerting platform is Grafana" in {
-      val threshold          = 19.9
-      val disabledThreshold  = 333.33
+      val threshold         = 19.9
+      val disabledThreshold = 333.33
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
         .withHttp5xxPercentThreshold(threshold, alertingPlatform = AlertingPlatform.Grafana)
@@ -299,16 +301,16 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"         -> JsString("critical"),
+        "severity"                     -> JsString("critical"),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "percentage"       -> JsNumber(disabledThreshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+        "percentage"                   -> JsNumber(disabledThreshold),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Grafana.toString)
       )
       service2Config("5xx-percent-threshold") shouldBe JsObject(
-        "severity"         -> JsString("critical"),
+        "severity"                     -> JsString("critical"),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "percentage"       -> JsNumber(disabledThreshold),
-        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+        "percentage"                   -> JsNumber(disabledThreshold),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
 
@@ -530,7 +532,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsObject("alertingPlatform" -> JsString("Default"), "warning" -> JsNumber(10), "critical" -> JsNumber(5), "timePeriod" -> JsNumber(10))
+      val expected =
+        JsObject("alertingPlatform" -> JsString("Default"), "warning" -> JsNumber(10), "critical" -> JsNumber(5), "timePeriod" -> JsNumber(10))
 
       service1Config("http90PercentileResponseTimeThresholds") shouldBe expected
       service2Config("http90PercentileResponseTimeThresholds") shouldBe expected
@@ -549,7 +552,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsObject("alertingPlatform" -> JsString("Grafana"), "warning" -> JsNumber(10), "critical" -> JsNumber(5), "timePeriod" -> JsNumber(10))
+      val expected =
+        JsObject("alertingPlatform" -> JsString("Grafana"), "warning" -> JsNumber(10), "critical" -> JsNumber(5), "timePeriod" -> JsNumber(10))
 
       service1Config("http90PercentileResponseTimeThresholds") shouldBe expected
       service2Config("http90PercentileResponseTimeThresholds") shouldBe expected
@@ -662,7 +666,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
     }
 
     "return TeamAlertConfigBuilder with correct httpStatusPercentThresholds" in {
-      val threshold1 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, 19.1, AlertSeverity.Warning, HttpMethod.Post, alertingPlatform = AlertingPlatform.Grafana)
+      val threshold1 = HttpStatusPercentThreshold(
+        HttpStatus.HTTP_STATUS_500,
+        19.1,
+        AlertSeverity.Warning,
+        HttpMethod.Post,
+        alertingPlatform = AlertingPlatform.Grafana)
       val threshold2 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_501, 20, alertingPlatform = AlertingPlatform.Grafana)
       val threshold3 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS(555), 55.5, alertingPlatform = AlertingPlatform.Grafana)
       val threshold4 = HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_502, 10, alertingPlatform = AlertingPlatform.Grafana)
@@ -732,10 +741,10 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config: Map[String, JsValue] = configs(0)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "percentage"       -> JsNumber(12.2),
+        "percentage"                   -> JsNumber(12.2),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        "severity"                     -> JsString("warning"),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
       )
     }
 
@@ -751,16 +760,16 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config: Map[String, JsValue] = configs(0)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "percentage"       -> JsNumber(12.2),
+        "percentage"                   -> JsNumber(12.2),
         "minimumHttp5xxCountThreshold" -> JsNumber(15),
-        "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+        "severity"                     -> JsString("warning"),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
       )
     }
 
     "return TeamAlertConfigBuilder with disabled withHttp5xxPercentThreshold when alerting platform is Grafana" in {
-      val threshold          = 19.9
-      val disabledThreshold  = 333.33
+      val threshold         = 19.9
+      val disabledThreshold = 333.33
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
@@ -772,34 +781,37 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config: Map[String, JsValue] = configs(0)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "percentage"       -> JsNumber(disabledThreshold),
+        "percentage"                   -> JsNumber(disabledThreshold),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+        "severity"                     -> JsString("warning"),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
 
     "return TeamAlertConfigBuilder with disabled withHttp5xxPercentThreshold when alerting platform is Grafana supplying optional minimum http 5xx count" in {
-      val threshold          = 19.9
-      val disabledThreshold  = 333.33
+      val threshold         = 19.9
+      val disabledThreshold = 333.33
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1"))
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
-        .withHttp5xxPercentThreshold(threshold, minimumHttp5xxCountThreshold = 12, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
+        .withHttp5xxPercentThreshold(
+          threshold,
+          minimumHttp5xxCountThreshold = 12,
+          severity = AlertSeverity.Warning,
+          alertingPlatform = AlertingPlatform.Grafana)
 
       alertConfigBuilder.services shouldBe Seq("service1")
       val configs                              = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
       val service1Config: Map[String, JsValue] = configs(0)
 
       service1Config("5xx-percent-threshold") shouldBe JsObject(
-        "percentage"       -> JsNumber(disabledThreshold),
+        "percentage"                   -> JsNumber(disabledThreshold),
         "minimumHttp5xxCountThreshold" -> JsNumber(12),
-        "severity"         -> JsString("warning"),
-        "alertingPlatform" -> JsString(AlertingPlatform.Grafana.toString)
+        "severity"                     -> JsString("warning"),
+        "alertingPlatform"             -> JsString(AlertingPlatform.Grafana.toString)
       )
     }
-
 
     "return TeamAlertConfigBuilder with correct logMessageThresholds" in {
       val alertConfigBuilder = TeamAlertConfigBuilder

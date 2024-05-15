@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-
 object EvaluationOperator {
   type EvaluationOperator = String
 
   val GREATER_THAN = "gt"
-  val LESS_THAN = "lt"
+  val LESS_THAN    = "lt"
 }

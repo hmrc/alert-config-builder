@@ -21,24 +21,24 @@ case class TopLevelConfig(services: Seq[ServiceConfig])
 case class ServiceConfig(service: String, alerts: Alerts, pagerduty: Seq[PagerDuty])
 
 case class Alerts(
-  averageCPUThreshold: Option[YamlAverageCPUThresholdAlert] = None,
-  containerKillThreshold: Option[YamlContainerKillThresholdAlert] = None,
-  errorsLoggedThreshold: Option[YamlErrorsLoggedThresholdAlert] = None,
-  exceptionThreshold: Option[YamlExceptionThresholdAlert] = None,
-  logMessageThresholds: Option[Seq[YamlLogMessageThresholdAlert]] = None,
-  http5xxThreshold: Option[YamlHttp5xxThresholdAlert] = None,
-  http5xxPercentThreshold: Option[YamlHttp5xxPercentThresholdAlert] = None,
-  httpAbsolutePercentSplitThreshold: Option[Seq[YamlHttpAbsolutePercentSplitThresholdAlert]] = None,
-  httpStatusPercentThresholds: Option[Seq[YamlHttpStatusPercentThresholdAlert]] = None,
-  httpStatusThresholds: Option[Seq[YamlHttpStatusThresholdAlert]] = None,
-  httpTrafficThresholds: Option[Seq[YamlHttpTrafficThresholdAlert]] = None,
-  totalHttpRequestThreshold: Option[YamlTotalHttpRequestThresholdAlert] = None,
-  metricsThresholds: Option[Seq[YamlMetricsThresholdAlert]] = None,
-  http90PercentileResponseTimeThreshold: Option[Seq[YamlHttp90PercentileResponseTimeThresholdAlert]] = None,
+    averageCPUThreshold: Option[YamlAverageCPUThresholdAlert] = None,
+    containerKillThreshold: Option[YamlContainerKillThresholdAlert] = None,
+    errorsLoggedThreshold: Option[YamlErrorsLoggedThresholdAlert] = None,
+    exceptionThreshold: Option[YamlExceptionThresholdAlert] = None,
+    logMessageThresholds: Option[Seq[YamlLogMessageThresholdAlert]] = None,
+    http5xxThreshold: Option[YamlHttp5xxThresholdAlert] = None,
+    http5xxPercentThreshold: Option[YamlHttp5xxPercentThresholdAlert] = None,
+    httpAbsolutePercentSplitThreshold: Option[Seq[YamlHttpAbsolutePercentSplitThresholdAlert]] = None,
+    httpStatusPercentThresholds: Option[Seq[YamlHttpStatusPercentThresholdAlert]] = None,
+    httpStatusThresholds: Option[Seq[YamlHttpStatusThresholdAlert]] = None,
+    httpTrafficThresholds: Option[Seq[YamlHttpTrafficThresholdAlert]] = None,
+    totalHttpRequestThreshold: Option[YamlTotalHttpRequestThresholdAlert] = None,
+    metricsThresholds: Option[Seq[YamlMetricsThresholdAlert]] = None,
+    http90PercentileResponseTimeThreshold: Option[Seq[YamlHttp90PercentileResponseTimeThresholdAlert]] = None
 )
 
 case class PagerDuty(
-  // name: String,
-  integrationKeyName: String
-  // slackChannel: String
+    // name: String,
+    integrationKeyName: String
+    // slackChannel: String
 )

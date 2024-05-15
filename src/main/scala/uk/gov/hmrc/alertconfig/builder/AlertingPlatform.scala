@@ -18,30 +18,26 @@ package uk.gov.hmrc.alertconfig.builder
 
 sealed trait AlertingPlatform
 
-/**
- * Configuration object to select an alerting platform
- * Defaults can be seen in GrafanaMigration
- * @see GrafanaMigration.scala
- */
+/** Configuration object to select an alerting platform Defaults can be seen in GrafanaMigration
+  * @see
+  *   GrafanaMigration.scala
+  */
 object AlertingPlatform {
 
-  /**
-   * Specifies the default alerting platform
-   */
+  /** Specifies the default alerting platform
+    */
   object Default extends AlertingPlatform {
     override def toString: String = "Default"
   }
 
-  /**
-   * Specifies the alerting platform to be Grafana
-   */
+  /** Specifies the alerting platform to be Grafana
+    */
   object Grafana extends AlertingPlatform {
     override def toString: String = "Grafana"
   }
 
-  /**
-   * Specifies the alerting platform to be Sensu
-   */
+  /** Specifies the alerting platform to be Sensu
+    */
   object Sensu extends AlertingPlatform {
     override def toString: String = "Sensu"
   }

@@ -34,8 +34,8 @@ class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeA
 
   "generate" should {
     "create a correctly defined YAML file containing integrations and severities for that env only" in {
-      val tmpDir = Files.createTempDirectory("integrations-test")
-      val testFile = new File(s"$tmpDir/integrations.yaml")
+      val tmpDir             = Files.createTempDirectory("integrations-test")
+      val testFile           = new File(s"$tmpDir/integrations.yaml")
       val currentEnvironment = Environment.Production
 
       val environmentAlertBuilders: Seq[EnvironmentAlertBuilder] = Seq(
@@ -60,8 +60,7 @@ class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeA
           |      - warning
           |  - name: team-telemetry-critical-only
           |    severitiesEnabled:
-          |      - critical"""
-          .stripMargin
+          |      - critical""".stripMargin
 
     }
   }

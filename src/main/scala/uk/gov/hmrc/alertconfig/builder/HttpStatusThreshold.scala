@@ -18,14 +18,19 @@ package uk.gov.hmrc.alertconfig.builder
 
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
-/**
- * This alert will notify when your microservice returns a specified number of requests with a given http status code (between 400 and 599) within a 15-minute window.
- * @param httpStatus The http status code that this alert will trigger on (429, 499-504)
- * @param count The number of http responses with the given status code to alert on
- * @param severity Whether to raise the alert as critical or warning
- * @param httpMethod The http method to filter all requests by (one of All, Post, Get, Put, Delete)
- * @param alertingPlatform The platform this alert will target. We are migrating towards Grafana and away from Sensu
- */
+/** This alert will notify when your microservice returns a specified number of requests with a given http status code (between 400 and 599) within a
+  * 15-minute window.
+  * @param httpStatus
+  *   The http status code that this alert will trigger on (429, 499-504)
+  * @param count
+  *   The number of http responses with the given status code to alert on
+  * @param severity
+  *   Whether to raise the alert as critical or warning
+  * @param httpMethod
+  *   The http method to filter all requests by (one of All, Post, Get, Put, Delete)
+  * @param alertingPlatform
+  *   The platform this alert will target. We are migrating towards Grafana and away from Sensu
+  */
 case class HttpStatusThreshold(
     httpStatus: HttpStatus.HTTP_STATUS,
     count: Int = 1,

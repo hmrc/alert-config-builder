@@ -16,169 +16,163 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-
 sealed trait AlertType
 
 object AlertType {
 
-  object AverageCPUThreshold extends AlertType
-  object ContainerKillThreshold extends AlertType
-  object ErrorsLoggedThreshold extends AlertType
-  object ExceptionThreshold extends AlertType
-  object Http5xxPercentThreshold extends AlertType
-  object Http5xxThreshold extends AlertType
-  object HttpAbsolutePercentSplitThreshold extends AlertType
-  object HttpStatusPercentThreshold extends AlertType
-  object HttpStatusThreshold extends AlertType
-  object HttpTrafficThreshold extends AlertType
-  object LogMessageThreshold extends AlertType
-  object MetricsThreshold extends AlertType
-  object TotalHttpRequestThreshold extends AlertType
+  object AverageCPUThreshold                   extends AlertType
+  object ContainerKillThreshold                extends AlertType
+  object ErrorsLoggedThreshold                 extends AlertType
+  object ExceptionThreshold                    extends AlertType
+  object Http5xxPercentThreshold               extends AlertType
+  object Http5xxThreshold                      extends AlertType
+  object HttpAbsolutePercentSplitThreshold     extends AlertType
+  object HttpStatusPercentThreshold            extends AlertType
+  object HttpStatusThreshold                   extends AlertType
+  object HttpTrafficThreshold                  extends AlertType
+  object LogMessageThreshold                   extends AlertType
+  object MetricsThreshold                      extends AlertType
+  object TotalHttpRequestThreshold             extends AlertType
   object Http90PercentileResponseTimeThreshold extends AlertType
 }
 
-/**
- * This class determines which standard alerts go where in each environment.
- *
- * This is so that the Telemetry team can safely migrate alerts gradually rather
- * than "big bang"ing them out
- */
+/** This class determines which standard alerts go where in each environment.
+  *
+  * This is so that the Telemetry team can safely migrate alerts gradually rather than "big bang"ing them out
+  */
 object GrafanaMigration {
 
   val config = Map(
     Environment.Integration -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
-      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold                -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
-
     Environment.Development -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
-      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold                -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
-
     Environment.Qa -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
-      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold                -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
-
     Environment.Staging -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
-      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold                -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     ),
-
     Environment.ExternalTest -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
-      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold                -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Sensu,
+      AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
     ),
-
     Environment.Production -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Sensu,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Sensu,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Sensu,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Sensu,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Sensu, // see TEL-4446 - when we put this live, announce the new feature
-      AlertType.Http5xxThreshold -> AlertingPlatform.Sensu,
-      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Sensu,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Sensu,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Sensu,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Sensu,
-      AlertType.MetricsThreshold -> AlertingPlatform.Sensu,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Sensu,
+      AlertType.ContainerKillThreshold                -> AlertingPlatform.Sensu,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Sensu,
+      AlertType.ExceptionThreshold                    -> AlertingPlatform.Sensu,
+      AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Sensu, // see TEL-4446 - when we put this live, announce the new feature
+      AlertType.Http5xxThreshold                      -> AlertingPlatform.Sensu,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Sensu,
+      AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold                   -> AlertingPlatform.Sensu,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Sensu,
+      AlertType.LogMessageThreshold                   -> AlertingPlatform.Sensu,
+      AlertType.MetricsThreshold                      -> AlertingPlatform.Sensu,
+      AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Sensu
     ),
-
     Environment.Management -> Map(
-      AlertType.AverageCPUThreshold -> AlertingPlatform.Grafana,
-      AlertType.ContainerKillThreshold -> AlertingPlatform.Grafana,
-      AlertType.ErrorsLoggedThreshold -> AlertingPlatform.Grafana,
-      AlertType.ExceptionThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.Http5xxThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusPercentThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpStatusThreshold -> AlertingPlatform.Grafana,
-      AlertType.HttpTrafficThreshold -> AlertingPlatform.Grafana,
-      AlertType.LogMessageThreshold -> AlertingPlatform.Grafana,
-      AlertType.MetricsThreshold -> AlertingPlatform.Grafana,
-      AlertType.TotalHttpRequestThreshold -> AlertingPlatform.Grafana,
+      AlertType.AverageCPUThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.ContainerKillThreshold                -> AlertingPlatform.Grafana,
+      AlertType.ErrorsLoggedThreshold                 -> AlertingPlatform.Grafana,
+      AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
+      AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
+      AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
+      AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
+      AlertType.LogMessageThreshold                   -> AlertingPlatform.Grafana,
+      AlertType.MetricsThreshold                      -> AlertingPlatform.Grafana,
+      AlertType.TotalHttpRequestThreshold             -> AlertingPlatform.Grafana,
       AlertType.Http90PercentileResponseTimeThreshold -> AlertingPlatform.Grafana
     )
   )
 
-  /**
-   *
-   * @param alertingPlatform Alerting platform to test for Grafana being enabled
-   * @param currentEnvironment env to test for Grafana being enabled
-   * @param alertType alert type to test for Grafana being enabled
-   * @return True if the alerting platform matches the data { alertingPlatform, currentEnvironment, alertType }.
-   *         All 3 must be matches for the stated alert in the stated env at the states severity to be Grafana-ised.
-   */
+  /** @param alertingPlatform
+    *   Alerting platform to test for Grafana being enabled
+    * @param currentEnvironment
+    *   env to test for Grafana being enabled
+    * @param alertType
+    *   alert type to test for Grafana being enabled
+    * @return
+    *   True if the alerting platform matches the data { alertingPlatform, currentEnvironment, alertType }. All 3 must be matches for the stated alert
+    *   in the stated env at the states severity to be Grafana-ised.
+    */
   def isGrafanaEnabled(alertingPlatform: AlertingPlatform, currentEnvironment: Environment, alertType: AlertType): Boolean = {
     alertingPlatform match {
-      case AlertingPlatform.Sensu => false
+      case AlertingPlatform.Sensu   => false
       case AlertingPlatform.Grafana => true
-      case _ => config(currentEnvironment)(alertType) == AlertingPlatform.Grafana
+      case _                        => config(currentEnvironment)(alertType) == AlertingPlatform.Grafana
     }
   }
+
 }

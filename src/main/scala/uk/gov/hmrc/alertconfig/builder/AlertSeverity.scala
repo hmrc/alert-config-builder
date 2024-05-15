@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-/**
- * An enumeration of sorts that encapsulates all the possible alert severities supported
- * by alert-config
- */
+/** An enumeration of sorts that encapsulates all the possible alert severities supported by alert-config
+  */
 sealed trait AlertSeverity
 
 object AlertSeverity {
-  object Info     extends AlertSeverity { override def toString: String = "info"  }
+  object Info     extends AlertSeverity { override def toString: String = "info"     }
   object Warning  extends AlertSeverity { override def toString: String = "warning"  }
   object Critical extends AlertSeverity { override def toString: String = "critical" }
 }

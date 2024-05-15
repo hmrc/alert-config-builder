@@ -20,9 +20,9 @@ object ReducerFunction {
   type ReducerFunction = String
 
   val COUNT = "count"
-  val LAST = "last"
-  val MAX = "max"
-  val MEAN = "mean"
-  val MIN = "min"
-  val SUM = "sum"
+  val LAST  = "last"
+  val MAX   = "max"
+  val MEAN  = "mean"
+  val MIN   = "min"
+  val SUM   = "sum"
 }
