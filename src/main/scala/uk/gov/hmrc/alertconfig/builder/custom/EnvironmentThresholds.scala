@@ -113,7 +113,7 @@ object EnvironmentThresholds {
     * @return
     *   EnvironmentThresholds with the same threshold for production and external test environments.
     */
-  def forAllPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+  def forAllProdEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold)
   )
@@ -125,7 +125,7 @@ object EnvironmentThresholds {
     * @return
     *   EnvironmentThresholds with the same threshold for all non-production environments.
     */
-  def forAllNonPordEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+  def forAllNonProdEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
     staging = Some(threshold),
     qa = Some(threshold),
     development = Some(threshold),
