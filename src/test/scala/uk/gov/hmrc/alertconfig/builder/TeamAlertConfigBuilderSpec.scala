@@ -590,8 +590,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         )
       )
 
-      service1Config("httpTrafficThresholds") shouldBe expected
-      service2Config("httpTrafficThresholds") shouldBe expected
+      service1Config("httpTrafficThresholds") shouldBe JsArray()
+      service2Config("httpTrafficThresholds") shouldBe JsArray()
     }
 
     "return TeamAlertConfigBuilder with empty httpTrafficThreshold when alerting platform is Grafana" in {
