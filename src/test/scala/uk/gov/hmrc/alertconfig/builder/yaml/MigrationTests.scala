@@ -58,13 +58,13 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(60))
     }
 
-    "averageCPUThreshold should be disabled by default in production" in {
+    "averageCPUThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withAverageCPUThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.averageCPUThreshold shouldBe None
+      output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(60))
     }
 
     "averageCPUThreshold should be disabled if alertingPlatform is Sensu" in {

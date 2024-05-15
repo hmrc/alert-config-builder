@@ -709,7 +709,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .asJsObject
       .fields
 
-    serviceConfig("average-cpu-threshold") shouldBe JsNumber(threshold)
+    serviceConfig("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
   }
 
   "disable averageCPUThreshold when the alerting platform is Grafana" in {
