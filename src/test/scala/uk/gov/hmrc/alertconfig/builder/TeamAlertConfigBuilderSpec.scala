@@ -179,8 +179,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
         ))
 
-      service1Config("absolute-percentage-split-threshold") shouldBe expected
-      service2Config("absolute-percentage-split-threshold") shouldBe expected
+      service1Config("absolute-percentage-split-threshold") shouldBe JsArray()
+      service2Config("absolute-percentage-split-threshold") shouldBe JsArray()
     }
 
     "return TeamAlertConfigBuilder with correct AbsolutePercentSplitDownstreamServiceThresholds" in {

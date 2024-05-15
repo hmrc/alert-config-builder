@@ -114,7 +114,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold                    -> AlertingPlatform.Grafana,
       AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold                      -> AlertingPlatform.Grafana,
-      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Sensu,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
       AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold                   -> AlertingPlatform.Grafana,
       AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,
@@ -130,7 +130,7 @@ object GrafanaMigration {
       AlertType.ExceptionThreshold                    -> AlertingPlatform.Sensu,
       AlertType.Http5xxPercentThreshold               -> AlertingPlatform.Sensu, // see TEL-4446 - when we put this live, announce the new feature
       AlertType.Http5xxThreshold                      -> AlertingPlatform.Sensu,
-      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Sensu,
+      AlertType.HttpAbsolutePercentSplitThreshold     -> AlertingPlatform.Grafana,
       AlertType.HttpStatusPercentThreshold            -> AlertingPlatform.Grafana,
       AlertType.HttpStatusThreshold                   -> AlertingPlatform.Sensu,
       AlertType.HttpTrafficThreshold                  -> AlertingPlatform.Grafana,

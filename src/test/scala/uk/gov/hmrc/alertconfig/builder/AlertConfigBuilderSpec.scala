@@ -360,7 +360,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
           "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
         ))
 
-      serviceConfig("absolute-percentage-split-threshold") shouldBe expected
+      serviceConfig("absolute-percentage-split-threshold") shouldBe JsArray()
     }
 
     "configure metrics threshold with given warning and critical levels" in {
@@ -476,7 +476,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     )
 
-    serviceConfig("absolute-percentage-split-threshold") shouldBe expected
+    serviceConfig("absolute-percentage-split-threshold") shouldBe JsArray()
   }
 
   "configure HttpAbsolutePercentSplitDownstreamServiceThreshold with given thresholds" in {
