@@ -571,7 +571,14 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsArray()
+      val expected = JsArray(
+        JsObject(
+          "warning"                  -> JsNumber(10),
+          "critical"                 -> JsNumber(5),
+          "maxMinutesBelowThreshold" -> JsNumber(35),
+          "alertingPlatform"         -> JsString("Default")
+        )
+      )
 
       service1Config("httpTrafficThresholds") shouldBe expected
       service2Config("httpTrafficThresholds") shouldBe expected
