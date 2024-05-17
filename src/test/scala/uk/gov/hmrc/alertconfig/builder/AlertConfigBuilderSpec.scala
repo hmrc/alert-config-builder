@@ -301,7 +301,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     }
 
-    "disable httpTrafficThreshold with given thresholds when alerting platform is Sensu" in {
+    "configure httpTrafficThreshold with given thresholds when alerting platform is Sensu" in {
       val threshold = HttpTrafficThreshold(Some(10), Some(5), 35)
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(threshold)
@@ -311,7 +311,14 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("httpTrafficThresholds") shouldBe JsArray()
+      serviceConfig("httpTrafficThresholds") shouldBe JsArray(
+        JsObject(
+          "warning"                  -> JsNumber(10),
+          "critical"                 -> JsNumber(5),
+          "maxMinutesBelowThreshold" -> JsNumber(35),
+          "alertingPlatform"         -> JsString(AlertingPlatform.Default.toString)
+        )
+      )
     }
 
     "disable httpTrafficThreshold in Sensu when alerting platform is Grafana" in {
