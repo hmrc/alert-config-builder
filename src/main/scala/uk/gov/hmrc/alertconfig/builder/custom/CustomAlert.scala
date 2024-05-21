@@ -15,6 +15,7 @@
  */
 
 package uk.gov.hmrc.alertconfig.builder.custom
+
 import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 
 trait CustomAlert {
