@@ -24,9 +24,9 @@ import java.io.File
 case class CustomAlertsTopLevel(alerts: CustomAlerts)
 
 case class CustomAlerts(
-    customLogAlerts: Seq[CustomLogAlert],
-    customMetricAlerts: Seq[CustomMetricAlert],
-    customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
+                         customLogAlerts: Seq[CustomLogAlert],
+                         customMetricAlerts: Seq[CustomGraphiteMetricAlert],
+                         customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
 )
 
 object CustomAlertConfigYamlBuilder {
@@ -45,8 +45,8 @@ object CustomAlertConfigYamlBuilder {
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
-    val customMetricAlerts: Seq[CustomMetricAlert] = activeAlerts
-      .collect { case alert: CustomMetricAlert =>
+    val customMetricAlerts: Seq[CustomGraphiteMetricAlert] = activeAlerts
+      .collect { case alert: CustomGraphiteMetricAlert =>
         alert
       }
       .map { alert =>
