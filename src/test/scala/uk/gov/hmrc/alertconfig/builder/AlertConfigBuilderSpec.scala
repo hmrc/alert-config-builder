@@ -530,6 +530,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val target        = "hod-endpoint"
     val severity      = AlertSeverity.Warning
 
+
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitDownstreamHodThreshold(
         HttpAbsolutePercentSplitDownstreamHodThreshold(percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, severity))
@@ -548,7 +549,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         "excludeSpikes"     -> JsNumber(excludeSpikes),
         "hysteresis"        -> JsNumber(hysteresis),
         "percentThreshold"  -> JsNumber(percent),
-        "severity"          -> JsString("warning")
+        "severity"          -> JsString("warning"),
+        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
       ))
 
     serviceConfig("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
