@@ -45,7 +45,7 @@ class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeA
         // This one should not appear in the output YAML
         EnvironmentAlertBuilder("team-telemetry-non-prod-one").disableProduction().inIntegration(Set(Severity.Warning, Severity.Critical))
       )
-      IntegrationsYamlBuilder.generate(environmentAlertBuilders, Seq(), currentEnvironment, testFile)
+      IntegrationsYamlBuilder.generate(environmentAlertBuilders, currentEnvironment, testFile)
 
       val yamlFromDisk = Source.fromFile(testFile).getLines().mkString("\n")
 
