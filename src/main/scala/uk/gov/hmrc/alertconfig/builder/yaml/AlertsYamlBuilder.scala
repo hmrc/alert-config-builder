@@ -120,16 +120,15 @@ object AlertsYamlBuilder {
       exceptionThreshold = convertExceptionThreshold(alertConfigBuilder.exceptionThreshold, currentEnvironment),
       http5xxPercentThreshold = convertHttp5xxPercentThresholds(alertConfigBuilder.http5xxPercentThreshold, currentEnvironment),
       http5xxThreshold = convertHttp5xxThreshold(alertConfigBuilder.http5xxThreshold, currentEnvironment),
-      httpAbsolutePercentSplitThreshold =
-        convertHttpAbsolutePercentSplitThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitThresholds, currentEnvironment),
+      httpAbsolutePercentSplitThreshold = convertHttpAbsolutePercentSplitThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitThresholds, currentEnvironment),
+      httpAbsolutePercentSplitDownstreamHodThreshold = convertHttpAbsolutePercentSplitDownstreamHodThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds, currentEnvironment),
       httpStatusPercentThresholds = convertHttpStatusPercentThresholdAlerts(alertConfigBuilder.httpStatusPercentThresholds, currentEnvironment),
       httpStatusThresholds = convertHttpStatusThresholds(alertConfigBuilder.httpStatusThresholds, currentEnvironment),
       httpTrafficThresholds = convertHttpTrafficThresholds(alertConfigBuilder.httpTrafficThresholds, currentEnvironment),
       logMessageThresholds = convertLogMessageThresholdAlerts(alertConfigBuilder.logMessageThresholds, currentEnvironment),
       totalHttpRequestThreshold = convertTotalHttpRequestThreshold(alertConfigBuilder.totalHttpRequestThreshold, currentEnvironment),
       metricsThresholds = convertMetricsThreshold(alertConfigBuilder.metricsThresholds, currentEnvironment),
-      http90PercentileResponseTimeThreshold =
-        convertHttp90PercentileResponseTimeThreshold(alertConfigBuilder.http90PercentileResponseTimeThresholds, currentEnvironment)
+      http90PercentileResponseTimeThreshold = convertHttp90PercentileResponseTimeThreshold(alertConfigBuilder.http90PercentileResponseTimeThresholds, currentEnvironment)
     )
   }
 
@@ -219,6 +218,29 @@ object AlertsYamlBuilder {
           hysteresis = threshold.hysteresis,
           excludeSpikes = threshold.excludeSpikes,
           errorFilter = threshold.errorFilter,
+          severity = threshold.severity.toString
+        )
+      }
+    Option.when(converted.nonEmpty)(converted)
+  }
+
+  def convertHttpAbsolutePercentSplitDownstreamHodThresholdAlert(httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold],
+                                                                 currentEnvironment: Environment): Option[Seq[YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert]] = {
+    val converted = httpAbsolutePercentSplitDownstreamHodThresholds
+      .withFilter(alert =>
+        isGrafanaEnabled(
+          alert.alertingPlatform,
+          currentEnvironment,
+          AlertType.HttpAbsolutePercentSplitDownstreamHodThreshold) && alert.absoluteThreshold < Int.MaxValue)
+      .map { threshold =>
+        YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert(
+          percentThreshold = threshold.percentThreshold,
+          crossover = threshold.crossOver,
+          absoluteThreshold = threshold.absoluteThreshold,
+          hysteresis = threshold.hysteresis,
+          excludeSpikes = threshold.excludeSpikes,
+          errorFilter = threshold.errorFilter,
+          target = threshold.target,
           severity = threshold.severity.toString
         )
       }
