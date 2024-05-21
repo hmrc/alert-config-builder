@@ -16,7 +16,10 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
+import uk.gov.hmrc.alertconfig.builder.EnvironmentAlertBuilder
+
 trait CustomAlertConfig {
   def customAlerts: Seq[CustomAlert]
 
+  def environmentConfig: Seq[EnvironmentAlertBuilder] = customAlerts.flatMap(_.integrations).map(EnvironmentAlertBuilder(_))
 }
