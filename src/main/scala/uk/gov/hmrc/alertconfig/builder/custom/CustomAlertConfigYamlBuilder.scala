@@ -24,9 +24,9 @@ import java.io.File
 case class CustomAlertsTopLevel(alerts: CustomAlerts)
 
 case class CustomAlerts(
-                         customLogAlerts: Seq[CustomLogAlert],
-                         customGraphiteMetricAlert: Seq[CustomGraphiteMetricAlert],
-                         customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
+    customLogAlerts: Seq[CustomLogAlert],
+    customGraphiteMetricAlert: Seq[CustomGraphiteMetricAlert],
+    customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
 )
 
 object CustomAlertConfigYamlBuilder {
