@@ -37,11 +37,11 @@ object IntegrationsYamlBuilder {
         // This is a clumsy implementation of adding the INFO status.
         //
         // It must only be added for:
-        // 1. the "team-telemetry-heartbeat" integration
+        // 1. the "team-telemetry-heartbeat-custom" integration
         // 2. in YAML (for Grafana)
         //
         // If we turn it on in Sensu, the entirety of Sensu crashes HARD! see TEL-4404
-        if (builder.integrationName.equals("team-telemetry-heartbeat")) {
+        if (builder.integrationName.equals("team-telemetry-heartbeat-custom")) {
           Integration(
             name = builder.integrationName,
             severitiesEnabled = Seq(Critical, Warning, Info).map(_.toString)
