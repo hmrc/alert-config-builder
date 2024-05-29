@@ -301,7 +301,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       )
     }
 
-    "disable httpTrafficThreshold with given thresholds when alerting platform is Sensu" in {
+    "configure httpTrafficThreshold with given thresholds when alerting platform is Sensu" in {
       val threshold = HttpTrafficThreshold(Some(10), Some(5), 35)
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpTrafficThreshold(threshold)
@@ -311,7 +311,14 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("httpTrafficThresholds") shouldBe JsArray()
+      serviceConfig("httpTrafficThresholds") shouldBe JsArray(
+        JsObject(
+          "warning"                  -> JsNumber(10),
+          "critical"                 -> JsNumber(5),
+          "maxMinutesBelowThreshold" -> JsNumber(35),
+          "alertingPlatform"         -> JsString(AlertingPlatform.Default.toString)
+        )
+      )
     }
 
     "disable httpTrafficThreshold in Sensu when alerting platform is Grafana" in {
@@ -523,6 +530,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val target        = "hod-endpoint"
     val severity      = AlertSeverity.Warning
 
+
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitDownstreamHodThreshold(
         HttpAbsolutePercentSplitDownstreamHodThreshold(percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, severity))
@@ -541,7 +549,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         "excludeSpikes"     -> JsNumber(excludeSpikes),
         "hysteresis"        -> JsNumber(hysteresis),
         "percentThreshold"  -> JsNumber(percent),
-        "severity"          -> JsString("warning")
+        "severity"          -> JsString("warning"),
+        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
       ))
 
     serviceConfig("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
@@ -709,7 +718,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .asJsObject
       .fields
 
-    serviceConfig("average-cpu-threshold") shouldBe JsNumber(threshold)
+    serviceConfig("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
   }
 
   "disable averageCPUThreshold when the alerting platform is Grafana" in {

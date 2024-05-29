@@ -54,6 +54,17 @@ case class YamlHttpAbsolutePercentSplitThresholdAlert(
     severity: String
 )
 
+case class YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert(
+    percentThreshold: Double,
+    crossover: Int,
+    absoluteThreshold: Int,
+    hysteresis: Double,
+    excludeSpikes: Int,
+    errorFilter: String,
+    target: String,
+    severity: String
+)
+
 case class YamlHttpStatusThresholdAlert(
     count: Int = 1,
     httpMethod: String,

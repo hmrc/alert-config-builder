@@ -29,6 +29,7 @@ case class Alerts(
     http5xxThreshold: Option[YamlHttp5xxThresholdAlert] = None,
     http5xxPercentThreshold: Option[YamlHttp5xxPercentThresholdAlert] = None,
     httpAbsolutePercentSplitThreshold: Option[Seq[YamlHttpAbsolutePercentSplitThresholdAlert]] = None,
+    httpAbsolutePercentSplitDownstreamHodThreshold: Option[Seq[YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert]] = None,
     httpStatusPercentThresholds: Option[Seq[YamlHttpStatusPercentThresholdAlert]] = None,
     httpStatusThresholds: Option[Seq[YamlHttpStatusThresholdAlert]] = None,
     httpTrafficThresholds: Option[Seq[YamlHttpTrafficThresholdAlert]] = None,

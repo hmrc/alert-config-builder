@@ -167,20 +167,10 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsArray(
-        JsObject(
-          "absoluteThreshold" -> JsNumber(absolute),
-          "crossOver"         -> JsNumber(crossover),
-          "errorFilter"       -> JsString(filter),
-          "excludeSpikes"     -> JsNumber(spikes),
-          "hysteresis"        -> JsNumber(hysteresis),
-          "percentThreshold"  -> JsNumber(percent),
-          "severity"          -> JsString(severity.toString),
-          "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
-        ))
+      val expected = JsArray()
 
-      service1Config("absolute-percentage-split-threshold") shouldBe JsArray()
-      service2Config("absolute-percentage-split-threshold") shouldBe JsArray()
+      service1Config("absolute-percentage-split-threshold") shouldBe expected
+      service2Config("absolute-percentage-split-threshold") shouldBe expected
     }
 
     "return TeamAlertConfigBuilder with correct AbsolutePercentSplitDownstreamServiceThresholds" in {
@@ -231,6 +221,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val target     = "hod-endpoint"
       val severity   = AlertSeverity.Warning
 
+
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitDownstreamHodThreshold(
@@ -252,7 +243,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
           "excludeSpikes"     -> JsNumber(spikes),
           "hysteresis"        -> JsNumber(hysteresis),
           "percentThreshold"  -> JsNumber(percent),
-          "severity"          -> JsString(severity.toString)
+          "severity"          -> JsString(severity.toString),
+          "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
         ))
 
       service1Config("absolute-percentage-split-downstream-hod-threshold") shouldBe expected
@@ -460,8 +452,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("average-cpu-threshold") shouldBe JsNumber(threshold)
-      service2Config("average-cpu-threshold") shouldBe JsNumber(threshold)
+      service1Config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with disabled AverageCPUThreshold when alerting plaform is Grafana" in {
@@ -590,8 +582,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         )
       )
 
-      service1Config("httpTrafficThresholds") shouldBe JsArray()
-      service2Config("httpTrafficThresholds") shouldBe JsArray()
+      service1Config("httpTrafficThresholds") shouldBe expected
+      service2Config("httpTrafficThresholds") shouldBe expected
     }
 
     "return TeamAlertConfigBuilder with empty httpTrafficThreshold when alerting platform is Grafana" in {

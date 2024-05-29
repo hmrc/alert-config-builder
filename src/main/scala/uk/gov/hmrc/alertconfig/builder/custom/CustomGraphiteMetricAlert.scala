@@ -47,7 +47,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
   * @param thresholds
   *   Trigger point for each environment
   */
-case class CustomMetricAlert(
+case class CustomGraphiteMetricAlert(
     alertName: String,
     dashboardUri: Option[String],
     dashboardPanelId: Option[Int],

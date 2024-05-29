@@ -26,7 +26,8 @@ case class HttpAbsolutePercentSplitDownstreamHodThreshold(
     excludeSpikes: Int = 0,
     errorFilter: String = "status:>498",
     target: String = "",
-    severity: AlertSeverity = AlertSeverity.Critical
+    severity: AlertSeverity = AlertSeverity.Critical,
+    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
 object HttpAbsolutePercentSplitDownstreamHodThresholdProtocol {
@@ -34,7 +35,7 @@ object HttpAbsolutePercentSplitDownstreamHodThresholdProtocol {
 
   implicit val thresholdFormat: JsonFormat[HttpAbsolutePercentSplitDownstreamHodThreshold] = {
     implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
-    jsonFormat8(HttpAbsolutePercentSplitDownstreamHodThreshold)
+    jsonFormat9(HttpAbsolutePercentSplitDownstreamHodThreshold)
   }
 
 }
