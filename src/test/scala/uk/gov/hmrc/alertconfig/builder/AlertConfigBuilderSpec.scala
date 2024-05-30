@@ -250,7 +250,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .fields
 
       serviceConfig("5xx-threshold") shouldBe JsObject(
-        "count"            -> JsNumber(2),
+        "count"            -> JsNumber(Int.MaxValue),
         "severity"         -> JsString("critical"),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString))
     }
