@@ -811,7 +811,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withLogMessageThreshold("SIMULATED_ERROR1", 19, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR2", 20, lessThanMode = true)
         .withLogMessageThreshold("SIMULATED_ERROR3", 21, lessThanMode = true, AlertSeverity.Warning)
-        .withLogMessageThreshold("SIMULATED_ERROR4", 22, alertingPlatform = AlertingPlatform.Grafana)
+        .withLogMessageThreshold("SIMULATED_ERROR4", 22, alertingPlatform = AlertingPlatform.Sensu)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -821,26 +821,13 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       val expected = JsArray(
+        // this one is filtered in because it was marked for Sensu
         JsObject(
-          "message"          -> JsString("SIMULATED_ERROR1"),
-          "count"            -> JsNumber(19),
+          "message"          -> JsString("SIMULATED_ERROR4"),
+          "count"            -> JsNumber(22),
           "lessThanMode"     -> JsFalse,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        ),
-        JsObject(
-          "message"          -> JsString("SIMULATED_ERROR2"),
-          "count"            -> JsNumber(20),
-          "lessThanMode"     -> JsTrue,
-          "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        ),
-        JsObject(
-          "message"          -> JsString("SIMULATED_ERROR3"),
-          "count"            -> JsNumber(21),
-          "lessThanMode"     -> JsTrue,
-          "severity"         -> JsString("warning"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
         )
       )
 

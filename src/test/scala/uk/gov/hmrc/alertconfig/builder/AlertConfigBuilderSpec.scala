@@ -261,42 +261,21 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .withLogMessageThreshold("SIMULATED_ERROR2", 4, lessThanMode = false)
         .withLogMessageThreshold("SIMULATED_ERROR3", 5, lessThanMode = true)
         .withLogMessageThreshold("SIMULATED_ERROR4", 6, lessThanMode = true, AlertSeverity.Warning)
-        .withLogMessageThreshold("SIMULATED_ERROR5", 7, alertingPlatform = AlertingPlatform.Grafana)
+        .withLogMessageThreshold("SIMULATED_ERROR5", 7, alertingPlatform = AlertingPlatform.Sensu)
         .build
         .get
         .parseJson
         .asJsObject
         .fields
 
-      // note that if alert is configured with alerting platform of Grafana (SIMULATED_ERROR5) that it is filtered out
+      // note that if alert is configured with alerting platform of Sensu (SIMULATED_ERROR7) that it is filtered in
       serviceConfig("log-message-thresholds") shouldBe JsArray(
         JsObject(
-          "message"          -> JsString("SIMULATED_ERROR1"),
-          "count"            -> JsNumber(3),
+          "message"          -> JsString("SIMULATED_ERROR5"),
+          "count"            -> JsNumber(7),
           "lessThanMode"     -> JsFalse,
           "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        ),
-        JsObject(
-          "message"          -> JsString("SIMULATED_ERROR2"),
-          "count"            -> JsNumber(4),
-          "lessThanMode"     -> JsFalse,
-          "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        ),
-        JsObject(
-          "message"          -> JsString("SIMULATED_ERROR3"),
-          "count"            -> JsNumber(5),
-          "lessThanMode"     -> JsTrue,
-          "severity"         -> JsString("critical"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        ),
-        JsObject(
-          "message"          -> JsString("SIMULATED_ERROR4"),
-          "count"            -> JsNumber(6),
-          "lessThanMode"     -> JsTrue,
-          "severity"         -> JsString("warning"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
+          "alertingPlatform" -> JsString(AlertingPlatform.Sensu.toString)
         )
       )
     }
@@ -355,19 +334,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      val expected = JsArray(
-        JsObject(
-          "errorFilter"       -> JsString("status:>498"),
-          "absoluteThreshold" -> JsNumber(Int.MaxValue),
-          "crossOver"         -> JsNumber(0),
-          "excludeSpikes"     -> JsNumber(0),
-          "hysteresis"        -> JsNumber(1.0),
-          "percentThreshold"  -> JsNumber(100.0),
-          "severity"          -> JsString("critical"),
-          "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
-        ))
+      val expected = JsArray()
 
-      serviceConfig("absolute-percentage-split-threshold") shouldBe JsArray()
+      serviceConfig("absolute-percentage-split-threshold") shouldBe expected
     }
 
     "configure metrics threshold with given warning and critical levels" in {
@@ -470,20 +439,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .asJsObject
       .fields
 
-    val expected = JsArray(
-      JsObject(
-        "errorFilter"       -> JsString(filter),
-        "absoluteThreshold" -> JsNumber(absolute),
-        "crossOver"         -> JsNumber(crossOver),
-        "excludeSpikes"     -> JsNumber(excludeSpikes),
-        "hysteresis"        -> JsNumber(hysteresis),
-        "percentThreshold"  -> JsNumber(percent),
-        "severity"          -> JsString("warning"),
-        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
-      )
-    )
+    val expected = JsArray()
 
-    serviceConfig("absolute-percentage-split-threshold") shouldBe JsArray()
+    serviceConfig("absolute-percentage-split-threshold") shouldBe expected
   }
 
   "configure HttpAbsolutePercentSplitDownstreamServiceThreshold with given thresholds" in {

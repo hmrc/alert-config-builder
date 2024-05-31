@@ -438,13 +438,15 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
         List(YamlLogMessageThresholdAlert(count = 60, lessThanMode = false, message = "LOG_MESSAGE", severity = "critical")))
     }
 
-    "LogMessageThreshold should be disabled by default in production" in {
+    "LogMessageThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withLogMessageThreshold("LOG_MESSAGE", 60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.logMessageThresholds shouldBe None
+      output.logMessageThresholds shouldBe Some(
+        List(YamlLogMessageThresholdAlert(60, lessThanMode = false, "LOG_MESSAGE", "critical"))
+      )
     }
 
     "MetricsThreshold should be enabled if alertingPlatform is Grafana" in {
