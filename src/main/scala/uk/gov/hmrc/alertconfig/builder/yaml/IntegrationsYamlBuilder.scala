@@ -17,7 +17,6 @@
 package uk.gov.hmrc.alertconfig.builder.yaml
 
 import uk.gov.hmrc.alertconfig.builder.Severity._
-import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertConfig
 import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder, Logger}
 
