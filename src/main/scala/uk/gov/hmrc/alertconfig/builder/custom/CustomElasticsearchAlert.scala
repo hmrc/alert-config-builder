@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-import uk.gov.hmrc.alertconfig.builder.custom.CloudWatchSource.CloudWatchSource
 import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
 import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
-import uk.gov.hmrc.alertconfig.builder.custom.Statistic.Statistic
+import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinutes
 
 /** CloudWatch metrics based alert.
   *
@@ -64,5 +63,5 @@ case class CustomElasticsearchAlert(
     summary: String,
     teamName: String,
     thresholds: EnvironmentThresholds,
-    timeRangeMinutes: Int
+    timeRangeMinutes: TimeRangeAsMinutes
 ) extends CustomAlert
