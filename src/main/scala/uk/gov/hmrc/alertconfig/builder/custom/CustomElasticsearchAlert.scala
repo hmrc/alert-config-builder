@@ -28,10 +28,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.Statistic.Statistic
   *   Name that the alert will be created with
   * @param checkIntervalMinutes
   *   Number of minutes between each check
-  * @param dashboardPanelId
-  *   Specific panel to deep link to that is specific to this alert
-  * @param dashboardUri
-  *   Grafana uri to link to. This should just be the uri path and not include the domain
+  * @param kibanaDashboardUri
+  *   Kibana uri to link to. This should just be the uri path and not include the domain
   * @param integrations
   *   Which PagerDuty integrations to direct this alert to n
   * @param luceneQuery
@@ -50,12 +48,13 @@ import uk.gov.hmrc.alertconfig.builder.custom.Statistic.Statistic
   *   All alerts are prefixed with the team name
   * @param thresholds
   *   Trigger point for each environment
+  * @param timeRangeMinutes
+  *   The number of minutes to look back in the search query e.g. 15 would mean 15m ago to now
   */
 case class CustomElasticsearchAlert(
     alertName: String,
     checkIntervalMinutes: Int,
-    dashboardPanelId: Option[Int],
-    dashboardUri: Option[String],
+    kibanaDashboardUri: Option[String],
     integrations: Seq[String],
     luceneQuery: String,
     operator: EvaluationOperator,
@@ -65,4 +64,5 @@ case class CustomElasticsearchAlert(
     summary: String,
     teamName: String,
     thresholds: EnvironmentThresholds,
+    timeRangeMinutes: Int
 ) extends CustomAlert
