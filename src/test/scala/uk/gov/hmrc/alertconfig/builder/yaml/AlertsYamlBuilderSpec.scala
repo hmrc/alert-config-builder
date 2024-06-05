@@ -95,7 +95,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
           .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = None))
           .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
-          .withTotalHttpRequestsCountThreshold(2, AlertingPlatform.Grafana)
+          .withTotalHttpRequestThreshold(2, AlertingPlatform.Grafana)
           .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
       )
 
@@ -264,7 +264,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Critical))
           .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = Some(1)))
           .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Critical, alertingPlatform = AlertingPlatform.Grafana)
-          .withTotalHttpRequestsCountThreshold(2, AlertingPlatform.Grafana)
+          .withTotalHttpRequestThreshold(2, AlertingPlatform.Grafana)
           .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
       )
 

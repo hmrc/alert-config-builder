@@ -489,7 +489,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
     "TotalHttpRequestThreshold should be enabled if alertingPlatform is Grafana" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Grafana)
+        .withTotalHttpRequestThreshold(60, AlertingPlatform.Grafana)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
@@ -498,7 +498,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
     "TotalHttpRequestThreshold should be disabled if alertingPlatform is Sensu" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withTotalHttpRequestsCountThreshold(60, AlertingPlatform.Sensu)
+        .withTotalHttpRequestThreshold(60, AlertingPlatform.Sensu)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -507,7 +507,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
     "TotalHttpRequestThreshold should be enabled by default in integration" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withTotalHttpRequestsCountThreshold(60)
+        .withTotalHttpRequestThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
@@ -516,7 +516,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
     "TotalHttpRequestThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withTotalHttpRequestsCountThreshold(60)
+        .withTotalHttpRequestThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
