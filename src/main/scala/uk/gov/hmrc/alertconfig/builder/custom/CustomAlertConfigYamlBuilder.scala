@@ -25,7 +25,7 @@ case class CustomAlertsTopLevel(alerts: CustomAlerts)
 
 case class CustomAlerts(
     customLogAlerts: Seq[CustomLogAlert],
-    customElasticsearchAlert: Seq[CustomElasticsearchAlert],
+    customElasticsearchAlerts: Seq[CustomElasticsearchAlert],
     customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert],
     customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
 )
@@ -70,7 +70,7 @@ object CustomAlertConfigYamlBuilder {
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
-    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customLogAlerts,customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
+    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customLogAlerts, customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
