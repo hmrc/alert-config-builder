@@ -259,9 +259,9 @@ case class AlertConfigBuilder(
     * @param alertingPlatform
     *   The that platform this alert should go to (Sensu or Grafana)
     * @return
-    *   <pre> {@code .withTotalHttpRequestsCountThreshold(1000) # alert when 1000 requests are received in a 15-minute window } </pre>
+    *   <pre> {@code .withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window } </pre>
     */
-  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
+  def withTotalHttpRequestThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   /** This alert will notify when the count of a given log message is logged exceeds a given threshold within a 15-minute window.
@@ -634,9 +634,9 @@ case class TeamAlertConfigBuilder(
     * @param alertingPlatform
     *   The that platform this alert should go to (Sensu or Grafana)
     * @return
-    *   <pre> {@code .withTotalHttpRequestsCountThreshold(1000) # alert when 1000 requests are received in a 15-minute window } </pre>
+    *   <pre> {@code .withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window } </pre>
     */
-  def withTotalHttpRequestsCountThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
+  def withTotalHttpRequestThreshold(threshold: Int, alertingPlatform: AlertingPlatform = AlertingPlatform.Default) =
     this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold, alertingPlatform))
 
   /** This alert will notify when the count of a given log message is logged exceeds a given threshold within a 15-minute window.

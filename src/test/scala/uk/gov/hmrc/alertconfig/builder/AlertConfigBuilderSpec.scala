@@ -754,7 +754,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
   "disable http request count threshold with given threshold when alerting platform is Grafana" in {
     val serviceConfig = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-      .withTotalHttpRequestsCountThreshold(500, AlertingPlatform.Grafana)
+      .withTotalHttpRequestThreshold(500, AlertingPlatform.Grafana)
       .build
       .get
       .parseJson
@@ -766,7 +766,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
   "disable http 5xx threshold in Sensu when alerting platform is Grafana" in {
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-      .withTotalHttpRequestsCountThreshold(500, AlertingPlatform.Grafana)
+      .withTotalHttpRequestThreshold(500, AlertingPlatform.Grafana)
       .build
       .get
       .parseJson

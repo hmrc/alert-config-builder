@@ -71,7 +71,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
         .withLogMessageThreshold("BLAH", 1)
-        .withTotalHttpRequestsCountThreshold(2000)
+        .withTotalHttpRequestThreshold(2000)
 
       val alertConfigBuilder = AlertConfigBuilder("service1")
         .withAverageCPUThreshold(50)
@@ -84,7 +84,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
         .withLogMessageThreshold("BLAH", 1)
-        .withTotalHttpRequestsCountThreshold(2000)
+        .withTotalHttpRequestThreshold(2000)
 
       val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
       val configs     = alertConfigBuilder.build.get.parseJson.asJsObject.fields
@@ -107,7 +107,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
         .withLogMessageThreshold("BLAH", 1)
-        .withTotalHttpRequestsCountThreshold(2000)
+        .withTotalHttpRequestThreshold(2000)
 
       val alertConfigBuilder = AlertConfigBuilder("service1")
         .withAverageCPUThreshold(50)
@@ -120,7 +120,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .withHttpStatusThreshold(HttpStatusThreshold(HttpStatus.HTTP_STATUS_502, 10))
         .withHttpTrafficThreshold(HttpTrafficThreshold(None, critical = Some(1000)))
         .withLogMessageThreshold("BLAH", 1)
-        .withTotalHttpRequestsCountThreshold(2000)
+        .withTotalHttpRequestThreshold(2000)
 
       val teamConfigs = teamAlertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
       val configs     = alertConfigBuilder.build.get.parseJson.asJsObject.fields
@@ -691,7 +691,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val requestThreshold = 35
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
-        .withTotalHttpRequestsCountThreshold(requestThreshold, AlertingPlatform.Grafana)
+        .withTotalHttpRequestThreshold(requestThreshold, AlertingPlatform.Grafana)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
@@ -708,7 +708,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val requestThreshold = 35
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
-        .withTotalHttpRequestsCountThreshold(requestThreshold, alertingPlatform = AlertingPlatform.Grafana)
+        .withTotalHttpRequestThreshold(requestThreshold, alertingPlatform = AlertingPlatform.Grafana)
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
       val configs = alertConfigBuilder.build.map(_.build.get.parseJson.asJsObject.fields)
