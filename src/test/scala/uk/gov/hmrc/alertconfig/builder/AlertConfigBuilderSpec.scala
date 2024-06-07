@@ -472,7 +472,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         "excludeSpikes"     -> JsNumber(excludeSpikes),
         "hysteresis"        -> JsNumber(hysteresis),
         "percentThreshold"  -> JsNumber(percent),
-        "severity"          -> JsString("warning")
+        "severity"          -> JsString("warning"),
+        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
       ))
 
     serviceConfig("absolute-percentage-split-downstream-service-threshold") shouldBe expected
