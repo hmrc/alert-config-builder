@@ -402,8 +402,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("containerKillThreshold") shouldBe JsNumber(1)
-      service2Config("containerKillThreshold") shouldBe JsNumber(1)
+      service1Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with correct ContainerKillThreshold" in {
@@ -419,8 +419,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      service1Config("containerKillThreshold") shouldBe JsNumber(threshold)
-      service2Config("containerKillThreshold") shouldBe JsNumber(threshold)
+      service1Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
+      service2Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "return TeamAlertConfigBuilder with disabled ContainerKillThreshold when alerting platform is Grafana" in {
@@ -850,9 +850,9 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       service1Config("app") shouldBe JsString("ingress-gateway-public.")
-      service1Config("containerKillThreshold") shouldBe JsNumber(1)
+      service1Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
       service2Config("app") shouldBe JsString("ingress-gateway-public-rate.")
-      service2Config("containerKillThreshold") shouldBe JsNumber(1)
+      service2Config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "throw exception if no service provided" in {

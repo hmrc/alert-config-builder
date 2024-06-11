@@ -103,13 +103,13 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
     }
 
-    "containerKillThreshold should be disabled by default in production" in {
+    "containerKillThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(60)
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.containerKillThreshold shouldBe None
+      output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(60))
     }
 
     "ErrorsLoggedThreshold should be enabled if alertingPlatform is Grafana" in {
