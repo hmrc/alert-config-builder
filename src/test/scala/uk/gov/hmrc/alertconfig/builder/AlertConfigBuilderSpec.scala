@@ -59,7 +59,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
       )
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
-      config("containerKillThreshold") shouldBe JsNumber(56)
+      config("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
       config("average-cpu-threshold") shouldBe JsNumber(Int.MaxValue)
       config("httpStatusThresholds") shouldBe JsArray()
       config("httpStatusPercentThresholds") shouldBe JsArray()
@@ -79,7 +79,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .fields
 
       platformServiceConfig("app") shouldBe JsString("ingress-gateway.")
-      platformServiceConfig("containerKillThreshold") shouldBe JsNumber(1)
+      platformServiceConfig("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
     }
 
     "throw exception and stop processing when app config directory not found" in {
@@ -727,20 +727,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     EnvironmentVars.unsetEnv("ENVIRONMENT")
   }
 
-  "use the configured value for containerKillThreshold when the alerting platform is Sensu" in {
-    val threshold = 3
-    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-      .withContainerKillThreshold(threshold)
-      .build
-      .get
-      .parseJson
-      .asJsObject
-      .fields
-
-    serviceConfig("containerKillThreshold") shouldBe JsNumber(threshold)
-  }
-
-  "disable containerKillThreshold in Sensu when the alerting platform is Grafana" in {
+  "use the configured value for containerKillThreshold when the alerting platform is Grafana" in {
     val threshold = 3
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withContainerKillThreshold(threshold, AlertingPlatform.Grafana)
@@ -751,6 +738,19 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .fields
 
     serviceConfig("containerKillThreshold") shouldBe JsNumber(Int.MaxValue)
+  }
+
+  "disable containerKillThreshold in Sensu when the alerting platform is Sensu" in {
+    val threshold = 3
+    val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
+      .withContainerKillThreshold(threshold, AlertingPlatform.Sensu)
+      .build
+      .get
+      .parseJson
+      .asJsObject
+      .fields
+
+    serviceConfig("containerKillThreshold") shouldBe JsNumber(threshold)
   }
 
   "disable http request count threshold with given threshold when alerting platform is Grafana" in {
