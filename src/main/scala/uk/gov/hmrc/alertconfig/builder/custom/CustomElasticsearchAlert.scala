@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
+import uk.gov.hmrc.alertconfig.builder.custom.CheckIntervalMinutes.CheckIntervalMinutes
 import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
 import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
@@ -26,7 +27,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   * @param alertName
   *   Name that the alert will be created with
   * @param checkIntervalMinutes
-  *   Number of minutes between each check
+  *   Number of minutes between each check. See [[CheckIntervalMinutes]] for supported values
   * @param kibanaDashboardUri
   *   Kibana uri to link to. This should just be the uri path and not include the domain
   * @param integrations
@@ -47,12 +48,10 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   All alerts are prefixed with the team name
   * @param thresholds
   *   Trigger point for each environment
-  * @param timeRangeMinutes
-  *   The number of minutes to look back in the search query e.g. 15 would mean 15m ago to now
   */
 case class CustomElasticsearchAlert(
     alertName: String,
-    checkIntervalMinutes: Int,
+    checkIntervalMinutes: CheckIntervalMinutes,
     kibanaDashboardUri: Option[String],
     integrations: Seq[String],
     luceneQuery: String,
