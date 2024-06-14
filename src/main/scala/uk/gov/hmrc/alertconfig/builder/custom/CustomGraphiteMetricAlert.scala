@@ -55,7 +55,7 @@ case class CustomGraphiteMetricAlert(
     operator: EvaluationOperator,
     query: String,
     teamName: String,
-    reducerFunction: Option[ReducerFunction] = Some(ReducerFunction.LAST),
+    reducerFunction: ReducerFunction,
     runbookUrl: Option[String],
     severity: AlertSeverity,
     summary: String,

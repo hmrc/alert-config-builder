@@ -24,7 +24,6 @@ import java.io.File
 case class CustomAlertsTopLevel(alerts: CustomAlerts)
 
 case class CustomAlerts(
-    customLogAlerts: Seq[CustomLogAlert],
     customElasticsearchAlerts: Seq[CustomElasticsearchAlert],
     customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert],
     customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
@@ -38,39 +37,22 @@ object CustomAlertConfigYamlBuilder {
     val currentEnvironment: Environment = Environment.get(environment)
     val activeAlerts: Seq[CustomAlert]  = filterDisabledAlerts(customAlerts, currentEnvironment)
 
-    val customLogAlerts: Seq[CustomLogAlert] = activeAlerts
-      .collect { case alert: CustomLogAlert =>
-        alert
-      }
-      .map { alert =>
-        alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
-      }
-
     val customElasticsearchAlerts: Seq[CustomElasticsearchAlert] = activeAlerts
       .collect { case alert: CustomElasticsearchAlert =>
-        alert
-      }
-      .map { alert =>
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
     val customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert] = activeAlerts
       .collect { case alert: CustomGraphiteMetricAlert =>
-        alert
-      }
-      .map { alert =>
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
     val customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert] = activeAlerts
       .collect { case alert: CustomCloudWatchMetricAlert =>
-        alert
-      }
-      .map { alert =>
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
-    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customLogAlerts, customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
+    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
