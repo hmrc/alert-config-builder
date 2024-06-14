@@ -38,7 +38,9 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   * @param teamName
   *   All alerts are prefixed with the team name
   * @param reducerFunction
-  *   Function to use when manipulate data returned from query
+  *   Function to use to transform multiple data points returned from query into a single value, to be compared against the specified threshold. Valid values include: COUNT, LAST, MAX, MEAN, MIN, SUM.
+  *   Note: Using the LAST reducer could result in not all data points being considered during alert evaluation, depending on the frequency at which the alert runs.
+  *   Example: An alert with a LAST reducer, that runs every 2 minutes, based on a metric that is written on a per minute basis, will only consider ~50% of the data points, potentially missing a legitimate breach of an alert threshold.
   * @param runbookUrl
   *   Runbook for when this alert fires
   * @param severity
