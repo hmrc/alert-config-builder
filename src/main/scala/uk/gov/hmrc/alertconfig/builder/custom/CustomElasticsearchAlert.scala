@@ -48,8 +48,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   All alerts are prefixed with the team name
   * @param thresholds
   *   Trigger point for each environment
-  * @param timeRangeStartMinutes The start of the evaluation period
-  * @param timeRangeEndMinutes The end of the evaluation period
+  * @param evaluationPeriodStartMinutesAgo The start of the evaluation period. If you set to FIFTEEN_MINUTES, the alert check will evaluate data starting fifteen minutes ago up until evaluationPeriodEndMinutesAgo
+  * @param evaluationPeriodEndMinutesAgo The end of the evaluation period. If you set it to ONE MINUTE, the alert check will evaluate data starting from evaluationPeriodStartMinutesAgo until one minute ago. Less than one minute ago is not advised because these metrics may not yet be fully shipped.
   */
 case class CustomElasticsearchAlert(
     alertName: String,
@@ -64,6 +64,6 @@ case class CustomElasticsearchAlert(
     summary: String,
     teamName: String,
     thresholds: EnvironmentThresholds,
-    timeRangeStartMinutes: TimeRangeAsMinutes,
-    timeRangeEndMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
+    evaluationPeriodStartMinutesAgo: TimeRangeAsMinutes,
+    evaluationPeriodEndMinutesAgo: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
 ) extends CustomAlert
