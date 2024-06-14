@@ -48,6 +48,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   All alerts are prefixed with the team name
   * @param thresholds
   *   Trigger point for each environment
+  * @param timeRangeStartMinutes The start of the evaluation period
+  * @param timeRangeEndMinutes The end of the evaluation period
   */
 case class CustomElasticsearchAlert(
     alertName: String,
@@ -62,5 +64,6 @@ case class CustomElasticsearchAlert(
     summary: String,
     teamName: String,
     thresholds: EnvironmentThresholds,
-    timeRangeMinutes: TimeRangeAsMinutes
+    timeRangeStartMinutes: TimeRangeAsMinutes,
+    timeRangeEndMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
 ) extends CustomAlert

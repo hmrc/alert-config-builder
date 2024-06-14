@@ -21,6 +21,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
 import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
 import uk.gov.hmrc.alertconfig.builder.custom.Statistic.Statistic
+import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinutes
 
 /** CloudWatch metrics based alert.
   *
@@ -56,6 +57,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.Statistic.Statistic
   *   Trigger point for each environment
   * @param statistic
   *   Used in the query. Valid values include Average, Maximum, Minimum, Sum, SampleCount, IQM
+  * @param timeRangeStartMinutes The start of the evaluation period
+  * @param timeRangeEndMinutes The end of the evaluation period
   */
 case class CustomCloudWatchMetricAlert(
     alertName: String,
@@ -74,4 +77,6 @@ case class CustomCloudWatchMetricAlert(
     teamName: String,
     thresholds: EnvironmentThresholds,
     statistic: Option[Statistic] = Some(Statistic.MAXIMUM),
+    timeRangeStartMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
+    timeRangeEndMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
 ) extends CustomAlert

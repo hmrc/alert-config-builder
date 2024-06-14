@@ -19,6 +19,7 @@ package uk.gov.hmrc.alertconfig.builder.custom
 import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
 import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
+import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinutes
 
 /** Graphite metric based alert.
   *
@@ -46,6 +47,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
   *   The description to populate in PagerDuty when the alert fires
   * @param thresholds
   *   Trigger point for each environment
+  * @param timeRangeStartMinutes The start of the evaluation period
+  * @param timeRangeEndMinutes The end of the evaluation period
   */
 case class CustomGraphiteMetricAlert(
     alertName: String,
@@ -59,5 +62,7 @@ case class CustomGraphiteMetricAlert(
     runbookUrl: Option[String],
     severity: AlertSeverity,
     summary: String,
-    thresholds: EnvironmentThresholds
+    thresholds: EnvironmentThresholds,
+    timeRangeStartMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
+    timeRangeEndMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
 ) extends CustomAlert
