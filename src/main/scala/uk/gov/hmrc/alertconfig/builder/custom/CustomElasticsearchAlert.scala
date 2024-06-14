@@ -56,7 +56,7 @@ case class CustomElasticsearchAlert(
     integrations: Seq[String],
     luceneQuery: String,
     operator: EvaluationOperator,
-    reducerFunction: Option[ReducerFunction] = Some(ReducerFunction.LAST),
+    reducerFunction: ReducerFunction,
     runbookUrl: Option[String],
     severity: AlertSeverity,
     summary: String,
