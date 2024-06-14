@@ -65,6 +65,6 @@ case class CustomGraphiteMetricAlert(
     severity: AlertSeverity,
     summary: String,
     thresholds: EnvironmentThresholds,
-    evaluationPeriodStartMinutesAgo: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
+    evaluationPeriodStartMinutesAgo: TimeRangeAsMinutes = TimeRangeAsMinutes.SIX_MINUTES,
     evaluationPeriodEndMinutesAgo: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
 ) extends CustomAlert

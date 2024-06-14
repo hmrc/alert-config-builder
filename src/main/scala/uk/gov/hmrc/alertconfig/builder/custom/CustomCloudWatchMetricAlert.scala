@@ -79,6 +79,6 @@ case class CustomCloudWatchMetricAlert(
     teamName: String,
     thresholds: EnvironmentThresholds,
     statistic: Option[Statistic] = Some(Statistic.MAXIMUM),
-    evaluationPeriodStartMinutesAgo: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
+    evaluationPeriodStartMinutesAgo: TimeRangeAsMinutes = TimeRangeAsMinutes.SIX_MINUTES,
     evaluationPeriodEndMinutesAgo: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
 ) extends CustomAlert
