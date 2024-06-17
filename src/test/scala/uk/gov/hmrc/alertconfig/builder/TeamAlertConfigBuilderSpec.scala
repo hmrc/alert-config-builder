@@ -195,7 +195,18 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service1Config = configs(0)
       val service2Config = configs(1)
 
-      val expected = JsArray()
+      val expected = JsArray(
+        JsObject(
+          "absoluteThreshold" -> JsNumber(absolute),
+          "crossOver"         -> JsNumber(crossover),
+          "errorFilter"       -> JsString(filter),
+          "target"            -> JsString(target),
+          "excludeSpikes"     -> JsNumber(spikes),
+          "hysteresis"        -> JsNumber(hysteresis),
+          "percentThreshold"  -> JsNumber(percent),
+          "severity"          -> JsString(severity.toString),
+          "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
+        ))
 
       service1Config("absolute-percentage-split-downstream-service-threshold") shouldBe expected
       service2Config("absolute-percentage-split-downstream-service-threshold") shouldBe expected

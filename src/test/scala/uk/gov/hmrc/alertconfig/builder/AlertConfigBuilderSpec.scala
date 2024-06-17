@@ -463,7 +463,18 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       .asJsObject
       .fields
 
-    val expected = JsArray()
+    val expected = JsArray(
+      JsObject(
+        "errorFilter"       -> JsString(filter),
+        "target"            -> JsString(target),
+        "absoluteThreshold" -> JsNumber(absolute),
+        "crossOver"         -> JsNumber(crossOver),
+        "excludeSpikes"     -> JsNumber(excludeSpikes),
+        "hysteresis"        -> JsNumber(hysteresis),
+        "percentThreshold"  -> JsNumber(percent),
+        "severity"          -> JsString("warning"),
+        "alertingPlatform"  -> JsString(AlertingPlatform.Default.toString)
+      ))
 
     serviceConfig("absolute-percentage-split-downstream-service-threshold") shouldBe expected
   }
