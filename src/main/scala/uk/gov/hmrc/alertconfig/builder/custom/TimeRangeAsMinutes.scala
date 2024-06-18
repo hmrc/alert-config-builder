@@ -29,6 +29,7 @@ object TimeRangeAsMinutes {
   val TWENTY_MINUTES = 20
   val THIRTY_MINUTES = 30
   val ONE_HOUR = 1 * 60
+  val NINETY_MINUTES = 90
   val TWO_HOURS = 2 * 60
   val TWELVE_HOURS = 12 * 60
   val TWENTY_FOUR_HOURS = 24 * 60

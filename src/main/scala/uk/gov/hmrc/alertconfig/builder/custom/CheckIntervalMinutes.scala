@@ -27,6 +27,7 @@ object CheckIntervalMinutes {
   val TEN_MINUTES = 10
   val FIFTEEN_MINUTES = 15
   val THIRTY_MINUTES = 30
+  val NINETY_MINUTES = 90
   val EIGHT_HOURS = 8 * 60
 }
 
