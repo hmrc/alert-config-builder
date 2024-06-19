@@ -290,14 +290,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("httpTrafficThresholds") shouldBe JsArray(
-        JsObject(
-          "warning"                  -> JsNumber(10),
-          "critical"                 -> JsNumber(5),
-          "maxMinutesBelowThreshold" -> JsNumber(35),
-          "alertingPlatform"         -> JsString(AlertingPlatform.Default.toString)
-        )
-      )
+      serviceConfig("httpTrafficThresholds") shouldBe JsArray()
     }
 
     "disable httpTrafficThreshold in Sensu when alerting platform is Grafana" in {
