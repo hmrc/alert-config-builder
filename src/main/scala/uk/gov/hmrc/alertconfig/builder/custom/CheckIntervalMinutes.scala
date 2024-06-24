@@ -23,6 +23,7 @@ object CheckIntervalMinutes {
   val ONE_MINUTE = 1
   val TWO_MINUTES = 2
   val THREE_MINUTES = 3
+  val FOUR_MINUTES = 4
   val FIVE_MINUTES = 5
   val TEN_MINUTES = 10
   val FIFTEEN_MINUTES = 15
