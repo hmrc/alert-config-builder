@@ -364,13 +364,13 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       output.httpStatusThresholds shouldBe Some(List(YamlHttpStatusThresholdAlert(60, "ALL_METHODS", 500, "critical")))
     }
 
-    "HttpStatusThreshold should be disabled by default in production" in {
+    "HttpStatusThreshold should be enabled by default in production" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(500), 60))
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.httpStatusThresholds shouldBe None
+      output.httpStatusThresholds shouldBe Some(List(YamlHttpStatusThresholdAlert(60, "ALL_METHODS", 500, "critical")))
     }
 
     "HttpTrafficThreshold should be enabled if alertingPlatform is Grafana" in {
