@@ -299,12 +299,12 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val service2Config = configs(1)
 
       service1Config("exception-threshold") shouldBe JsObject(
-        "count"            -> JsNumber(threshold),
+        "count"            -> JsNumber(Int.MaxValue),
         "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
       service2Config("exception-threshold") shouldBe JsObject(
-        "count"            -> JsNumber(threshold),
+        "count"            -> JsNumber(Int.MaxValue),
         "severity"         -> JsString("warning"),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )

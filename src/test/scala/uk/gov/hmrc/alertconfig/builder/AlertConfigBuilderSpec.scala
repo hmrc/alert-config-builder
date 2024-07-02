@@ -43,7 +43,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("app") shouldBe JsString("service1.domain.zone.1")
       config("handlers") shouldBe JsArray(JsString("h1"), JsString("h2"))
       config("exception-threshold") shouldBe JsObject(
-        "count"            -> JsNumber(2),
+        "count"            -> JsNumber(Int.MaxValue),
         "severity"         -> JsString("critical"),
         "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
       )
@@ -469,7 +469,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("handlers") shouldBe expected
   }
 
-  "configure ExceptionThreshold with given thresholds when the alerting platform is Sensu" in {
+  "configure ExceptionThreshold with max integer value when the alerting platform is Sensu" in {
     val threshold = 12
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withExceptionThreshold(threshold)
@@ -481,7 +481,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     val expected = JsObject(
       "severity"         -> JsString("critical"),
-      "count"            -> JsNumber(threshold),
+      "count"            -> JsNumber(Int.MaxValue),
       "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
     )
 
@@ -519,7 +519,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
 
     val expected = JsObject(
       "severity"         -> JsString("warning"),
-      "count"            -> JsNumber(threshold),
+      "count"            -> JsNumber(Int.MaxValue),
       "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
     )
 
