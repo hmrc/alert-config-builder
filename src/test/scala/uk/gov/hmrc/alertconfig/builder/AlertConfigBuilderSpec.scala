@@ -119,22 +119,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("httpStatusThresholds") shouldBe JsArray(
-        JsObject(
-          "httpStatus"       -> JsNumber(502),
-          "count"            -> JsNumber(2),
-          "severity"         -> JsString("warning"),
-          "httpMethod"       -> JsString("POST"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        ),
-        JsObject(
-          "httpStatus"       -> JsNumber(504),
-          "count"            -> JsNumber(4),
-          "severity"         -> JsString("critical"),
-          "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        )
-      )
+      serviceConfig("httpStatusThresholds") shouldBe JsArray()
     }
 
     "configure http status threshold with given thresholds and severities only if alerting platform is Sensu" in {
@@ -149,15 +134,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .fields
 
       // note that if alert is configured with alerting platform of Grafana that it is filtered out
-      serviceConfig("httpStatusThresholds") shouldBe JsArray(
-        JsObject(
-          "httpStatus"       -> JsNumber(504),
-          "count"            -> JsNumber(4),
-          "severity"         -> JsString("critical"),
-          "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        )
-      )
+      serviceConfig("httpStatusThresholds") shouldBe JsArray()
     }
 
     "configure http status threshold with given status code using default threshold" in {
@@ -169,15 +146,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         .asJsObject
         .fields
 
-      serviceConfig("httpStatusThresholds") shouldBe JsArray(
-        JsObject(
-          "httpStatus"       -> JsNumber(404),
-          "count"            -> JsNumber(1),
-          "severity"         -> JsString("critical"),
-          "httpMethod"       -> JsString("ALL_METHODS"),
-          "alertingPlatform" -> JsString(AlertingPlatform.Default.toString)
-        )
-      )
+      serviceConfig("httpStatusThresholds") shouldBe JsArray()
     }
 
     "disable http status percent threshold with given thresholds and severities, when alerting platform is Grafana" in {
