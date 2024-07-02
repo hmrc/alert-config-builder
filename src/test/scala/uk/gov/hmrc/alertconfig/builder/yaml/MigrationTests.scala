@@ -181,7 +181,7 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
 
-      output.exceptionThreshold shouldBe None
+      output.exceptionThreshold shouldBe Some(YamlExceptionThresholdAlert(60, "critical"))
     }
 
     "Http5xxPercentThreshold should be enabled if alertingPlatform is Grafana" in {
