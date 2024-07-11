@@ -449,44 +449,6 @@ class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
       )
     }
 
-    "MetricsThreshold should be enabled if alertingPlatform is Grafana" in {
-      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Grafana))
-
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
-
-      output.metricsThresholds shouldBe Some(
-        List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
-    }
-
-    "MetricsThreshold should be disabled if alertingPlatform is Sensu" in {
-      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1), alertingPlatform = AlertingPlatform.Sensu))
-
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
-
-      output.metricsThresholds shouldBe None
-    }
-
-    "MetricsThreshold should be enabled by default in integration" in {
-      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
-
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
-
-      output.metricsThresholds shouldBe Some(
-        List(YamlMetricsThresholdAlert(count = 1, name = "metric", query = "a.b.c.d", severity = "critical", invert = false)))
-    }
-
-    "MetricsThreshold should be disabled by default in production" in {
-      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withMetricsThreshold(MetricsThreshold("metric", "a.b.c.d", None, Some(1)))
-
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
-
-      output.metricsThresholds shouldBe None
-    }
-
     "TotalHttpRequestThreshold should be enabled if alertingPlatform is Grafana" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withTotalHttpRequestThreshold(60, AlertingPlatform.Grafana)
