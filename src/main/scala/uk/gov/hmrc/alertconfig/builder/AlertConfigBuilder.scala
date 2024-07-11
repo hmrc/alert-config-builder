@@ -226,18 +226,6 @@ case class AlertConfigBuilder(
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
 
-  /** This alert will notify when a given metric query exceeds a given threshold within a 15-minute window.
-    *
-    * @param threshold
-    * @return
-    *   <pre> {@code .withMetricsThreshold(MetricsThreshold(name = "address_lookup_failed_audit", query =
-    *   "sumSeries(play.address-lookup.ecs*.audit.failure.count)", warning = Some(4), critical = Some(6))) .withMetricsThreshold(MetricsThreshold(name
-    *   \= "address_lookup_failed_reject_audit", query = "integral(sumSeries(play.address-lookup.ecs*.audit.{failure,reject}.count))", critical =
-    *   Some(10))) } </pre>
-    */
-  def withMetricsThreshold(threshold: MetricsThreshold) =
-    this.copy(metricsThresholds = metricsThresholds :+ threshold)
-
   /** All microservices are deployed to MDTP inside docker containers. If the docker container runs out of memory then the container will be killed
     * with an out-of-memory exception. This alert will notify when a specified number of containers are killed within a 15-minute window.
     *
@@ -614,18 +602,6 @@ case class TeamAlertConfigBuilder(
     */
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold) =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
-
-  /** This alert will notify when a given metric query exceeds a given threshold within a 15-minute window.
-    *
-    * @param threshold
-    * @return
-    *   <pre> {@code .withMetricsThreshold(MetricsThreshold(name = "address_lookup_failed_audit", query =
-    *   "sumSeries(play.address-lookup.ecs*.audit.failure.count)", warning = Some(4), critical = Some(6))) .withMetricsThreshold(MetricsThreshold(name
-    *   \= "address_lookup_failed_reject_audit", query = "integral(sumSeries(play.address-lookup.ecs*.audit.{failure,reject}.count))", critical =
-    *   Some(10))) } </pre>
-    */
-  def withMetricsThreshold(threshold: MetricsThreshold) =
-    this.copy(metricsThresholds = metricsThresholds :+ threshold)
 
   /** This alert will notify when your microservice receives a given number of requests within a 15-minute window.
     *

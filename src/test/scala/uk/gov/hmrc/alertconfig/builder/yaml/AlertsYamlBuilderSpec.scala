@@ -93,7 +93,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
-          .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = None))
           .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
           .withTotalHttpRequestThreshold(2, AlertingPlatform.Grafana)
           .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
@@ -120,7 +119,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
             httpStatusThresholds = Some(Seq(YamlHttpStatusThresholdAlert(1, "ALL_METHODS", 501, "critical"))),
             httpTrafficThresholds = Some(Seq(YamlHttpTrafficThresholdAlert(2, 5, "critical"))),
             totalHttpRequestThreshold = Some(YamlTotalHttpRequestThresholdAlert(2)),
-            metricsThresholds = None,
             http90PercentileResponseTimeThreshold = None
           ),
           pagerduty = Seq(
@@ -171,7 +169,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
             httpStatusThresholds = None,
             httpTrafficThresholds = None,
             totalHttpRequestThreshold = None,
-            metricsThresholds = None,
             http90PercentileResponseTimeThreshold = None
           ),
           pagerduty = Seq(
@@ -223,7 +220,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
             httpStatusThresholds = None,
             httpTrafficThresholds = None,
             totalHttpRequestThreshold = None,
-            metricsThresholds = None,
             http90PercentileResponseTimeThreshold = None
           ),
           pagerduty = Seq(
@@ -262,7 +258,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Critical))
-          .withMetricsThreshold(MetricsThreshold("metrics", "query", warning = Some(1), critical = Some(1)))
           .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Critical, alertingPlatform = AlertingPlatform.Grafana)
           .withTotalHttpRequestThreshold(2, AlertingPlatform.Grafana)
           .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
@@ -289,7 +284,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
             httpStatusThresholds = Some(Seq(YamlHttpStatusThresholdAlert(1, "ALL_METHODS", 500, "warning"))),
             httpTrafficThresholds = Some(Seq(YamlHttpTrafficThresholdAlert(1, 5, "warning"))),
             totalHttpRequestThreshold = Some(YamlTotalHttpRequestThresholdAlert(2)),
-            metricsThresholds = Some(Seq(YamlMetricsThresholdAlert(1.0, "metrics", "query", "warning", invert = false))),
             http90PercentileResponseTimeThreshold = Some(Seq(YamlHttp90PercentileResponseTimeThresholdAlert(15, 2, "warning")))
           ),
           pagerduty = Seq(
@@ -400,14 +394,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
       val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
 
       output.logMessageThresholds shouldBe None
-    }
-
-    "MetricsThreshold should be disabled by default" in {
-      val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
-
-      output.metricsThresholds shouldBe None
     }
 
     "TotalHttpRequestThreshold should be disabled by default" in {
