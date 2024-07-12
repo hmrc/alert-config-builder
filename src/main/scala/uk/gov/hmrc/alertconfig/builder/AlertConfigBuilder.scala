@@ -37,6 +37,7 @@ case class AlertConfigBuilder(
     httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
+    httpEndpointAlerts: Seq[HttpEndpointAlert] = Nil,
     containerKillThreshold: ContainerKillThreshold = ContainerKillThreshold(1),
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
@@ -175,6 +176,28 @@ case class AlertConfigBuilder(
     */
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
+
+  /** Adds a new HTTP endpoint alert configuration to the sequence of alerts.
+   *
+   * This method allows you to configure multiple alerts that notify you when your microservice endpoints do not return the expected HTTP status code or response pattern.
+   *
+   * @param httpEndpointAlert
+   *   Object with fields httpEndpoint, cronCheckSchedule, expectedHttpStatusCode, and expectedQueryString.
+   * @return
+   *   A new instance of the class with the added HTTP endpoint alert configuration.
+   *
+   * @example
+   *   <pre> {@code
+   *   .withHttpEndpointAlert(HttpEndpointAlert(
+   *     httpEndpoint = "https://api.example.com/status",
+   *     cronCheckSchedule = "0 * * * *",
+   *     expectedHttpStatusCode = 200,
+   *     expectedQueryString = "status=ok"
+   *   )) # Alert when the endpoint "https://api.example.com/status" does not return a 200 status code with the query string "status=ok" within the scheduled time frame
+   *   } </pre>
+   */
+  def withHttpEndpointAlert(threshold: HttpEndpointAlert) =
+    this.copy(httpEndpointAlerts = httpEndpointAlerts :+ threshold)
 
   /** This alert will notify when your microservice returns a specified number of requests with a given http status code (between 400 and 599) within
     * a 15-minute window.
@@ -386,6 +409,7 @@ case class AlertConfigBuilder(
              |"httpTrafficThresholds" : ${httpTrafficThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpTrafficThreshold)).toJson.compactPrint},
              |"httpStatusThresholds" : ${httpStatusThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusThreshold)).toJson.compactPrint},
              |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold)).toJson.compactPrint},
+             |"httpEndpointAlerts" : ${printSeq(httpEndpointAlerts.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpEndpointAlert)))(HttpEndpointAlertProtocol.thresholdFormat)},
              |"metricsThresholds" : ${printSeq(metricsThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.MetricsThreshold)))(MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
              |"log-message-thresholds" : ${logMessageThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.LogMessageThreshold)).toJson.compactPrint},
@@ -412,6 +436,7 @@ case class TeamAlertConfigBuilder(
     httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
+    httpEndpointAlerts: Seq[HttpEndpointAlert] = Nil,
     containerKillThreshold: ContainerKillThreshold = ContainerKillThreshold(1),
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
@@ -538,6 +563,28 @@ case class TeamAlertConfigBuilder(
 
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold) =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
+
+  /** Adds a new HTTP endpoint alert configuration to the sequence of alerts.
+   *
+   * This method allows you to configure multiple alerts that notify you when your microservice endpoints do not return the expected HTTP status code or response pattern.
+   *
+   * @param httpEndpointAlert
+   *   Object with fields httpEndpoint, cronCheckSchedule, expectedHttpStatusCode, and expectedQueryString.
+   * @return
+   *   A new instance of the class with the added HTTP endpoint alert configuration.
+   *
+   * @example
+   *   <pre> {@code
+   *   .withHttpEndpointAlert(HttpEndpointAlert(
+   *     httpEndpoint = "https://api.example.com/status",
+   *     cronCheckSchedule = "0 * * * *",
+   *     expectedHttpStatusCode = 200,
+   *     expectedQueryString = "status=ok"
+   *   )) # Alert when the endpoint "https://api.example.com/status" does not return a 200 status code with the query string "status=ok" within the scheduled time frame
+   *   } </pre>
+   */
+  def withHttpEndpointAlert(threshold: HttpEndpointAlert) =
+    this.copy(httpEndpointAlerts = httpEndpointAlerts :+ threshold)
 
   /** All microservices are deployed to MDTP inside docker containers. If the docker container runs out of memory then the container will be killed
     * with an out-of-memory exception. This alert will notify when a specified number of containers are killed within a 15-minute window.
@@ -680,6 +727,7 @@ case class TeamAlertConfigBuilder(
         httpAbsolutePercentSplitThresholds,
         httpAbsolutePercentSplitDownstreamServiceThresholds,
         httpAbsolutePercentSplitDownstreamHodThresholds,
+        httpEndpointAlerts,
         containerKillThreshold,
         httpTrafficThresholds,
         httpStatusThresholds,
