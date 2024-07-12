@@ -28,8 +28,7 @@ import uk.gov.hmrc.alertconfig.builder.{
   HttpAbsolutePercentSplitThreshold,
   HttpStatusPercentThreshold,
   HttpStatusThreshold,
-  HttpTrafficThreshold,
-  MetricsThreshold
+  HttpTrafficThreshold
 }
 
 class MigrationTests extends AnyWordSpec with Matchers with BeforeAndAfterEach {
