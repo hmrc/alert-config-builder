@@ -49,7 +49,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   The description to populate in PagerDuty when the alert fires
   * @param thresholds
   *   Trigger point for each environment
- * @param evaluationPeriodMinutes The sample period to check data for. If you set it to FIVE_MINUTES, the alert check will evaluate data starting from 6 minutes ago until one minute ago (so that only fully shipped metrics are evaluated).
+ * @param queryTimeRangeMinutes The sample period to check data for. If you set it to FIVE_MINUTES, the alert check will evaluate data starting from 6 minutes ago until one minute ago (so that only fully shipped metrics are evaluated).
   */
 case class CustomGraphiteMetricAlert(
     alertName: String,
@@ -64,5 +64,5 @@ case class CustomGraphiteMetricAlert(
     severity: AlertSeverity,
     summary: String,
     thresholds: EnvironmentThresholds,
-    evaluationPeriodMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES
+    queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES
 ) extends CustomAlert
