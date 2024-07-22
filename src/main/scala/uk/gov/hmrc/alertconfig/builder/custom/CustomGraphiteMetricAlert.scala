@@ -25,6 +25,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *
   * @param alertName
   *   Name that the alert will be created with
+  * @param forTime
+  *   Amount of time that a threshold needs to be breached before the alert fires
   * @param dashboardUri
   *   Grafana uri to link to. This should just be the uri path and not include the domain
   * @param dashboardPanelId
@@ -53,6 +55,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   */
 case class CustomGraphiteMetricAlert(
     alertName: String,
+    forTime: Option[Int],
     dashboardUri: Option[String],
     dashboardPanelId: Option[Int],
     integrations: Seq[String],
