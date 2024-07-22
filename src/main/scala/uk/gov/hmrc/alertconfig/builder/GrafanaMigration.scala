@@ -146,7 +146,7 @@ object GrafanaMigration {
       AlertType.ContainerKillThreshold                             -> AlertingPlatform.Grafana,
       AlertType.ErrorsLoggedThreshold                              -> AlertingPlatform.Grafana,
       AlertType.ExceptionThreshold                                 -> AlertingPlatform.Grafana,
-      AlertType.Http5xxPercentThreshold                            -> AlertingPlatform.Sensu, // see TEL-4446 - when we put this live, announce the new feature
+      AlertType.Http5xxPercentThreshold                            -> AlertingPlatform.Grafana,
       AlertType.Http5xxThreshold                                   -> AlertingPlatform.Grafana,
       AlertType.HttpAbsolutePercentSplitThreshold                  -> AlertingPlatform.Grafana,
       AlertType.HttpStatusPercentThreshold                         -> AlertingPlatform.Grafana,
