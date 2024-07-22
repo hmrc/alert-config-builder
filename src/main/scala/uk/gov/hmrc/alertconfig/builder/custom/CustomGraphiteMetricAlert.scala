@@ -55,7 +55,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   */
 case class CustomGraphiteMetricAlert(
     alertName: String,
-    pendingPeriodMinutes: Option[Int],
+    pendingPeriodMinutes: Option[Int] = None,
     dashboardUri: Option[String],
     dashboardPanelId: Option[Int],
     integrations: Seq[String],
