@@ -32,6 +32,8 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
   "AlertConfigBuilder" should {
     "build correct config" in {
 
+      val disabledThreshold = 333.33
+
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withContainerKillThreshold(56)
         .build
@@ -55,7 +57,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       config("5xx-percent-threshold") shouldBe JsObject(
         "severity"                     -> JsString("critical"),
         "minimumHttp5xxCountThreshold" -> JsNumber(0),
-        "percentage"                   -> JsNumber(100),
+        "percentage"                   -> JsNumber(disabledThreshold),
         "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
       )
       config("total-http-request-threshold") shouldBe JsNumber(Int.MaxValue)
@@ -484,13 +486,14 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"                     -> JsString("critical"),
       "minimumHttp5xxCountThreshold" -> JsNumber(0),
-      "percentage"                   -> JsNumber(threshold),
+      "percentage"                   -> JsNumber(333.33),
       "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
     )
   }
 
   "configure http5xxPercentThreshold with count and percentage thresholds when the alerting platform is Sensu" in {
     val threshold = 13.3
+    val disabledThreshold = 333.33
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withHttp5xxPercentThreshold(threshold, 10)
       .build
@@ -502,7 +505,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     serviceConfig("5xx-percent-threshold") shouldBe JsObject(
       "severity"                     -> JsString("critical"),
       "minimumHttp5xxCountThreshold" -> JsNumber(10),
-      "percentage"                   -> JsNumber(threshold),
+      "percentage"                   -> JsNumber(disabledThreshold),
       "alertingPlatform"             -> JsString(AlertingPlatform.Default.toString)
     )
   }
