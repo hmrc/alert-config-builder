@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
+import uk.gov.hmrc.alertconfig.builder.custom.CheckIntervalMinutes.CheckIntervalMinutes
 import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
 import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
@@ -51,10 +52,14 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   The description to populate in PagerDuty when the alert fires
   * @param thresholds
   *   Trigger point for each environment
- * @param queryTimeRangeMinutes The sample period to check data for. If you set it to FIVE_MINUTES, the alert check will evaluate data starting from 6 minutes ago until one minute ago (so that only fully shipped metrics are evaluated).
+  * @param checkIntervalMinutes
+  *   Number of minutes between each check. See [[CheckIntervalMinutes]] for supported values
+  * @param queryTimeRangeMinutes 
+  *   The sample period to check data for. If you set it to FIVE_MINUTES, the alert check will evaluate data starting from 6 minutes ago until one minute ago (so that only fully shipped metrics are evaluated).
   */
 case class CustomGraphiteMetricAlert(
     alertName: String,
+    checkIntervalMinutes: Option[CheckIntervalMinutes] = None,
     pendingPeriodMinutes: Option[Int] = None,
     dashboardUri: Option[String],
     dashboardPanelId: Option[Int],
