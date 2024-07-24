@@ -68,7 +68,7 @@ object AlertsYamlBuilder {
   }
 
   def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, integrationSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder = {
-    val uniqueEnabledSeveritiesForServiceInEnv = integrationSeveritiesForEnv.values.flatten.toSet
+    val uniqueEnabledSeveritiesForServiceInEnv = integrationSeveritiesForEnv.view.filterKeys(alertConfigBuilder.integrations.contains).values.flatten.toSet
     if (uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Critical) && !uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning)) {
       removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Warning)
     } else if (uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning) && !uniqueEnabledSeveritiesForServiceInEnv.contains(
