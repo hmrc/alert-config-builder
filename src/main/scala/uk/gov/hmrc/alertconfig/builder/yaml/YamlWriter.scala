@@ -27,6 +27,7 @@ object YamlWriter {
   val mapper: ObjectMapper = new ObjectMapper(
     new YAMLFactory()
       .disable(Feature.WRITE_DOC_START_MARKER)
+      .disable(Feature.SPLIT_LINES)
       .enable(Feature.MINIMIZE_QUOTES)
       .enable(Feature.INDENT_ARRAYS_WITH_INDICATOR)
   )
