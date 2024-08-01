@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-import uk.gov.hmrc.alertconfig.builder.Environment
 import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
+import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder}
 
 import java.io.File
 
@@ -33,9 +33,8 @@ object CustomAlertConfigYamlBuilder {
 
   def run(customAlertConfigs: Seq[CustomAlertConfig], environment: String, saveLocation: File): Unit = {
 
-    val customAlerts                    = customAlertConfigs.flatMap(_.customAlerts)
     val currentEnvironment: Environment = Environment.get(environment)
-    val activeAlerts: Seq[CustomAlert]  = filterDisabledAlerts(customAlerts, currentEnvironment)
+    val activeAlerts: Seq[CustomAlert]  = filterDisabledAlerts(customAlertConfigs, currentEnvironment)
 
     val customElasticsearchAlerts: Seq[CustomElasticsearchAlert] = activeAlerts
       .collect { case alert: CustomElasticsearchAlert =>
@@ -57,15 +56,71 @@ object CustomAlertConfigYamlBuilder {
     mapper.writeValue(saveLocation, separatedAlerts)
   }
 
-  /** @param customAlerts
-    *   Custom Alerts to filter
+  /** Checks every single [[CustomAlert]] and removes any that do not have a threshold defined for the current environment It also updates any
+    * remaining alerts by removing any integrations that do not have an associated EnvironmentAlertBuilder with the current environment set to enabled
+    * @param customAlertConfigs
+    *   All of the custom alert configs
     * @param currentEnvironment
-    *   Environment we're generating YAML for
+    *   Environment the YAML is being generated for
     * @return
-    *   customAlerts list passed in minus any alerts that don't have a threshold defined for this environment
     */
-  private def filterDisabledAlerts(customAlerts: Seq[CustomAlert], currentEnvironment: Environment): Seq[CustomAlert] = {
-    customAlerts.filter(_.thresholds.isEnvironmentDefined(currentEnvironment))
+  private def filterDisabledAlerts(customAlertConfigs: Seq[CustomAlertConfig], currentEnvironment: Environment): Seq[CustomAlert] = {
+    customAlertConfigs.flatMap { customAlertConfig =>
+      customAlertConfig.customAlerts
+        .filter { customAlert =>
+          isThresholdDefinedForEnv(customAlert, currentEnvironment)
+        }
+        .flatMap { customAlert =>
+          val enabledIntegrationsForAlert = customAlert.integrations.filter(isIntegrationEnabledForEnv(_, customAlertConfig, currentEnvironment))
+          println(Console.RED + s"enabledIntegrationsForAlert = ${enabledIntegrationsForAlert}" + Console.RESET)
+          Option.when(enabledIntegrationsForAlert.nonEmpty)(updateIntegrationsForCustomAlert(customAlert, enabledIntegrationsForAlert))
+        }
+    }
+  }
+
+  /** Checks the [[CustomAlert]] to see if an alert threshold has been configured for the current environment.
+    *
+    * @param alert
+    *   Alert to check
+    * @param currentEnvironment
+    *   Environment the YAML is being generated for
+    * @return
+    */
+  private def isThresholdDefinedForEnv(alert: CustomAlert, currentEnvironment: Environment): Boolean = {
+    alert.thresholds.isEnvironmentDefined(currentEnvironment)
+  }
+
+  /** For the given integration checks if there is an [[EnvironmentAlertBuilder]] defined as well as checking that the current environment is enabled
+    * for the given integration
+    *
+    * @param integration
+    *   PagerDuty integration to check
+    * @param customAlertConfig
+    *   Config that contains the [[EnvironmentAlertBuilder]]s for this set of alerts
+    * @param currentEnvironment
+    *   Environment the YAML is being generated for
+    * @return
+    */
+  private def isIntegrationEnabledForEnv(integration: String, customAlertConfig: CustomAlertConfig, currentEnvironment: Environment): Boolean = {
+    customAlertConfig.environmentConfig.find(_.integrationName == integration).exists { environmentAlertBuilder =>
+      environmentAlertBuilder.enabledEnvironments.contains(currentEnvironment)
+    }
+  }
+
+  /** Takes a [[CustomAlert]] and a Seq of integrations that are enabled in the environment and updates it based on the type
+    * @param customAlert
+    *   The custom alert to update the integrations in
+    * @param enabledIntegrations
+    *   The enabled PagerDuty integrations for this alert to be used to replace the existing ones
+    * @return
+    */
+  private def updateIntegrationsForCustomAlert(customAlert: CustomAlert, enabledIntegrations: Seq[String]): CustomAlert = {
+    customAlert match {
+      case alert: CustomCloudWatchMetricAlert => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomElasticsearchAlert    => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomGraphiteMetricAlert   => alert.copy(integrations = enabledIntegrations)
+      case _                                  => throw new IllegalArgumentException(s"Unsupported CustomAlert type: ${customAlert.getClass.getName}")
+    }
   }
 
 }
