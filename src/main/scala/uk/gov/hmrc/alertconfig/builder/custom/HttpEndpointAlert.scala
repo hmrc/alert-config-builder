@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builder
+package uk.gov.hmrc.alertconfig.builder.custom
+import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 
 import spray.json.{DefaultJsonProtocol, JsonFormat}
 
@@ -40,7 +41,7 @@ case class HttpEndpointAlert(
     expectedQueryString: String = "",
     severity: AlertSeverity = AlertSeverity.Critical,
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default
-)
+) extends CustomAlert
 
 object HttpEndpointAlertProtocol extends DefaultJsonProtocol {
   import DefaultJsonProtocol._
