@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonFilter
   *
   * @param checkName
   *   Name to be used in the metric path. Only lowercase letters and - are allowed: `^[a-z-]+$`
+  * @param componentName
+  *   The name of the component you are testing. e.g. jira / proxy / sensu / mongo. Only lowercase letters and - are allowed: `^[a-z-]+$`
   * @param cronCheckSchedule
   *   The cron schedule for how often the endpoint will be checked creating a metric data point.
   * @param environmentsEnabled
@@ -41,6 +43,7 @@ import com.fasterxml.jackson.annotation.JsonFilter
 @JsonFilter("RemoveEnvironmentsEnabledField")
 case class CustomHttpEndpointAlert(
     checkName: String,
+    componentName: String,
     cronCheckSchedule: String,
     environmentsEnabled: EnvironmentsEnabled,
     expectedHttpStatusCode: Option[Int] = None,
