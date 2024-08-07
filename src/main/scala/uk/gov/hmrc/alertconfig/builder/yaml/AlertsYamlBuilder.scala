@@ -99,8 +99,6 @@ object AlertsYamlBuilder {
         alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds.filterNot(_.severity == severityToRemove),
       httpAbsolutePercentSplitDownstreamHodThresholds =
         alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds.filterNot(_.severity == severityToRemove),
-      httpEndpointAlerts =
-        alertConfigBuilder.httpEndpointAlerts.filterNot(_.severity == severityToRemove),
       httpTrafficThresholds = alertConfigBuilder.httpTrafficThresholds.map(threshold =>
         if (severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None)
         else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None)
@@ -125,7 +123,6 @@ object AlertsYamlBuilder {
       httpAbsolutePercentSplitThreshold = convertHttpAbsolutePercentSplitThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitThresholds, currentEnvironment),
       httpAbsolutePercentSplitDownstreamHodThreshold = convertHttpAbsolutePercentSplitDownstreamHodThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds, currentEnvironment),
       httpAbsolutePercentSplitDownstreamServiceThreshold = convertHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds, currentEnvironment),
-      httpEndpointAlerts = convertHttpEndpointAlerts(alertConfigBuilder.httpEndpointAlerts, currentEnvironment),
       httpStatusPercentThresholds = convertHttpStatusPercentThresholdAlerts(alertConfigBuilder.httpStatusPercentThresholds, currentEnvironment),
       httpStatusThresholds = convertHttpStatusThresholds(alertConfigBuilder.httpStatusThresholds, currentEnvironment),
       httpTrafficThresholds = convertHttpTrafficThresholds(alertConfigBuilder.httpTrafficThresholds, currentEnvironment),

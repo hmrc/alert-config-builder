@@ -17,7 +17,7 @@
 package uk.gov.hmrc.alertconfig.builder.custom
 
 import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
-import uk.gov.hmrc.alertconfig.builder.{Environment, EnvironmentAlertBuilder}
+import uk.gov.hmrc.alertconfig.builder.Environment
 
 import java.io.File
 

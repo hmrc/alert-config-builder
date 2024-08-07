@@ -23,15 +23,13 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
   * @param httpEndpoint
   *   The HTTP endpoint to be checked.
   * @param cronCheckSchedule
-  *   The schedule for the cron job that will check the endpoint.
+  *   The cron schedule for how often the endpoint will be checked creating a metric data point.
   * @param expectedHttpStatusCode
   *   The expected HTTP status code from the endpoint. Defaults to 200.
   * @param expectedQueryString
   *   The expected query string in the endpoint's response.
   * @param severity
   *   The severity level of the alert (critical or warning). Defaults to critical.
-  * @param alertingPlatform
-  *   The platform this alert will target. Defaults to the platform being migrated towards (e.g., Grafana).
   */
 case class HttpEndpointAlert(
     httpEndpoint: String,
@@ -42,8 +40,8 @@ case class HttpEndpointAlert(
     alertingPlatform: AlertingPlatform = AlertingPlatform.Default
 )
 
+// TODO DELETE
 object HttpEndpointAlertProtocol extends DefaultJsonProtocol {
-  import DefaultJsonProtocol._
 
   implicit val thresholdFormat: JsonFormat[HttpEndpointAlert] = {
     implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
