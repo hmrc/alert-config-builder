@@ -280,22 +280,6 @@ object AlertsYamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  // TODO Check if needed
-//  def convertHttpEndpointAlerts(httpEndpointAlerts: Seq[CustomHttpEndpointAlert],
-//                                currentEnvironment: Environment): Option[Seq[YamlHttpEndpointAlert]] = {
-//    val converted =
-//    httpEndpointAlerts.withFilter(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpEndpointAlert)).map { threshold =>
-//      YamlHttpEndpointAlert(
-//        httpEndpoint = threshold.httpEndpoint,
-//        cronCheckSchedule = threshold.cronCheckSchedule,
-//        expectedHttpStatusCode = threshold.expectedHttpStatusCode,
-//        expectedQueryString = threshold.expectedQueryString,
-//        severity = threshold.severity.toString
-//      )
-//    }
-//    Option.when(converted.nonEmpty)(converted)
-//  }
-
   def convertHttpStatusThresholds(httpStatusThresholds: Seq[HttpStatusThreshold],
                                   currentEnvironment: Environment): Option[Seq[YamlHttpStatusThresholdAlert]] = {
     val converted =
