@@ -14,38 +14,38 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.alertconfig.builder
+package uk.gov.hmrc.alertconfig.builder.custom
 
-import spray.json.{DefaultJsonProtocol, JsonFormat}
+import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
+import com.fasterxml.jackson.annotation.JsonFilter
 
 /** This alert will notify when it fails to receive the expected response (status code and/or string pattern) from the given endpoint
   *
-  * @param httpEndpoint
-  *   The HTTP endpoint to be checked.
+  * @param checkName
+  *   Name to be used in the metric path. Only lowercase letters and - are allowed: `^[a-z-]+$`
   * @param cronCheckSchedule
   *   The cron schedule for how often the endpoint will be checked creating a metric data point.
+  * @param environmentsEnabled
+  *   The specific environments to enable this alert in
   * @param expectedHttpStatusCode
-  *   The expected HTTP status code from the endpoint. Defaults to 200.
+  *   The HTTP status code expected from the endpoint.
   * @param expectedQueryString
-  *   The expected query string in the endpoint's response.
+  *   A substring that is expect in the endpoint's response.
+  * @param httpEndpoint
+  *   The HTTP endpoint to be checked.
+  * @param integrations
+  *   Which PagerDuty integrations to direct this alert to
   * @param severity
   *   The severity level of the alert (critical or warning). Defaults to critical.
   */
-case class HttpEndpointAlert(
-    httpEndpoint: String,
+@JsonFilter("RemoveEnvironmentsEnabledField")
+case class CustomHttpEndpointAlert(
+    checkName: String,
     cronCheckSchedule: String,
-    expectedHttpStatusCode: Int = 200,
-    expectedQueryString: String = "",
-    severity: AlertSeverity = AlertSeverity.Critical,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
-)
-
-// TODO DELETE
-object HttpEndpointAlertProtocol extends DefaultJsonProtocol {
-
-  implicit val thresholdFormat: JsonFormat[HttpEndpointAlert] = {
-    implicit val asf: JsonFormat[AlertSeverity] = alertSeverityFormat
-    jsonFormat6(HttpEndpointAlert)
-  }
-
-}
+    environmentsEnabled: EnvironmentsEnabled,
+    expectedHttpStatusCode: Option[Int] = None,
+    expectedQueryString: Option[String] = None,
+    httpEndpoint: String,
+    integrations: Seq[String],
+    severity: AlertSeverity
+) extends CustomAlert

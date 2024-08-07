@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.alertconfig.builder.custom
 
-import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 import uk.gov.hmrc.alertconfig.builder.Environment
+import uk.gov.hmrc.alertconfig.builder.yaml.YamlWriter.mapper
 
 import java.io.File
 
@@ -26,7 +26,8 @@ case class CustomAlertsTopLevel(alerts: CustomAlerts)
 case class CustomAlerts(
     customElasticsearchAlerts: Seq[CustomElasticsearchAlert],
     customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert],
-    customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
+    customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert],
+    customHttpEndpointAlerts: Seq[CustomHttpEndpointAlert]
 )
 
 object CustomAlertConfigYamlBuilder {
@@ -51,7 +52,11 @@ object CustomAlertConfigYamlBuilder {
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
-    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
+    val customHttpEndpointAlerts: Seq[CustomHttpEndpointAlert] = activeAlerts
+      .collect { case alert: CustomHttpEndpointAlert => alert }
+
+    val separatedAlerts = CustomAlertsTopLevel(
+      CustomAlerts(customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts, customHttpEndpointAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
@@ -68,11 +73,10 @@ object CustomAlertConfigYamlBuilder {
     customAlertConfigs.flatMap { customAlertConfig =>
       customAlertConfig.customAlerts
         .filter { customAlert =>
-          isThresholdDefinedForEnv(customAlert, currentEnvironment)
+          isAlertDefinedForEnv(customAlert, currentEnvironment)
         }
         .flatMap { customAlert =>
           val enabledIntegrationsForAlert = customAlert.integrations.filter(isIntegrationEnabledForEnv(_, customAlertConfig, currentEnvironment))
-          println(Console.RED + s"enabledIntegrationsForAlert = ${enabledIntegrationsForAlert}" + Console.RESET)
           Option.when(enabledIntegrationsForAlert.nonEmpty)(updateIntegrationsForCustomAlert(customAlert, enabledIntegrationsForAlert))
         }
     }
@@ -86,17 +90,23 @@ object CustomAlertConfigYamlBuilder {
     *   Environment the YAML is being generated for
     * @return
     */
-  private def isThresholdDefinedForEnv(alert: CustomAlert, currentEnvironment: Environment): Boolean = {
-    alert.thresholds.isEnvironmentDefined(currentEnvironment)
+  private def isAlertDefinedForEnv(alert: CustomAlert, currentEnvironment: Environment): Boolean = {
+    alert match {
+      case alert: CustomGraphiteMetricAlert   => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomElasticsearchAlert    => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomCloudWatchMetricAlert => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomHttpEndpointAlert     => alert.environmentsEnabled.isEnvironmentDefined(currentEnvironment)
+      case other => throw new IllegalArgumentException(s"isAlertDefinedForEnv is not defined for ${other.getClass.getSimpleName}. Please update it.")
+    }
   }
 
-  /** For the given integration checks if there is an [[EnvironmentAlertBuilder]] defined as well as checking that the current environment is enabled
-    * for the given integration
+  /** For the given integration checks if there is an [[uk.gov.hmrc.alertconfig.builder.EnvironmentAlertBuilder]] defined as well as checking that the
+    * current environment is enabled for the given integration
     *
     * @param integration
     *   PagerDuty integration to check
     * @param customAlertConfig
-    *   Config that contains the [[EnvironmentAlertBuilder]]s for this set of alerts
+    *   Config that contains the [[uk.gov.hmrc.alertconfig.builder.EnvironmentAlertBuilder]]s for this set of alerts
     * @param currentEnvironment
     *   Environment the YAML is being generated for
     * @return
@@ -119,6 +129,7 @@ object CustomAlertConfigYamlBuilder {
       case alert: CustomCloudWatchMetricAlert => alert.copy(integrations = enabledIntegrations)
       case alert: CustomElasticsearchAlert    => alert.copy(integrations = enabledIntegrations)
       case alert: CustomGraphiteMetricAlert   => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomHttpEndpointAlert     => alert.copy(integrations = enabledIntegrations)
       case _                                  => throw new IllegalArgumentException(s"Unsupported CustomAlert type: ${customAlert.getClass.getName}")
     }
   }

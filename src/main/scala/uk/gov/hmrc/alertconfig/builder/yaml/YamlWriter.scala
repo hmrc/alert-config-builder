@@ -18,11 +18,16 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ser.impl.{SimpleBeanPropertyFilter, SimpleFilterProvider}
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 object YamlWriter {
+
+  // Define a filter to exclude 'environmentsEnabled' field
+  private val propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("environmentsEnabled")
+  private val filters = new SimpleFilterProvider().addFilter("RemoveEnvironmentsEnabledField", propertyFilter)
 
   val mapper: ObjectMapper = new ObjectMapper(
     new YAMLFactory()
@@ -33,5 +38,6 @@ object YamlWriter {
   )
     .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
     .registerModule(DefaultScalaModule)
+    .setFilterProvider(filters)
 
 }
