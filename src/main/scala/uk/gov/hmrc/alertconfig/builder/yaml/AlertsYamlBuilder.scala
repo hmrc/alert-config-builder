@@ -68,7 +68,8 @@ object AlertsYamlBuilder {
   }
 
   def removeUnusedAlerts(alertConfigBuilder: AlertConfigBuilder, integrationSeveritiesForEnv: Map[String, Set[Severity]]): AlertConfigBuilder = {
-    val uniqueEnabledSeveritiesForServiceInEnv = integrationSeveritiesForEnv.view.filterKeys(alertConfigBuilder.integrations.contains).values.flatten.toSet
+    val uniqueEnabledSeveritiesForServiceInEnv =
+      integrationSeveritiesForEnv.view.filterKeys(alertConfigBuilder.integrations.contains).values.flatten.toSet
     if (uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Critical) && !uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning)) {
       removeUnusedAlerts(alertConfigBuilder, AlertSeverity.Warning)
     } else if (uniqueEnabledSeveritiesForServiceInEnv.contains(Severity.Warning) && !uniqueEnabledSeveritiesForServiceInEnv.contains(
@@ -99,8 +100,6 @@ object AlertsYamlBuilder {
         alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds.filterNot(_.severity == severityToRemove),
       httpAbsolutePercentSplitDownstreamHodThresholds =
         alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds.filterNot(_.severity == severityToRemove),
-      httpEndpointAlerts =
-        alertConfigBuilder.httpEndpointAlerts.filterNot(_.severity == severityToRemove),
       httpTrafficThresholds = alertConfigBuilder.httpTrafficThresholds.map(threshold =>
         if (severityToRemove == AlertSeverity.Warning) threshold.copy(warning = None)
         else if (severityToRemove == AlertSeverity.Critical) threshold.copy(critical = None)
@@ -122,17 +121,22 @@ object AlertsYamlBuilder {
       exceptionThreshold = convertExceptionThreshold(alertConfigBuilder.exceptionThreshold, currentEnvironment),
       http5xxPercentThreshold = convertHttp5xxPercentThresholds(alertConfigBuilder.http5xxPercentThreshold, currentEnvironment),
       http5xxThreshold = convertHttp5xxThreshold(alertConfigBuilder.http5xxThreshold, currentEnvironment),
-      httpAbsolutePercentSplitThreshold = convertHttpAbsolutePercentSplitThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitThresholds, currentEnvironment),
-      httpAbsolutePercentSplitDownstreamHodThreshold = convertHttpAbsolutePercentSplitDownstreamHodThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds, currentEnvironment),
-      httpAbsolutePercentSplitDownstreamServiceThreshold = convertHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds, currentEnvironment),
-      httpEndpointAlerts = convertHttpEndpointAlerts(alertConfigBuilder.httpEndpointAlerts, currentEnvironment),
+      httpAbsolutePercentSplitThreshold =
+        convertHttpAbsolutePercentSplitThresholdAlert(alertConfigBuilder.httpAbsolutePercentSplitThresholds, currentEnvironment),
+      httpAbsolutePercentSplitDownstreamHodThreshold = convertHttpAbsolutePercentSplitDownstreamHodThresholdAlert(
+        alertConfigBuilder.httpAbsolutePercentSplitDownstreamHodThresholds,
+        currentEnvironment),
+      httpAbsolutePercentSplitDownstreamServiceThreshold = convertHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(
+        alertConfigBuilder.httpAbsolutePercentSplitDownstreamServiceThresholds,
+        currentEnvironment),
       httpStatusPercentThresholds = convertHttpStatusPercentThresholdAlerts(alertConfigBuilder.httpStatusPercentThresholds, currentEnvironment),
       httpStatusThresholds = convertHttpStatusThresholds(alertConfigBuilder.httpStatusThresholds, currentEnvironment),
       httpTrafficThresholds = convertHttpTrafficThresholds(alertConfigBuilder.httpTrafficThresholds, currentEnvironment),
       logMessageThresholds = convertLogMessageThresholdAlerts(alertConfigBuilder.logMessageThresholds, currentEnvironment),
       totalHttpRequestThreshold = convertTotalHttpRequestThreshold(alertConfigBuilder.totalHttpRequestThreshold, currentEnvironment),
       metricsThresholds = convertMetricsThreshold(alertConfigBuilder.metricsThresholds, currentEnvironment),
-      http90PercentileResponseTimeThreshold = convertHttp90PercentileResponseTimeThreshold(alertConfigBuilder.http90PercentileResponseTimeThresholds, currentEnvironment)
+      http90PercentileResponseTimeThreshold =
+        convertHttp90PercentileResponseTimeThreshold(alertConfigBuilder.http90PercentileResponseTimeThresholds, currentEnvironment)
     )
   }
 
@@ -228,8 +232,9 @@ object AlertsYamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  def convertHttpAbsolutePercentSplitDownstreamHodThresholdAlert(httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold],
-                                                                 currentEnvironment: Environment): Option[Seq[YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert]] = {
+  def convertHttpAbsolutePercentSplitDownstreamHodThresholdAlert(
+      httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold],
+      currentEnvironment: Environment): Option[Seq[YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert]] = {
     val converted = httpAbsolutePercentSplitDownstreamHodThresholds
       .withFilter(alert =>
         isGrafanaEnabled(
@@ -251,9 +256,9 @@ object AlertsYamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-
-  def convertHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold],
-                                                                 currentEnvironment: Environment): Option[Seq[YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert]] = {
+  def convertHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(
+      httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold],
+      currentEnvironment: Environment): Option[Seq[YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert]] = {
     val converted = httpAbsolutePercentSplitDownstreamServiceThresholds
       .withFilter(alert =>
         isGrafanaEnabled(
@@ -274,22 +279,6 @@ object AlertsYamlBuilder {
       }
     Option.when(converted.nonEmpty)(converted)
   }
-
-  def convertHttpEndpointAlerts(httpEndpointAlerts: Seq[HttpEndpointAlert],
-                                currentEnvironment: Environment): Option[Seq[YamlHttpEndpointAlert]] = {
-    val converted =
-    httpEndpointAlerts.withFilter(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpEndpointAlert)).map { threshold =>
-      YamlHttpEndpointAlert(
-        httpEndpoint = threshold.httpEndpoint,
-        cronCheckSchedule = threshold.cronCheckSchedule,
-        expectedHttpStatusCode = threshold.expectedHttpStatusCode,
-        expectedQueryString = threshold.expectedQueryString,
-        severity = threshold.severity.toString
-      )
-    }
-    Option.when(converted.nonEmpty)(converted)
-  }
-
 
   def convertHttpStatusThresholds(httpStatusThresholds: Seq[HttpStatusThreshold],
                                   currentEnvironment: Environment): Option[Seq[YamlHttpStatusThresholdAlert]] = {

@@ -19,24 +19,7 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.{
-  AlertConfig,
-  AlertConfigBuilder,
-  AlertSeverity,
-  AlertingPlatform,
-  Environment,
-  EnvironmentAlertBuilder,
-  Http90PercentileResponseTimeThreshold,
-  HttpAbsolutePercentSplitDownstreamHodThreshold,
-  HttpAbsolutePercentSplitDownstreamServiceThreshold,
-  HttpAbsolutePercentSplitThreshold,
-  HttpEndpointAlert,
-  HttpStatus,
-  HttpStatusPercentThreshold,
-  HttpStatusThreshold,
-  HttpTrafficThreshold,
-  Severity
-}
+import uk.gov.hmrc.alertconfig.builder._
 
 class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -88,7 +71,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(severity =
             AlertSeverity.Warning))
           .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(severity = AlertSeverity.Warning))
-          .withHttpEndpointAlert(HttpEndpointAlert(httpEndpoint = "https://api.example.com/status", cronCheckSchedule = "0 * * * *"))
           .withContainerKillThreshold(2, AlertingPlatform.Grafana)
           .withHttpTrafficThreshold(HttpTrafficThreshold(warning = Some(1), critical = Some(2), alertingPlatform = AlertingPlatform.Grafana))
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
@@ -116,7 +98,6 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
             logMessageThresholds = None,
             http5xxThreshold = None,
             http5xxPercentThreshold = None,
-            httpEndpointAlerts = Some(Seq(YamlHttpEndpointAlert("https://api.example.com/status", "0 * * * *", 200, "", "critical"))),
             httpStatusPercentThresholds = None,
             httpStatusThresholds = Some(Seq(YamlHttpStatusThresholdAlert(1, "ALL_METHODS", 501, "critical"))),
             httpTrafficThresholds = Some(Seq(YamlHttpTrafficThresholdAlert(2, 5, "critical"))),
