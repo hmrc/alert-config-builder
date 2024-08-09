@@ -52,8 +52,16 @@ If you want to build a local version of alert-config-builder and test it without
 you can do a local build:
 
 
-1. Do an `sbt publishLocal` (https://www.scala-sbt.org/1.x/docs/Publishing.html)
-2. Configure alert-config's 
+1. Do an `sbt publishLocal` to publish a snapshot (https://www.scala-sbt.org/1.x/docs/Publishing.html)
+2. Configure alert-config's `AppDepedencies` to reference your snapshot:
+```scala
+  val compile: Seq[ModuleID] = Seq(
+      // "uk.gov.hmrc" %% "alert-config-builder" % "1.112.0"
+      "uk.gov.hmrc" %% "alert-config-builder" % "1.113.0-SNAPSHOT"
+  )
+```
+
+_Note that this is just for local testing - please do not try to commit this change!_
 
 
 NEW
