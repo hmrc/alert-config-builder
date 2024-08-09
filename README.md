@@ -46,6 +46,29 @@ We encourage contributors to make sure their work is well formatted using the fo
 
 [Visit the official Scalafmt documentation to view a complete list of tasks which can be run.](https://scalameta.org/scalafmt/docs/installation.html#task-keys)
 
+## Local testing
+
+If you want to build a local version of alert-config-builder and test it without doing a build of alert-config,
+you can do a local build:
+
+
+1. Do an `sbt publishLocal` to publish a snapshot (https://www.scala-sbt.org/1.x/docs/Publishing.html)
+2. Configure alert-config's `AppDepedencies` to reference your snapshot:
+```scala
+  val compile: Seq[ModuleID] = Seq(
+      // "uk.gov.hmrc" %% "alert-config-builder" % "1.112.0"
+      "uk.gov.hmrc" %% "alert-config-builder" % "1.113.0-SNAPSHOT"
+  )
+```
+
+_Note that this is just for local testing - please do not try to commit this change!_
+
+
+NEW
+
+16:30
+Patch versions totally okay, think I did that more frequently than buildLocal when on Platops :shrug:
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").

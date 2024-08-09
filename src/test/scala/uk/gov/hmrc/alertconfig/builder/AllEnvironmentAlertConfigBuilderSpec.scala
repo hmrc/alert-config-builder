@@ -56,7 +56,7 @@ class AllEnvironmentAlertConfigBuilderSpec extends AnyFunSuite with Matchers wit
 
   test("create config for production") {
     val environmentConfigMap =
-      AllEnvironmentAlertConfigBuilder.build(Set(EnvironmentAlertBuilder("team-telemetry"), EnvironmentAlertBuilder("infra")))
+      AllEnvironmentAlertConfigBuilder.build(Set(EnvironmentAlertBuilder("team-telemetry").inProduction(), EnvironmentAlertBuilder("infra").inProduction()))
 
     environmentConfigMap(Environment.Production) shouldBe
       JsObject(

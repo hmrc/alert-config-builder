@@ -43,7 +43,7 @@ class IntegrationsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeA
         EnvironmentAlertBuilder("team-telemetry-warning-only").inProduction(Set(Severity.Warning)),
         EnvironmentAlertBuilder("team-telemetry-critical-only").inProduction(Set(Severity.Critical)),
         // This one should not appear in the output YAML
-        EnvironmentAlertBuilder("team-telemetry-non-prod-one").disableProduction().inIntegration(Set(Severity.Warning, Severity.Critical))
+        EnvironmentAlertBuilder("team-telemetry-non-prod-one").inIntegration(Set(Severity.Warning, Severity.Critical))
       )
       IntegrationsYamlBuilder.generate(environmentAlertBuilders, currentEnvironment, testFile)
 
