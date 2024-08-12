@@ -31,12 +31,14 @@ import com.fasterxml.jackson.annotation.JsonFilter
   *   The specific environments to enable this alert in
   * @param expectedHttpStatusCode
   *   The HTTP status code expected from the endpoint.
-  * @param expectedQueryString
+  * @param expectedStringInResponse
   *   A substring that is expect in the endpoint's response.
   * @param httpEndpoint
   *   The HTTP endpoint to be checked.
   * @param integrations
   *   Which PagerDuty integrations to direct this alert to
+  * @param runbookUrl
+  *   Runbook for when this alert fires
   * @param severity
   *   The severity level of the alert (critical or warning). Defaults to critical.
   */
@@ -47,8 +49,9 @@ case class CustomHttpEndpointAlert(
     cronCheckSchedule: String,
     environmentsEnabled: EnvironmentsEnabled,
     expectedHttpStatusCode: Option[Int] = None,
-    expectedQueryString: Option[String] = None,
+    expectedStringInResponse: Option[String] = None,
     httpEndpoint: String,
     integrations: Seq[String],
+    runbookUrl: Option[String],
     severity: AlertSeverity
 ) extends CustomAlert
