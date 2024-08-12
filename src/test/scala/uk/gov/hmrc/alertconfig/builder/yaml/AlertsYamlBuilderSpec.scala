@@ -57,7 +57,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
         override def environmentConfig: Seq[EnvironmentAlertBuilder] = Seq[EnvironmentAlertBuilder]()
       }
 
-      intercept[Exception] {
+      intercept[IllegalStateException] {
         AlertsYamlBuilder.convert(
           config,
           currentEnvironment = Environment.Production,

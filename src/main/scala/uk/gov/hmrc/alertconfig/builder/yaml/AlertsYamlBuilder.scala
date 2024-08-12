@@ -41,7 +41,7 @@ object AlertsYamlBuilder {
 
   def convert(alertConfig: AlertConfig, currentEnvironment: Environment): Seq[ServiceConfig] = {
     if(alertConfig.environmentConfig.filter(_.enabledEnvironments.nonEmpty).isEmpty) {
-      throw new Exception("No environments defined for alert config " + alertConfig.toString)
+      throw new IllegalStateException("No environments defined for alert config " + alertConfig.toString)
     }
     val filtered                 = alertConfig.environmentConfig.filter(_.enabledEnvironments.contains(currentEnvironment))
     val enabledIntegrationsInEnv = filtered.map(_.integrationName).toSet
