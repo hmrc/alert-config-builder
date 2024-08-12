@@ -19,6 +19,7 @@ package uk.gov.hmrc.alertconfig.builder.yaml
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import uk.gov.hmrc.alertconfig.builder.TeamAlertConfigBuilder.teamAlerts
 import uk.gov.hmrc.alertconfig.builder._
 
 class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
@@ -47,6 +48,21 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
       )
 
       res shouldBe None
+    }
+
+    "throw an exception if there are no envs configured" in {
+      val config = new AlertConfig {
+        override def alertConfig: Seq[AlertConfigBuilder] = teamAlerts(Seq("alert-simulator"))
+
+        override def environmentConfig: Seq[EnvironmentAlertBuilder] = Seq[EnvironmentAlertBuilder]()
+      }
+
+      intercept[Exception] {
+        AlertsYamlBuilder.convert(
+          config,
+          currentEnvironment = Environment.Production,
+        )
+      }
     }
   }
 
