@@ -53,11 +53,11 @@ you can do a local build:
 
 
 1. Do an `sbt publishLocal` to publish a snapshot (https://www.scala-sbt.org/1.x/docs/Publishing.html)
-2. Configure alert-config's `AppDepedencies` to reference your snapshot:
+2. Configure your local `alert-config` project's `AppDepedencies` to reference your snapshot:
 ```scala
   val compile: Seq[ModuleID] = Seq(
-      // "uk.gov.hmrc" %% "alert-config-builder" % "1.112.0"
-      "uk.gov.hmrc" %% "alert-config-builder" % "1.113.0-SNAPSHOT"
+      // "uk.gov.hmrc" %% "alert-config-builder" % "1.112.0"       // comment out the main stream version of alert-config-builder
+      "uk.gov.hmrc" %% "alert-config-builder" % "1.113.0-SNAPSHOT" // your specific snapshot number will vary
   )
 ```
 
