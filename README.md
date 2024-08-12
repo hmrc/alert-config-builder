@@ -52,7 +52,7 @@ If you want to build a local version of alert-config-builder and test it without
 you can do a local build:
 
 
-1. Do an `sbt publishLocal` to publish a snapshot (https://www.scala-sbt.org/1.x/docs/Publishing.html)
+1. Do an `sbt publishLocal` in your `alert-config-builder` folder to publish a snapshot (https://www.scala-sbt.org/1.x/docs/Publishing.html)
 2. Configure your local `alert-config` project's `AppDepedencies` to reference your snapshot:
 ```scala
   val compile: Seq[ModuleID] = Seq(
