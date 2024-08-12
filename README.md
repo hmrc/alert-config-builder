@@ -63,12 +63,6 @@ you can do a local build:
 
 _Note that this is just for local testing - please do not try to commit this change!_
 
-
-NEW
-
-16:30
-Patch versions totally okay, think I did that more frequently than buildLocal when on Platops :shrug:
-
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
