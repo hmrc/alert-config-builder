@@ -46,6 +46,23 @@ We encourage contributors to make sure their work is well formatted using the fo
 
 [Visit the official Scalafmt documentation to view a complete list of tasks which can be run.](https://scalameta.org/scalafmt/docs/installation.html#task-keys)
 
+## Local testing
+
+If you want to build a local version of alert-config-builder and test it without doing a build of alert-config,
+you can do a local build:
+
+
+1. Do an `sbt publishLocal` in your `alert-config-builder` folder to publish a snapshot (https://www.scala-sbt.org/1.x/docs/Publishing.html)
+2. Configure your local `alert-config` project's `AppDependencies` to reference your snapshot:
+```scala
+  val compile: Seq[ModuleID] = Seq(
+      // "uk.gov.hmrc" %% "alert-config-builder" % "1.112.0"       // comment out the main stream version of alert-config-builder
+      "uk.gov.hmrc" %% "alert-config-builder" % "1.113.0-SNAPSHOT" // your specific snapshot number will vary
+  )
+```
+
+_Note that this is just for local testing - please do not try to commit this change!_
+
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").

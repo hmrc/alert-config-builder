@@ -19,7 +19,8 @@ package uk.gov.hmrc.alertconfig.builder
 trait AlertConfig {
   def alertConfig: Seq[AlertConfigBuilder]
 
-  def environmentConfig: Seq[EnvironmentAlertBuilder] = alertConfig.flatMap(_.integrations).map(EnvironmentAlertBuilder(_))
+  // empty by default to force override
+  def environmentConfig: Seq[EnvironmentAlertBuilder]
 
   implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
 }

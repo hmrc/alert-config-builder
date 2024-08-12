@@ -77,9 +77,9 @@ object AllEnvironmentAlertConfigBuilder {
 case class EnvironmentAlertBuilder(
     integrationName: String,
     command: Option[JsValue] = None,
-    enabledEnvironments: Map[Environment, Set[Severity]] = Map((Environment.Production, Set(Severity.Ok, Severity.Warning, Severity.Critical))),
-    customEnvironmentNames: Map[Environment, String] = Map((Environment.Production, "aws_production")),
-    integrationFilters: Map[Environment, JsValue] = Map((Environment.Production, JsString("occurrences")))
+    enabledEnvironments: Map[Environment, Set[Severity]] = Map(),
+    customEnvironmentNames: Map[Environment, String] = Map(),
+    integrationFilters: Map[Environment, JsValue] = Map()
 ) {
 
   private val defaultSeverities: Set[Severity] = Set(Severity.Ok, Severity.Warning, Severity.Critical)
@@ -162,9 +162,6 @@ case class EnvironmentAlertBuilder(
       customEnvironmentNames = customEnvironmentNames + (Environment.Production -> customEnv),
       integrationFilters = integrationFilters + (Environment.Production         -> customFilter)
     )
-
-  def disableProduction(): EnvironmentAlertBuilder =
-    this.copy(enabledEnvironments = enabledEnvironments - Environment.Production)
 
   def withCommand(customCommand: String): EnvironmentAlertBuilder =
     this.copy(command = Option(JsString(customCommand)))
