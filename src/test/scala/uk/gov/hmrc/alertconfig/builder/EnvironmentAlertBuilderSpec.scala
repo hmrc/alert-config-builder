@@ -124,7 +124,7 @@ class EnvironmentAlertBuilderSpec extends AnyWordSpec with Matchers with BeforeA
           "command"    -> JsString("/etc/sensu/handlers/hmrc_pagerduty_multiteam_env_apiv2.rb --team infra -e aws_management"),
           "type"       -> JsString("pipe"),
           "severities" -> JsArray(JsString("ok"), JsString("warning"), JsString("critical")),
-          "filters"    -> JsArray(JsString("occurrences"), JsString("kitchen_filter"), JsString("packer_filter"))
+          "filter"    -> JsString("occurrences")
         )
     }
 
