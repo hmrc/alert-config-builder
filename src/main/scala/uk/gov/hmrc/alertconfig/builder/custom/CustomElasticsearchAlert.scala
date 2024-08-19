@@ -54,7 +54,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   */
 case class CustomElasticsearchAlert(
     alertName: String,
-    checkIntervalMinutes: CheckIntervalMinutes,
+    checkIntervalMinutes: Option[CheckIntervalMinutes] = None,
     kibanaDashboardUri: Option[String],
     integrations: Seq[String],
     luceneQuery: String,
