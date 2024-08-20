@@ -26,8 +26,7 @@ case class CustomAlertsTopLevel(alerts: CustomAlerts)
 case class CustomAlerts(
     customElasticsearchAlerts: Seq[CustomElasticsearchAlert],
     customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert],
-    customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert],
-    customHttpEndpointAlerts: Seq[CustomHttpEndpointAlert]
+    customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
 )
 
 object CustomAlertConfigYamlBuilder {
@@ -52,11 +51,7 @@ object CustomAlertConfigYamlBuilder {
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
-    val customHttpEndpointAlerts: Seq[CustomHttpEndpointAlert] = activeAlerts
-      .collect { case alert: CustomHttpEndpointAlert => alert }
-
-    val separatedAlerts = CustomAlertsTopLevel(
-      CustomAlerts(customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts, customHttpEndpointAlerts))
+    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
@@ -95,7 +90,6 @@ object CustomAlertConfigYamlBuilder {
       case alert: CustomGraphiteMetricAlert   => alert.thresholds.isEnvironmentDefined(currentEnvironment)
       case alert: CustomElasticsearchAlert    => alert.thresholds.isEnvironmentDefined(currentEnvironment)
       case alert: CustomCloudWatchMetricAlert => alert.thresholds.isEnvironmentDefined(currentEnvironment)
-      case alert: CustomHttpEndpointAlert     => alert.environmentsEnabled.isEnvironmentDefined(currentEnvironment)
       case other => throw new IllegalArgumentException(s"isAlertDefinedForEnv is not defined for ${other.getClass.getSimpleName}. Please update it.")
     }
   }
@@ -129,7 +123,6 @@ object CustomAlertConfigYamlBuilder {
       case alert: CustomCloudWatchMetricAlert => alert.copy(integrations = enabledIntegrations)
       case alert: CustomElasticsearchAlert    => alert.copy(integrations = enabledIntegrations)
       case alert: CustomGraphiteMetricAlert   => alert.copy(integrations = enabledIntegrations)
-      case alert: CustomHttpEndpointAlert     => alert.copy(integrations = enabledIntegrations)
       case _                                  => throw new IllegalArgumentException(s"Unsupported CustomAlert type: ${customAlert.getClass.getName}")
     }
   }
