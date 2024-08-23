@@ -92,7 +92,7 @@ object EnvironmentThresholds {
   /** Creates EnvironmentThresholds with the same threshold for all environments.
     *
     * @param threshold
-    *   An integer to be set as the threshold for all seven environments.
+    *   An integer to be set as the threshold for all six environments.
     * @return
     *   EnvironmentThresholds with the same threshold for all environments.
     */
@@ -102,8 +102,7 @@ object EnvironmentThresholds {
     staging = Some(threshold),
     qa = Some(threshold),
     development = Some(threshold),
-    integration = Some(threshold),
-    management = Some(threshold)
+    integration = Some(threshold)
   )
 
   /** Creates EnvironmentThresholds with the same threshold for production and external test environments.
@@ -126,6 +125,22 @@ object EnvironmentThresholds {
     *   EnvironmentThresholds with the same threshold for all non-production environments.
     */
   def forAllNonProdEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+    staging = Some(threshold),
+    qa = Some(threshold),
+    development = Some(threshold),
+    integration = Some(threshold)
+  )
+
+  /** Creates EnvironmentThresholds with the same threshold for all environments including management.
+   *
+   * @param threshold
+   * An integer to be set as the threshold for all seven environments including management.
+   * @return
+   * EnvironmentThresholds with the same threshold for all environments.
+   */
+  def forAllEnvironmentsPlusManagement(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+    production = Some(threshold),
+    externaltest = Some(threshold),
     staging = Some(threshold),
     qa = Some(threshold),
     development = Some(threshold),
