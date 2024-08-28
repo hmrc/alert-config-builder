@@ -28,6 +28,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   Name that the alert will be created with
   * @param checkIntervalMinutes
   *   Number of minutes between each check. See [[CheckIntervalMinutes]] for supported values
+  * @param pendingPeriodMinutes
+  *   Amount of time in minutes that a threshold needs to be breached before the alert fires
   * @param kibanaDashboardUri
   *   Kibana uri to link to. This should just be the uri path and not include the domain
   * @param integrations
@@ -55,6 +57,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
 case class CustomElasticsearchAlert(
     alertName: String,
     checkIntervalMinutes: Option[CheckIntervalMinutes] = None,
+    pendingPeriodMinutes: Option[Int] = None,
     kibanaDashboardUri: Option[String],
     integrations: Seq[String],
     luceneQuery: String,
