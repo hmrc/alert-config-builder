@@ -59,7 +59,10 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   Trigger point for each environment
   * @param statistic
   *   Used in the query. Valid values include Average, Maximum, Minimum, Sum, SampleCount, IQM
- * @param queryTimeRangeMinutes The sample period to check data for. If you set it to FIVE_MINUTES, the alert check will evaluate data starting from 6 minutes ago until one minute ago (so that only fully shipped metrics are evaluated).
+  * @param queryTimeRangeMinutes 
+  *   The sample period to check data for. If you set it to FIVE_MINUTES, the alert check will evaluate data starting from 6 minutes ago until one minute ago (so that only fully shipped metrics are evaluated).
+  * @param period
+  *   CloudWatch metric statistics period
   */
 case class CustomCloudWatchMetricAlert(
     alertName: String,
@@ -78,5 +81,6 @@ case class CustomCloudWatchMetricAlert(
     teamName: String,
     thresholds: EnvironmentThresholds,
     statistic: Option[Statistic] = Some(Statistic.MAXIMUM),
-    queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES
+    queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
+    period: TimeRangeAsMinutes = TimeRangeAsMinutes.ONE_MINUTE
 ) extends CustomAlert
