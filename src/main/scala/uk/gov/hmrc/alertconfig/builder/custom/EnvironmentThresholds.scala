@@ -36,13 +36,13 @@ import uk.gov.hmrc.alertconfig.builder.Environment
   *   The threshold for the staging environment.
   */
 case class EnvironmentThresholds(
-    development: Option[Int] = None,
-    externaltest: Option[Int] = None,
-    integration: Option[Int] = None,
-    management: Option[Int] = None,
-    production: Option[Int] = None,
-    qa: Option[Int] = None,
-    staging: Option[Int] = None
+    development: Option[Long] = None,
+    externaltest: Option[Long] = None,
+    integration: Option[Long] = None,
+    management: Option[Long] = None,
+    production: Option[Long] = None,
+    qa: Option[Long] = None,
+    staging: Option[Long] = None
 ) {
 
   /** Checks if the given environment has a threshold defined.
