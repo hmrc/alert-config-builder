@@ -211,7 +211,6 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val target     = "hod-endpoint"
       val severity   = AlertSeverity.Warning
 
-
       val alertConfigBuilder = TeamAlertConfigBuilder
         .teamAlerts(Seq("service1", "service2"))
         .withHttpAbsolutePercentSplitDownstreamHodThreshold(

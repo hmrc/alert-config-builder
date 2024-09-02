@@ -75,6 +75,7 @@ case class YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(
     target: String,
     severity: String
 )
+
 case class YamlHttpEndpointAlert(
     httpEndpoint: String,
     cronCheckSchedule: String,

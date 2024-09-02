@@ -361,7 +361,6 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     val target        = "hod-endpoint"
     val severity      = AlertSeverity.Warning
 
-
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withHttpAbsolutePercentSplitDownstreamHodThreshold(
         HttpAbsolutePercentSplitDownstreamHodThreshold(percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, severity))
@@ -474,7 +473,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
   }
 
   "configure http5xxPercentThreshold with given thresholds when the alerting platform is Sensu" in {
-    val threshold = 13.3
+    val threshold         = 13.3
     val disabledThreshold = 333.33
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withHttp5xxPercentThreshold(threshold)
@@ -493,7 +492,7 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
   }
 
   "configure http5xxPercentThreshold with count and percentage thresholds when the alerting platform is Sensu" in {
-    val threshold = 13.3
+    val threshold         = 13.3
     val disabledThreshold = 333.33
     val serviceConfig: Map[String, JsValue] = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
       .withHttp5xxPercentThreshold(threshold, 10)

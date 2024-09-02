@@ -19,21 +19,20 @@ package uk.gov.hmrc.alertconfig.builder.custom
 object TimeRangeAsMinutes {
   type TimeRangeAsMinutes = Int
 
-  val DEFAULT = 15
-  val ONE_MINUTE = 1
-  val TWO_MINUTES = 2
-  val THREE_MINUTES = 3
-  val FOUR_MINUTES = 4
-  val FIVE_MINUTES = 5
-  val TEN_MINUTES = 10
-  val FIFTEEN_MINUTES = 15
-  val SIXTEEN_MINUTES = 16
-  val TWENTY_MINUTES = 20
-  val THIRTY_MINUTES = 30
-  val ONE_HOUR = 1 * 60
-  val NINETY_MINUTES = 90
-  val TWO_HOURS = 2 * 60
-  val TWELVE_HOURS = 12 * 60
+  val DEFAULT           = 15
+  val ONE_MINUTE        = 1
+  val TWO_MINUTES       = 2
+  val THREE_MINUTES     = 3
+  val FOUR_MINUTES      = 4
+  val FIVE_MINUTES      = 5
+  val TEN_MINUTES       = 10
+  val FIFTEEN_MINUTES   = 15
+  val SIXTEEN_MINUTES   = 16
+  val TWENTY_MINUTES    = 20
+  val THIRTY_MINUTES    = 30
+  val ONE_HOUR          = 1 * 60
+  val NINETY_MINUTES    = 90
+  val TWO_HOURS         = 2 * 60
+  val TWELVE_HOURS      = 12 * 60
   val TWENTY_FOUR_HOURS = 24 * 60
 }
-

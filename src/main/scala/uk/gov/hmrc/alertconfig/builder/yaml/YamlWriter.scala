@@ -27,7 +27,7 @@ object YamlWriter {
 
   // Define a filter to exclude 'environmentsEnabled' field
   private val propertyFilter = SimpleBeanPropertyFilter.serializeAllExcept("environmentsEnabled")
-  private val filters = new SimpleFilterProvider().addFilter("RemoveEnvironmentsEnabledField", propertyFilter)
+  private val filters        = new SimpleFilterProvider().addFilter("RemoveEnvironmentsEnabledField", propertyFilter)
 
   val mapper: ObjectMapper = new ObjectMapper(
     new YAMLFactory()
