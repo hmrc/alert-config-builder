@@ -18,6 +18,15 @@ package uk.gov.hmrc.alertconfig.builder.custom
 
 import uk.gov.hmrc.alertconfig.builder.Environment
 
+sealed trait NumberWrapper
+case class AsLong(value: Long) extends NumberWrapper
+case class AsDouble(value: Double) extends NumberWrapper
+
+object NumberWrapper {
+  implicit def longToNumberWrapper(l: Long): NumberWrapper = AsLong(l)
+  implicit def doubleToNumberWrapper(d: Double): NumberWrapper = AsDouble(d)
+}
+
 /** Define thresholds for any environments you want this custom alert to be active in.
   *
   * @param development
@@ -36,13 +45,13 @@ import uk.gov.hmrc.alertconfig.builder.Environment
   *   The threshold for the staging environment.
   */
 case class EnvironmentThresholds(
-    development: Option[Long] = None,
-    externaltest: Option[Long] = None,
-    integration: Option[Long] = None,
-    management: Option[Long] = None,
-    production: Option[Long] = None,
-    qa: Option[Long] = None,
-    staging: Option[Long] = None
+    development: Option[NumberWrapper] = None,
+    externaltest: Option[NumberWrapper] = None,
+    integration: Option[NumberWrapper] = None,
+    management: Option[NumberWrapper] = None,
+    production: Option[NumberWrapper] = None,
+    qa: Option[NumberWrapper] = None,
+    staging: Option[NumberWrapper] = None
 ) {
 
   /** Checks if the given environment has a threshold defined.
@@ -96,7 +105,7 @@ object EnvironmentThresholds {
     * @return
     *   EnvironmentThresholds with the same threshold for all environments.
     */
-  def forAllEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+  def forAllEnvironments(threshold: NumberWrapper): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold),
     staging = Some(threshold),
@@ -112,7 +121,7 @@ object EnvironmentThresholds {
     * @return
     *   EnvironmentThresholds with the same threshold for production and external test environments.
     */
-  def forAllProdEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+  def forAllProdEnvironments(threshold: NumberWrapper): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold)
   )
@@ -124,7 +133,7 @@ object EnvironmentThresholds {
     * @return
     *   EnvironmentThresholds with the same threshold for all non-production environments.
     */
-  def forAllNonProdEnvironments(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+  def forAllNonProdEnvironments(threshold: NumberWrapper): EnvironmentThresholds = EnvironmentThresholds(
     staging = Some(threshold),
     qa = Some(threshold),
     development = Some(threshold),
@@ -138,7 +147,7 @@ object EnvironmentThresholds {
    * @return
    * EnvironmentThresholds with the same threshold for all environments.
    */
-  def forAllEnvironmentsPlusManagement(threshold: Int): EnvironmentThresholds = EnvironmentThresholds(
+  def forAllEnvironmentsPlusManagement(threshold: NumberWrapper): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold),
     staging = Some(threshold),
