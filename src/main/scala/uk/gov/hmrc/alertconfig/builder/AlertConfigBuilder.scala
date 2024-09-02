@@ -378,21 +378,48 @@ case class AlertConfigBuilder(
              |"app": "$serviceName.$serviceDomain",
              |"handlers": ${integrations.toJson.compactPrint},
              |"errors-logged-threshold":$updatedErrorsLoggedThreshold,
-             |"exception-threshold":${exceptionThreshold.copy(count = updatedExceptionThreshold).toJson(ExceptionThresholdProtocol.thresholdFormat).compactPrint},
+             |"exception-threshold":${exceptionThreshold
+            .copy(count = updatedExceptionThreshold)
+            .toJson(ExceptionThresholdProtocol.thresholdFormat)
+            .compactPrint},
              |"5xx-threshold":${http5xxThreshold.copy(count = updated5xxThreshold).toJson(Http5xxThresholdProtocol.thresholdFormat).compactPrint},
-             |"5xx-percent-threshold":${http5xxPercentThreshold.copy(percentage = updated5xxPercentThreshold).toJson(Http5xxPercentThresholdProtocol.thresholdFormat).compactPrint},
+             |"5xx-percent-threshold":${http5xxPercentThreshold
+            .copy(percentage = updated5xxPercentThreshold)
+            .toJson(Http5xxPercentThresholdProtocol.thresholdFormat)
+            .compactPrint},
              |"containerKillThreshold" : $updatedContainerKillThreshold,
-             |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption.map(_.toJson.compactPrint).getOrElse(JsNull)},
-             |"httpTrafficThresholds" : ${httpTrafficThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpTrafficThreshold)).toJson.compactPrint},
-             |"httpStatusThresholds" : ${httpStatusThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusThreshold)).toJson.compactPrint},
-             |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold)).toJson.compactPrint},
-             |"metricsThresholds" : ${printSeq(metricsThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.MetricsThreshold)))(MetricsThresholdProtocol.thresholdFormat)},
+             |"http90PercentileResponseTimeThresholds" : ${http90PercentileResponseTimeThresholds.headOption
+            .map(_.toJson.compactPrint)
+            .getOrElse(JsNull)},
+             |"httpTrafficThresholds" : ${httpTrafficThresholds
+            .filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpTrafficThreshold))
+            .toJson
+            .compactPrint},
+             |"httpStatusThresholds" : ${httpStatusThresholds
+            .filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusThreshold))
+            .toJson
+            .compactPrint},
+             |"httpStatusPercentThresholds" : ${httpStatusPercentThresholds
+            .filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpStatusPercentThreshold))
+            .toJson
+            .compactPrint},
+             |"metricsThresholds" : ${printSeq(metricsThresholds.filterNot(a =>
+            isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.MetricsThreshold)))(MetricsThresholdProtocol.thresholdFormat)},
              |"total-http-request-threshold": $updatedTotalHttpRequestThreshold,
-             |"log-message-thresholds" : ${logMessageThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.LogMessageThreshold)).toJson.compactPrint},
+             |"log-message-thresholds" : ${logMessageThresholds
+            .filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.LogMessageThreshold))
+            .toJson
+            .compactPrint},
              |"average-cpu-threshold" : $updatedAverageCPUThreshold,
-             |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitThreshold)))(HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
-             |"absolute-percentage-split-downstream-service-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamServiceThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitDownstreamServiceThreshold)))(HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)},
-             |"absolute-percentage-split-downstream-hod-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamHodThresholds.filterNot(a => isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitDownstreamHodThreshold)))(HttpAbsolutePercentSplitDownstreamHodThresholdProtocol.thresholdFormat)}
+             |"absolute-percentage-split-threshold" : ${printSeq(httpAbsolutePercentSplitThresholds.filterNot(a =>
+            isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitThreshold)))(
+            HttpAbsolutePercentSplitThresholdProtocol.thresholdFormat)},
+             |"absolute-percentage-split-downstream-service-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamServiceThresholds.filterNot(a =>
+            isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitDownstreamServiceThreshold)))(
+            HttpAbsolutePercentSplitDownstreamServiceThresholdProtocol.thresholdFormat)},
+             |"absolute-percentage-split-downstream-hod-threshold" : ${printSeq(httpAbsolutePercentSplitDownstreamHodThresholds.filterNot(a =>
+            isGrafanaEnabled(a.alertingPlatform, currentEnvironment, AlertType.HttpAbsolutePercentSplitDownstreamHodThreshold)))(
+            HttpAbsolutePercentSplitDownstreamHodThresholdProtocol.thresholdFormat)}
              |}
               """.stripMargin
       }

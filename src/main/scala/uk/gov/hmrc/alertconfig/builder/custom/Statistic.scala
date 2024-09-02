@@ -19,10 +19,10 @@ package uk.gov.hmrc.alertconfig.builder.custom
 object Statistic {
   type Statistic = String
 
-  val MAXIMUM = "Maximum"
-  val MINIMUM = "Minimum"
-  val AVERAGE   = "Average"
-  val SUM  = "Sum"
-  val SAMPLE_COUNT   = "SampleCount"
-  val IQM   = "IQM"
+  val MAXIMUM      = "Maximum"
+  val MINIMUM      = "Minimum"
+  val AVERAGE      = "Average"
+  val SUM          = "Sum"
+  val SAMPLE_COUNT = "SampleCount"
+  val IQM          = "IQM"
 }

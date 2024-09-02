@@ -18,12 +18,20 @@ package uk.gov.hmrc.alertconfig.builder.custom
 
 import uk.gov.hmrc.alertconfig.builder.Environment
 
-sealed trait NumberWrapper
-case class AsLong(value: Long) extends NumberWrapper
-case class AsDouble(value: Double) extends NumberWrapper
+sealed trait NumberWrapper {
+  override def toString: String
+}
+
+case class AsLong(value: Long) extends NumberWrapper {
+  override def toString: String = value.toString
+}
+
+case class AsDouble(value: Double) extends NumberWrapper {
+  override def toString: String = value.toString
+}
 
 object NumberWrapper {
-  implicit def longToNumberWrapper(l: Long): NumberWrapper = AsLong(l)
+  implicit def longToNumberWrapper(l: Long): NumberWrapper     = AsLong(l)
   implicit def doubleToNumberWrapper(d: Double): NumberWrapper = AsDouble(d)
 }
 
@@ -141,12 +149,12 @@ object EnvironmentThresholds {
   )
 
   /** Creates EnvironmentThresholds with the same threshold for all environments including management.
-   *
-   * @param threshold
-   * An integer to be set as the threshold for all seven environments including management.
-   * @return
-   * EnvironmentThresholds with the same threshold for all environments.
-   */
+    *
+    * @param threshold
+    *   An integer to be set as the threshold for all seven environments including management.
+    * @return
+    *   EnvironmentThresholds with the same threshold for all environments.
+    */
   def forAllEnvironmentsPlusManagement(threshold: NumberWrapper): EnvironmentThresholds = EnvironmentThresholds(
     production = Some(threshold),
     externaltest = Some(threshold),
