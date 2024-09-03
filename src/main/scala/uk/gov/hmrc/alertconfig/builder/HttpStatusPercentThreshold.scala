@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, JsonFormat}
-
 /** This alert will notify when the percentage of http responses with a given http status code exceeds a given threshold within a 15-minute window.
   * @param httpStatus
   *   The http status code that this alert will trigger on (429, 499-504)
@@ -27,25 +25,10 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
   *   Whether to raise the alert as critical or warning
   * @param httpMethod
   *   The http method to filter all requests by (one of All, Post, Get, Put, Delete)
-  * @param alertingPlatform
-  *   The platform this alert will target. We are migrating towards Grafana and away from Sensu
   */
 case class HttpStatusPercentThreshold(
     httpStatus: HttpStatus.HTTP_STATUS,
     percentage: Double = 100.0,
     severity: AlertSeverity = AlertSeverity.Critical,
-    httpMethod: HttpMethod = HttpMethod.All,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
+    httpMethod: HttpMethod = HttpMethod.All
 )
-
-object HttpStatusPercentThresholdProtocol {
-  import DefaultJsonProtocol._
-
-  implicit val thresholdPercentFormat: JsonFormat[HttpStatusPercentThreshold] = {
-    implicit val hsf: JsonFormat[HttpStatus.HTTP_STATUS] = httpStatusFormat
-    implicit val asf: JsonFormat[AlertSeverity]          = alertSeverityFormat
-    implicit val hmf: JsonFormat[HttpMethod]             = httpMethodFormat
-    jsonFormat5(HttpStatusPercentThreshold)
-  }
-
-}

@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.alertconfig.builder
 
-import spray.json.{DefaultJsonProtocol, JsonFormat}
-
 /** This alert will notify when your microservice returns a specified number of requests with a given http status code (between 400 and 599) within a
   * 15-minute window.
   * @param httpStatus
@@ -28,25 +26,10 @@ import spray.json.{DefaultJsonProtocol, JsonFormat}
   *   Whether to raise the alert as critical or warning
   * @param httpMethod
   *   The http method to filter all requests by (one of All, Post, Get, Put, Delete)
-  * @param alertingPlatform
-  *   The platform this alert will target. We are migrating towards Grafana and away from Sensu
   */
 case class HttpStatusThreshold(
     httpStatus: HttpStatus.HTTP_STATUS,
     count: Int = 1,
     severity: AlertSeverity = AlertSeverity.Critical,
-    httpMethod: HttpMethod = HttpMethod.All,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
+    httpMethod: HttpMethod = HttpMethod.All
 )
-
-object HttpStatusThresholdProtocol {
-  import DefaultJsonProtocol._
-
-  implicit val thresholdFormat: JsonFormat[HttpStatusThreshold] = {
-    implicit val hsf: JsonFormat[HttpStatus.HTTP_STATUS] = httpStatusFormat
-    implicit val asf: JsonFormat[AlertSeverity]          = alertSeverityFormat
-    implicit val hmf: JsonFormat[HttpMethod]             = httpMethodFormat
-    jsonFormat5(HttpStatusThreshold)
-  }
-
-}
