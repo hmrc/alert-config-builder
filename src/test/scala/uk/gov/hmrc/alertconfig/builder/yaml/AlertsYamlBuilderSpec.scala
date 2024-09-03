@@ -23,10 +23,10 @@ import uk.gov.hmrc.alertconfig.builder._
 
 class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
-  override def beforeEach(): Unit = {
-    System.setProperty("app-config-path", "src/test/resources/app-config")
-    System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
-  }
+//  override def beforeEach(): Unit = {
+//    System.setProperty("app-config-path", "src/test/resources/app-config")
+//    System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
+//  }
 
   "convert(Seq[AlertConfig])" should {
     "when supplied an empty sequence it should return an empty list" in {
@@ -37,12 +37,11 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
   "convert()" should {
     "filter out alerting configuration for services without an entry in app-config-env (meaning they are undeployed)" in {
       val config = AlertConfigBuilder("service-without-app-config-entry", integrations = Seq("h1", "h2"))
-        .withContainerKillThreshold(10, AlertingPlatform.Grafana)
+        .withContainerKillThreshold(10)
 
       val res = AlertsYamlBuilder.convert(
         alertConfigBuilder = config,
         environmentDefinedIntegrations = Set("h1"),
-        currentEnvironment = Environment.Production,
         integrationSeveritiesForEnv = Map("h1" -> Set(Severity.Warning, Severity.Critical))
       )
 
@@ -62,23 +61,23 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           serviceName = "service1",
           integrations = Seq("integration-non-prod")
         )
-          .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
-          .withExceptionThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
-          .withHttp5xxThreshold(1, AlertSeverity.Warning, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(1, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
+          .withErrorsLoggedThreshold(4)
+          .withExceptionThreshold(1, AlertSeverity.Warning)
+          .withHttp5xxThreshold(1, AlertSeverity.Warning)
+          .withHttp5xxPercentThreshold(1, severity = AlertSeverity.Warning)
           .withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning = Some(1), critical = None))
           .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(severity = AlertSeverity.Warning))
           .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(severity =
             AlertSeverity.Warning))
           .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(severity = AlertSeverity.Warning))
-          .withContainerKillThreshold(2, AlertingPlatform.Grafana)
-          .withHttpTrafficThreshold(HttpTrafficThreshold(warning = Some(1), critical = Some(2), alertingPlatform = AlertingPlatform.Grafana))
+          .withContainerKillThreshold(2)
+          .withHttpTrafficThreshold(HttpTrafficThreshold(warning = Some(1), critical = Some(2)))
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
-          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
-          .withTotalHttpRequestThreshold(2, AlertingPlatform.Grafana)
-          .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
+          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Warning)
+          .withTotalHttpRequestThreshold(2)
+          .withAverageCPUThreshold(1)
       )
 
       val fakeConfig = new AlertConfig {
@@ -126,9 +125,9 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           serviceName = "service1",
           integrations = Seq("foo", "bar")
         )
-          .withExceptionThreshold(9, AlertSeverity.Warning, AlertingPlatform.Grafana)
-          .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
+          .withExceptionThreshold(9, AlertSeverity.Warning)
+          .withContainerKillThreshold(Int.MaxValue)
+          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning)
       )
 
       val fakeConfig = new AlertConfig {
@@ -177,9 +176,9 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           serviceName = "service1",
           integrations = Seq("foo", "bar")
         )
-          .withExceptionThreshold(9, AlertSeverity.Critical, AlertingPlatform.Grafana)
-          .withContainerKillThreshold(Int.MaxValue, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning, alertingPlatform = AlertingPlatform.Grafana)
+          .withExceptionThreshold(9, AlertSeverity.Critical)
+          .withContainerKillThreshold(Int.MaxValue)
+          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning)
       )
 
       val fakeConfig = new AlertConfig {
@@ -227,23 +226,23 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           serviceName = "service1",
           integrations = Seq("integration-non-prod")
         )
-          .withErrorsLoggedThreshold(4, alertingPlatform = AlertingPlatform.Grafana)
-          .withExceptionThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
-          .withHttp5xxThreshold(1, AlertSeverity.Critical, AlertingPlatform.Grafana)
-          .withHttp5xxPercentThreshold(1, severity = AlertSeverity.Critical, alertingPlatform = AlertingPlatform.Grafana)
+          .withErrorsLoggedThreshold(4)
+          .withExceptionThreshold(1, AlertSeverity.Critical)
+          .withHttp5xxThreshold(1, AlertSeverity.Critical)
+          .withHttp5xxPercentThreshold(1, severity = AlertSeverity.Critical)
           .withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning = Some(2), critical = Some(1)))
           .withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(severity = AlertSeverity.Critical))
           .withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(severity =
             AlertSeverity.Critical))
           .withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(severity = AlertSeverity.Critical))
-          .withContainerKillThreshold(2, AlertingPlatform.Grafana)
-          .withHttpTrafficThreshold(HttpTrafficThreshold(warning = Some(1), critical = Some(2), alertingPlatform = AlertingPlatform.Grafana))
+          .withContainerKillThreshold(2)
+          .withHttpTrafficThreshold(HttpTrafficThreshold(warning = Some(1), critical = Some(2)))
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Warning))
           .withHttpStatusThreshold(HttpStatusThreshold(httpStatus = HttpStatus.HTTP_STATUS_501, severity = AlertSeverity.Critical))
           .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HttpStatus.HTTP_STATUS_500, severity = AlertSeverity.Critical))
-          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Critical, alertingPlatform = AlertingPlatform.Grafana)
-          .withTotalHttpRequestThreshold(2, AlertingPlatform.Grafana)
-          .withAverageCPUThreshold(1, AlertingPlatform.Grafana)
+          .withLogMessageThreshold("HelloWorld", 1, lessThanMode = false, AlertSeverity.Critical)
+          .withTotalHttpRequestThreshold(2)
+          .withAverageCPUThreshold(1)
       )
 
       val fakeConfig = new AlertConfig {
@@ -282,9 +281,9 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "containerKillThreshold should be set to defined threshold" in {
       val threshold = 56
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
-        .withContainerKillThreshold(threshold, AlertingPlatform.Grafana)
+        .withContainerKillThreshold(threshold)
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Production)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.containerKillThreshold shouldBe Some(YamlContainerKillThresholdAlert(threshold))
     }
@@ -292,7 +291,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "averageCPUThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.averageCPUThreshold shouldBe None
     }
@@ -302,7 +301,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
         .withAverageCPUThreshold(threshold)
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.averageCPUThreshold shouldBe Some(YamlAverageCPUThresholdAlert(threshold))
     }
@@ -310,7 +309,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "ErrorsLoggedThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.errorsLoggedThreshold shouldBe None
     }
@@ -318,7 +317,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "ExceptionThreshold should be 2 by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.exceptionThreshold shouldBe Some(YamlExceptionThresholdAlert(2, "critical"))
     }
@@ -326,7 +325,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "Http5xxPercentThreshold should be 100% by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.http5xxPercentThreshold shouldBe Some(YamlHttp5xxPercentThresholdAlert(100.0, 0, "critical"))
     }
@@ -334,7 +333,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "Http5xxThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.http5xxThreshold shouldBe None
     }
@@ -342,7 +341,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "httpAbsolutePercentSplitThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.httpAbsolutePercentSplitThreshold shouldBe None
     }
@@ -350,7 +349,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "HttpStatusPercentThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.httpStatusPercentThresholds shouldBe None
     }
@@ -358,7 +357,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "HttpStatusThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.httpStatusThresholds shouldBe None
     }
@@ -366,7 +365,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "HttpTrafficThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.httpTrafficThresholds shouldBe None
     }
@@ -374,7 +373,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "LogMessageThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.logMessageThresholds shouldBe None
     }
@@ -382,7 +381,7 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
     "TotalHttpRequestThreshold should be disabled by default" in {
       val config = AlertConfigBuilder("service1", integrations = Seq("h1", "h2"))
 
-      val output = AlertsYamlBuilder.convertAlerts(config, Environment.Integration)
+      val output = AlertsYamlBuilder.convertAlerts(config)
 
       output.totalHttpRequestThreshold shouldBe None
     }

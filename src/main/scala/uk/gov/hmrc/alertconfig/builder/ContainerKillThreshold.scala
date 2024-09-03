@@ -21,10 +21,7 @@ package uk.gov.hmrc.alertconfig.builder
   *
   * @param count
   *   The number of container kills to alert on
-  * @param alertingPlatform
-  *   The platform this alert will target. We are migrating towards Grafana and away from Sensu
   */
 case class ContainerKillThreshold(
-    count: Int = Int.MaxValue,
-    alertingPlatform: AlertingPlatform = AlertingPlatform.Default
+    count: Int = Int.MaxValue
 )
