@@ -18,7 +18,7 @@ package uk.gov.hmrc.alertconfig.builder
 
 case class AlertConfigBuilder(
     serviceName: String,
-    integrations: Seq[String],
+    integrations: Seq[String] = Seq("noop"),
     errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
     exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
     http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
@@ -268,7 +268,7 @@ case class AlertConfigBuilder(
 
 case class TeamAlertConfigBuilder(
     services: Seq[String],
-    integrations: Seq[String],
+    integrations: Seq[String] = Seq("noop"),
     errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
     exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
     http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),

@@ -23,11 +23,6 @@ import uk.gov.hmrc.alertconfig.builder._
 
 class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
-//  override def beforeEach(): Unit = {
-//    System.setProperty("app-config-path", "src/test/resources/app-config")
-//    System.setProperty("zone-mapping-path", "src/test/resources/zone-to-service-domain-mapping.yml")
-//  }
-
   "convert(Seq[AlertConfig])" should {
     "when supplied an empty sequence it should return an empty list" in {
       AlertsYamlBuilder.convert(Seq(), Environment.Qa) shouldBe List()
