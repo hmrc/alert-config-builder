@@ -18,23 +18,23 @@ package uk.gov.hmrc.alertconfig.builder
 
 case class AlertConfigBuilder(
     serviceName: String,
-    integrations: Seq[String] = Seq("noop"),
-    errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
-    exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
-    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
-    http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
+    integrations: Seq[String] = Nil,
+    errorsLoggedThreshold: Option[ErrorsLoggedThreshold] = None,
+    exceptionThreshold: Option[ExceptionThreshold] = Some(ExceptionThreshold(2)),
+    http5xxThreshold: Option[Http5xxThreshold] = None,
+    http5xxPercentThreshold: Option[Http5xxPercentThreshold] = Some(Http5xxPercentThreshold(100.0)),
     http90PercentileResponseTimeThresholds: Seq[Http90PercentileResponseTimeThreshold] = Nil,
     httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
-    containerKillThreshold: ContainerKillThreshold = ContainerKillThreshold(1),
+    containerKillThreshold: Option[ContainerKillThreshold] = Some(ContainerKillThreshold(1)),
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
     httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
     metricsThresholds: Seq[MetricsThreshold] = Nil,
     logMessageThresholds: Seq[LogMessageThreshold] = Nil,
-    totalHttpRequestThreshold: TotalHttpRequestThreshold = TotalHttpRequestThreshold(),
-    averageCPUThreshold: AverageCPUThreshold = AverageCPUThreshold(),
+    totalHttpRequestThreshold: Option[TotalHttpRequestThreshold] = None,
+    averageCPUThreshold: Option[AverageCPUThreshold] = None,
     platformService: Boolean = false
 ) {
 
@@ -56,7 +56,7 @@ case class AlertConfigBuilder(
     *   <pre> {@code .withErrorsLoggedThreshold(5) # alert when 5 logs at ERROR level are logged in a 15-minute window } </pre>
     */
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
-    this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold))
+    this.copy(errorsLoggedThreshold = Some(ErrorsLoggedThreshold(errorsLoggedThreshold)))
 
   /** This alert will notify when your microservice throws a specified number of exceptions, at log level ERROR, within a 15-minute window.
     * @param count
@@ -66,7 +66,7 @@ case class AlertConfigBuilder(
     *   <pre> {@code .withExceptionThreshold(count: Int, severity: AlertSeverity = AlertSeverity.Critical) } </pre>
     */
   def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
+    this.copy(exceptionThreshold = Some(ExceptionThreshold(exceptionThreshold, severity)))
 
   /** This alert will notify when the number of http responses returning a 5xx http status code exceeds a given threshold within a 15-minute window.
     *
@@ -80,7 +80,7 @@ case class AlertConfigBuilder(
     *   AlertSeverity.Warning) # raise a warning alert when 5 requests return a 5xx status code in a 15-minute window } </pre>
     */
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+    this.copy(http5xxThreshold = Some(Http5xxThreshold(http5xxThreshold, severity)))
 
   /** This alert will notify when the percentage of http responses returning a 5xx http status code exceeds a given threshold within a 15-minute
     * window.
@@ -104,7 +104,7 @@ case class AlertConfigBuilder(
     *   status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window } </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity))
+    this.copy(http5xxPercentThreshold = Some(Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity)))
 
   /** This alert will notify you when the 90th Percentile request time goes above the defined thresholds for the time period specified by the user.
     * @param threshold
@@ -208,7 +208,7 @@ case class AlertConfigBuilder(
     *   window } </pre>
     */
   def withContainerKillThreshold(containerCrashThreshold: Int) =
-    this.copy(containerKillThreshold = ContainerKillThreshold(containerCrashThreshold))
+    this.copy(containerKillThreshold = Some(ContainerKillThreshold(containerCrashThreshold)))
 
   /** This alert will notify when your microservice receives a given number of requests within a 15-minute window.
     *
@@ -218,7 +218,7 @@ case class AlertConfigBuilder(
     *   <pre> {@code .withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window } </pre>
     */
   def withTotalHttpRequestThreshold(threshold: Int) =
-    this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold))
+    this.copy(totalHttpRequestThreshold = Some(TotalHttpRequestThreshold(threshold)))
 
   /** This alert will notify when the count of a given log message is logged exceeds a given threshold within a 15-minute window.
     * @param message
@@ -249,7 +249,7 @@ case class AlertConfigBuilder(
     *   } </pre>
     */
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
-    this.copy(averageCPUThreshold = AverageCPUThreshold(averageCPUThreshold))
+    this.copy(averageCPUThreshold = Some(AverageCPUThreshold(averageCPUThreshold)))
 
   /** In order to generate an alert for a service, alert-config expects an entry in app-config-\$ENV for that service. However, since platform
     * services don't have app-config entries by design, the creation of alerts for these services can be forced by adding .isPlatformService(true) to
@@ -268,23 +268,23 @@ case class AlertConfigBuilder(
 
 case class TeamAlertConfigBuilder(
     services: Seq[String],
-    integrations: Seq[String] = Seq("noop"),
-    errorsLoggedThreshold: ErrorsLoggedThreshold = ErrorsLoggedThreshold(),
-    exceptionThreshold: ExceptionThreshold = ExceptionThreshold(),
-    http5xxThreshold: Http5xxThreshold = Http5xxThreshold(),
-    http5xxPercentThreshold: Http5xxPercentThreshold = Http5xxPercentThreshold(100.0),
+    integrations: Seq[String] = Nil,
+    errorsLoggedThreshold: Option[ErrorsLoggedThreshold] = None,
+    exceptionThreshold: Option[ExceptionThreshold] = Some(ExceptionThreshold(2)),
+    http5xxThreshold: Option[Http5xxThreshold] = None,
+    http5xxPercentThreshold: Option[Http5xxPercentThreshold] = Some(Http5xxPercentThreshold(100.0)),
     http90PercentileResponseTimeThresholds: Seq[Http90PercentileResponseTimeThreshold] = Nil,
     httpAbsolutePercentSplitThresholds: Seq[HttpAbsolutePercentSplitThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamServiceThresholds: Seq[HttpAbsolutePercentSplitDownstreamServiceThreshold] = Nil,
     httpAbsolutePercentSplitDownstreamHodThresholds: Seq[HttpAbsolutePercentSplitDownstreamHodThreshold] = Nil,
-    containerKillThreshold: ContainerKillThreshold = ContainerKillThreshold(1),
+    containerKillThreshold: Option[ContainerKillThreshold] = Some(ContainerKillThreshold(1)),
     httpTrafficThresholds: Seq[HttpTrafficThreshold] = Nil,
     httpStatusThresholds: Seq[HttpStatusThreshold] = Nil,
     httpStatusPercentThresholds: Seq[HttpStatusPercentThreshold] = Nil,
     metricsThresholds: Seq[MetricsThreshold] = Nil,
     logMessageThresholds: Seq[LogMessageThreshold] = Nil,
-    totalHttpRequestThreshold: TotalHttpRequestThreshold = TotalHttpRequestThreshold(),
-    averageCPUThreshold: AverageCPUThreshold = AverageCPUThreshold(),
+    totalHttpRequestThreshold: Option[TotalHttpRequestThreshold] = None,
+    averageCPUThreshold: Option[AverageCPUThreshold] = None,
     platformService: Boolean = false
 ) {
 
@@ -304,7 +304,7 @@ case class TeamAlertConfigBuilder(
     *   <pre> {@code .withErrorsLoggedThreshold(5) # alert when 5 logs at ERROR level are logged in a 15-minute window } </pre>
     */
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int) =
-    this.copy(errorsLoggedThreshold = ErrorsLoggedThreshold(errorsLoggedThreshold))
+    this.copy(errorsLoggedThreshold = Some(ErrorsLoggedThreshold(errorsLoggedThreshold)))
 
   /** This alert will notify when your microservice throws a specified number of exceptions, at log level ERROR, within a 15-minute window.
     * @param count
@@ -314,7 +314,7 @@ case class TeamAlertConfigBuilder(
     *   <pre> {@code .withExceptionThreshold(count: Int, severity: AlertSeverity = AlertSeverity.Critical) } </pre>
     */
   def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(exceptionThreshold = ExceptionThreshold(exceptionThreshold, severity))
+    this.copy(exceptionThreshold = Some(ExceptionThreshold(exceptionThreshold, severity)))
 
   /** This alert will notify when the number of http responses returning a 5xx http status code exceeds a given threshold within a 15-minute window.
     *
@@ -328,7 +328,7 @@ case class TeamAlertConfigBuilder(
     *   AlertSeverity.Warning) # raise a warning alert when 5 requests return a 5xx status code in a 15-minute window } </pre>
     */
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxThreshold = Http5xxThreshold(http5xxThreshold, severity))
+    this.copy(http5xxThreshold = Some(Http5xxThreshold(http5xxThreshold, severity)))
 
   /** This alert will notify when the percentage of http responses returning a 5xx http status code exceeds a given threshold within a 15-minute
     * window.
@@ -352,7 +352,7 @@ case class TeamAlertConfigBuilder(
     *   status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window } </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical) =
-    this.copy(http5xxPercentThreshold = Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity))
+    this.copy(http5xxPercentThreshold = Some(Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity)))
 
   /** This alert will notify you when the 90th Percentile request time goes above the defined thresholds for the time period specified by the user.
     * @param threshold
@@ -398,7 +398,7 @@ case class TeamAlertConfigBuilder(
     *   window } </pre>
     */
   def withContainerKillThreshold(containerKillThreshold: Int) =
-    this.copy(containerKillThreshold = ContainerKillThreshold(containerKillThreshold))
+    this.copy(containerKillThreshold = Some(ContainerKillThreshold(containerKillThreshold)))
 
   /** This alert will notify you when the total number of requests received by the microservice is below a certain threshold.
     *
@@ -458,7 +458,7 @@ case class TeamAlertConfigBuilder(
     *   <pre> {@code .withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window } </pre>
     */
   def withTotalHttpRequestThreshold(threshold: Int) =
-    this.copy(totalHttpRequestThreshold = TotalHttpRequestThreshold(threshold))
+    this.copy(totalHttpRequestThreshold = Some(TotalHttpRequestThreshold(threshold)))
 
   /** This alert will notify when the count of a given log message is logged exceeds a given threshold within a 15-minute window.
     * @param message
@@ -489,7 +489,7 @@ case class TeamAlertConfigBuilder(
     *   } </pre>
     */
   def withAverageCPUThreshold(averageCPUThreshold: Int) =
-    this.copy(averageCPUThreshold = AverageCPUThreshold(averageCPUThreshold))
+    this.copy(averageCPUThreshold = Some(AverageCPUThreshold(averageCPUThreshold)))
 
   /** In order to generate an alert for a service, alert-config expects an entry in app-config-\$ENV for that service. However, since platform
     * services don't have app-config entries by design, the creation of alerts for these services can be forced by adding .isPlatformService(true) to

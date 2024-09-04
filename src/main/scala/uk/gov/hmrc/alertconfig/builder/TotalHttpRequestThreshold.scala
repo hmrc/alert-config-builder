@@ -22,5 +22,5 @@ package uk.gov.hmrc.alertconfig.builder
   *   The number of all http requests to alert on
   */
 case class TotalHttpRequestThreshold(
-    count: Int = Int.MaxValue
+    count: Int
 )

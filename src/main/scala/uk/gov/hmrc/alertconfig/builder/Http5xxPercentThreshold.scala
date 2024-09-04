@@ -29,7 +29,7 @@ package uk.gov.hmrc.alertconfig.builder
   *   Whether to raise the alert as critical or warning
   */
 case class Http5xxPercentThreshold(
-    percentage: Double = 100.0,
+    percentage: Double,
     minimumHttp5xxCountThreshold: Int = 0,
     severity: AlertSeverity = AlertSeverity.Critical
 )

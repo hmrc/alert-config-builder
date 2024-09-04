@@ -57,18 +57,18 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
       val alertConfigBuilder: TeamAlertConfigBuilder = TeamAlertConfigBuilder.teamAlerts(Seq("service1", "service2"))
 
       alertConfigBuilder.services shouldBe Seq("service1", "service2")
-      alertConfigBuilder.integrations shouldBe Seq("noop")
-      alertConfigBuilder.averageCPUThreshold shouldBe AverageCPUThreshold(Int.MaxValue)
-      alertConfigBuilder.containerKillThreshold shouldBe ContainerKillThreshold(1)
-      alertConfigBuilder.exceptionThreshold shouldBe ExceptionThreshold(2, AlertSeverity.Critical)
-      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(100, severity = AlertSeverity.Critical)
-      alertConfigBuilder.http5xxThreshold shouldBe Http5xxThreshold(Int.MaxValue, AlertSeverity.Critical)
+      alertConfigBuilder.integrations shouldBe List()
+      alertConfigBuilder.averageCPUThreshold shouldBe None
+      alertConfigBuilder.containerKillThreshold shouldBe Some(ContainerKillThreshold(1))
+      alertConfigBuilder.exceptionThreshold shouldBe Some(ExceptionThreshold(2, AlertSeverity.Critical))
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Some(Http5xxPercentThreshold(100, severity = AlertSeverity.Critical))
+      alertConfigBuilder.http5xxThreshold shouldBe None
       alertConfigBuilder.http90PercentileResponseTimeThresholds shouldBe List()
       alertConfigBuilder.httpAbsolutePercentSplitThresholds shouldBe List()
       alertConfigBuilder.httpStatusThresholds shouldBe List()
       alertConfigBuilder.httpTrafficThresholds shouldBe List()
       alertConfigBuilder.logMessageThresholds shouldBe List()
-      alertConfigBuilder.totalHttpRequestThreshold shouldBe TotalHttpRequestThreshold(Int.MaxValue)
+      alertConfigBuilder.totalHttpRequestThreshold shouldBe None
     }
 
     "result in identical defaults to AlertConfigBuilder" in {
@@ -118,7 +118,7 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .teamAlerts(Seq("service1", "service2"))
         .withHttp5xxPercentThreshold(19.2, severity = AlertSeverity.Warning)
 
-      alertConfigBuilder.http5xxPercentThreshold shouldBe Http5xxPercentThreshold(19.2, severity = AlertSeverity.Warning)
+      alertConfigBuilder.http5xxPercentThreshold shouldBe Some(Http5xxPercentThreshold(19.2, severity = AlertSeverity.Warning))
     }
 
     "return TeamAlertConfigBuilder with correct integrations" in {
