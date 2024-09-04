@@ -136,55 +136,37 @@ object AlertsYamlBuilder {
   }
 
   private def convertAverageCPUThreshold(averageCPUThreshold: Option[AverageCPUThreshold]): Option[YamlAverageCPUThresholdAlert] = {
-    val threshold = averageCPUThreshold.map(_.count).getOrElse(Int.MaxValue)
-    Option.when(threshold < Int.MaxValue)(
-      YamlAverageCPUThresholdAlert(threshold)
-    )
+    averageCPUThreshold.map(threshold => YamlAverageCPUThresholdAlert(threshold.count))
   }
 
   private def convertContainerKillThreshold(containerKillThreshold: Option[ContainerKillThreshold]): Option[YamlContainerKillThresholdAlert] = {
-    val threshold = containerKillThreshold.map(_.count).getOrElse(Int.MaxValue)
-    Option.when(threshold < Int.MaxValue)(
-      YamlContainerKillThresholdAlert(threshold)
-    )
+    containerKillThreshold.map(threshold => YamlContainerKillThresholdAlert(threshold.count))
   }
 
   private def convertErrorsLoggedThreshold(errorsLoggedThreshold: Option[ErrorsLoggedThreshold]): Option[YamlErrorsLoggedThresholdAlert] = {
-    val threshold = errorsLoggedThreshold.map(_.count).getOrElse(Int.MaxValue)
-    Option.when(threshold < Int.MaxValue)(
-      YamlErrorsLoggedThresholdAlert(threshold)
-    )
+    errorsLoggedThreshold.map(threshold => YamlErrorsLoggedThresholdAlert(threshold.count))
   }
 
   private def convertExceptionThreshold(exceptionThreshold: Option[ExceptionThreshold]): Option[YamlExceptionThresholdAlert] = {
-    val threshold = exceptionThreshold.map(_.count).getOrElse(Int.MaxValue)
-    Option.when(threshold < Int.MaxValue)(
-      YamlExceptionThresholdAlert(
-        count = threshold,
-        severity = exceptionThreshold.map(_.severity).getOrElse("critical").toString
-      )
-    )
+    exceptionThreshold.map(threshold => YamlExceptionThresholdAlert(
+      count = threshold.count,
+      severity = threshold.severity.toString
+    ))
   }
 
   private def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Option[Http5xxPercentThreshold]): Option[YamlHttp5xxPercentThresholdAlert] = {
-    val threshold = http5xxPercentThreshold.map(_.percentage).getOrElse(150.0)
-    Option.when(threshold <= 100.0)(
-      YamlHttp5xxPercentThresholdAlert(
-        percentage = threshold,
-        minimumHttp5xxCountThreshold = http5xxPercentThreshold.map(_.minimumHttp5xxCountThreshold).getOrElse(0),
-        severity = http5xxPercentThreshold.map(_.severity).getOrElse("critical").toString
-      )
-    )
+    http5xxPercentThreshold.filter(_.percentage <= 100.0).map(threshold => YamlHttp5xxPercentThresholdAlert(
+      percentage = threshold.percentage,
+      minimumHttp5xxCountThreshold = threshold.minimumHttp5xxCountThreshold,
+      severity = threshold.severity.toString
+    ))
   }
 
   private def convertHttp5xxThreshold(http5xxThreshold: Option[Http5xxThreshold]): Option[YamlHttp5xxThresholdAlert] = {
-    val threshold = http5xxThreshold.map(_.count).getOrElse(Int.MaxValue)
-    Option.when(threshold < Int.MaxValue)(
-      YamlHttp5xxThresholdAlert(
-        count = threshold,
-        severity = http5xxThreshold.map(_.severity).getOrElse("critical").toString
-      )
-    )
+    http5xxThreshold.map(threshold => YamlHttp5xxThresholdAlert(
+      count = threshold.count,
+      severity = threshold.severity.toString
+    ))
   }
 
   private def convertHttpAbsolutePercentSplitThresholdAlert(
@@ -305,10 +287,8 @@ object AlertsYamlBuilder {
   }
 
   private def convertTotalHttpRequestThreshold(totalHttpRequestThreshold: Option[TotalHttpRequestThreshold]): Option[YamlTotalHttpRequestThresholdAlert] = {
-    val threshold = totalHttpRequestThreshold.map(_.count).getOrElse(Int.MaxValue)
-    Option.when(threshold < Int.MaxValue)(
-      YamlTotalHttpRequestThresholdAlert(threshold)
-    )
+    totalHttpRequestThreshold.map(threshold =>
+      YamlTotalHttpRequestThresholdAlert(threshold.count))
   }
 
   private def convertMetricsThreshold(metricsThreshold: Seq[MetricsThreshold]): Option[Seq[YamlMetricsThresholdAlert]] = {

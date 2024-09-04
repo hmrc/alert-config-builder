@@ -207,6 +207,10 @@ case class AlertConfigBuilder(
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold): AlertConfigBuilder =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
 
+  /** This will disable the ContainerKillThreshold alert which is configured with a threshold of 1 by default */
+  def disableContainerKillThreshold(): AlertConfigBuilder =
+    this.copy(containerKillThreshold = None)
+
   /** All microservices are deployed to MDTP inside docker containers. If the docker container runs out of memory then the container will be killed
     * with an out-of-memory exception. This alert will notify when a specified number of containers are killed within a 15-minute window.
     *
@@ -417,6 +421,10 @@ case class TeamAlertConfigBuilder(
    */
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold): TeamAlertConfigBuilder =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
+
+  /** This will disable the ContainerKillThreshold alert which is configured with a threshold of 1 by default */
+  def disableContainerKillThreshold(): TeamAlertConfigBuilder =
+    this.copy(containerKillThreshold = None)
 
   /** All microservices are deployed to MDTP inside docker containers. If the docker container runs out of memory then the container will be killed
     * with an out-of-memory exception. This alert will notify when a specified number of containers are killed within a 15-minute window.

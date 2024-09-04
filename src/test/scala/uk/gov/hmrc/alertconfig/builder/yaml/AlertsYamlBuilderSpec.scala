@@ -121,8 +121,8 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           integrations = Seq("foo", "bar")
         )
           .withExceptionThreshold(9, AlertSeverity.Warning)
-          .withContainerKillThreshold(Int.MaxValue)
-          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning)
+          .disableContainerKillThreshold()
+          .disableHttp5xxPercentThreshold()
       )
 
       val fakeConfig = new AlertConfig {
@@ -172,8 +172,8 @@ class AlertsYamlBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfte
           integrations = Seq("foo", "bar")
         )
           .withExceptionThreshold(9, AlertSeverity.Critical)
-          .withContainerKillThreshold(Int.MaxValue)
-          .withHttp5xxPercentThreshold(Int.MaxValue, 1, severity = AlertSeverity.Warning)
+          .disableContainerKillThreshold()
+          .disableHttp5xxPercentThreshold()
       )
 
       val fakeConfig = new AlertConfig {

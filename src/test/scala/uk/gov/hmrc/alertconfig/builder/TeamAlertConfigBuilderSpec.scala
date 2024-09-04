@@ -710,8 +710,8 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         .teamAlerts(Seq("ingress-gateway-public", "ingress-gateway-public-rate"))
         .isPlatformService(true)
         .withContainerKillThreshold(1)
-        .withExceptionThreshold(Int.MaxValue) // disabled
-        .withHttp5xxPercentThreshold(150)     // disabled
+        .disableExceptionThreshold()
+        .disableHttp5xxPercentThreshold()
         .withIntegrations(integration)
 
       alertConfigBuilder.services shouldBe Seq("ingress-gateway-public", "ingress-gateway-public-rate")
@@ -733,6 +733,34 @@ class TeamAlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAn
         exceptionThreshold = None,
         http5xxPercentThreshold = None
       )
+
+      service1Config.alerts shouldBe expected
+      service2Config.alerts shouldBe expected
+    }
+
+    "return TeamAlertConfigBuilder with default alerts disabled" in {
+      val alertConfigBuilder = TeamAlertConfigBuilder
+        .teamAlerts(Seq("service1", "service2"))
+        .disableContainerKillThreshold()
+        .disableExceptionThreshold()
+        .disableHttp5xxPercentThreshold()
+        .withIntegrations(integration)
+
+      alertConfigBuilder.services shouldBe Seq("service1", "service2")
+
+      val fakeConfig = new AlertConfig {
+        override def alertConfig: Seq[AlertConfigBuilder] = alertConfigBuilder
+
+        override def environmentConfig: Seq[EnvironmentAlertBuilder] = envConfig
+      }
+
+      val output = AlertsYamlBuilder.convert(Seq(fakeConfig), Environment.Production)
+
+      output.length shouldBe 2
+      val service1Config = output(0)
+      val service2Config = output(1)
+
+      val expected = Alerts()
 
       service1Config.alerts shouldBe expected
       service2Config.alerts shouldBe expected
