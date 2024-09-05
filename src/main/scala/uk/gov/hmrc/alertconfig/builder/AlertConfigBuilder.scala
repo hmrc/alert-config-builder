@@ -110,7 +110,7 @@ case class AlertConfigBuilder(
    *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
-    if (percentThreshold >= 100) {
+    if (percentThreshold > 100) {
       println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
       throw new Exception(
         s"withHttp5xxPercentThreshold percentThreshold '${percentThreshold}' cannot be over 100% - use .disableHttp5xxPercentThreshold() to disable this alert")
@@ -377,7 +377,7 @@ case class TeamAlertConfigBuilder(
    *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
-    if (percentThreshold >= 100) {
+    if (percentThreshold > 100) {
       println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
       throw new Exception(
         s"withHttp5xxPercentThreshold percentThreshold '${percentThreshold}' cannot be over 100% - use .disableHttp5xxPercentThreshold() to disable this alert")
