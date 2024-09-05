@@ -129,6 +129,10 @@ case class AlertConfigBuilder(
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold): AlertConfigBuilder = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {
       throw new Exception("withHttp90PercentileResponseTimeThreshold has already been defined for this microservice")
+    } else if (threshold.timePeriod < 0 || threshold.timePeriod > 15) {
+      println(Console.CYAN + s" = ${threshold}" + Console.RESET)
+      throw new Exception(
+        s"withHttp90PercentileResponseTimeThreshold timePeriod '${threshold.timePeriod}' needs to be in the range 1-15 minutes (inclusive)")
     } else {
       this.copy(http90PercentileResponseTimeThresholds = Seq(threshold))
     }
