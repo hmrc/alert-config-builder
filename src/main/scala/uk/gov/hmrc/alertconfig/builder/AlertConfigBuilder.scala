@@ -110,7 +110,7 @@ case class AlertConfigBuilder(
    *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
-    if (percentThreshold >= 100) {
+    if (percentThreshold > 100) {
       println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
       throw new Exception(
         s"withHttp5xxPercentThreshold percentThreshold '${percentThreshold}' cannot be over 100% - use .disableHttp5xxPercentThreshold() to disable this alert")
@@ -129,6 +129,10 @@ case class AlertConfigBuilder(
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold): AlertConfigBuilder = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {
       throw new Exception("withHttp90PercentileResponseTimeThreshold has already been defined for this microservice")
+    } else if (threshold.timePeriod < 0 || threshold.timePeriod > 15) {
+      println(Console.CYAN + s" = ${threshold}" + Console.RESET)
+      throw new Exception(
+        s"withHttp90PercentileResponseTimeThreshold timePeriod '${threshold.timePeriod}' needs to be in the range 1-15 minutes (inclusive)")
     } else {
       this.copy(http90PercentileResponseTimeThresholds = Seq(threshold))
     }
@@ -377,7 +381,7 @@ case class TeamAlertConfigBuilder(
    *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
-    if (percentThreshold >= 100) {
+    if (percentThreshold > 100) {
       println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
       throw new Exception(
         s"withHttp5xxPercentThreshold percentThreshold '${percentThreshold}' cannot be over 100% - use .disableHttp5xxPercentThreshold() to disable this alert")
