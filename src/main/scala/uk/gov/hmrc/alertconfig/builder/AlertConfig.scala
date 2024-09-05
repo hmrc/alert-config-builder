@@ -22,5 +22,5 @@ trait AlertConfig {
   // empty by default to force override
   def environmentConfig: Seq[EnvironmentAlertBuilder]
 
-  implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build
+  implicit def teamAlertConfigToAlertConfigs(config: TeamAlertConfigBuilder): Seq[AlertConfigBuilder] = config.build()
 }

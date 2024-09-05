@@ -23,5 +23,5 @@ package uk.gov.hmrc.alertconfig.builder
   *   The number of container kills to alert on
   */
 case class ContainerKillThreshold(
-    count: Int = Int.MaxValue
+    count: Int
 )

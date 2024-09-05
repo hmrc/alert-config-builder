@@ -21,5 +21,5 @@ package uk.gov.hmrc.alertconfig.builder
   *   The average percentage CPU used by all instances of your microservice
   */
 case class AverageCPUThreshold(
-    count: Int = Int.MaxValue
+    count: Int
 )

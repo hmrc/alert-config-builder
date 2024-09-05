@@ -17,5 +17,5 @@
 package uk.gov.hmrc.alertconfig.builder
 
 case class ErrorsLoggedThreshold(
-    count: Int = Int.MaxValue
+    count: Int
 )

@@ -23,6 +23,6 @@ package uk.gov.hmrc.alertconfig.builder
   *   Whether to raise the alert as critical or warning
   */
 case class Http5xxThreshold(
-    count: Int = Int.MaxValue,
+    count: Int,
     severity: AlertSeverity = AlertSeverity.Critical
 )
