@@ -155,7 +155,7 @@ object AlertsYamlBuilder {
   }
 
   private def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Option[Http5xxPercentThreshold]): Option[YamlHttp5xxPercentThresholdAlert] = {
-    http5xxPercentThreshold.filter(_.percentage <= 100.0).map(threshold => YamlHttp5xxPercentThresholdAlert(
+    http5xxPercentThreshold.map(threshold => YamlHttp5xxPercentThresholdAlert(
       percentage = threshold.percentage,
       minimumHttp5xxCountThreshold = threshold.minimumHttp5xxCountThreshold,
       severity = threshold.severity.toString

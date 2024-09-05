@@ -91,7 +91,7 @@ case class AlertConfigBuilder(
   /** This alert will notify when the percentage of http responses returning a 5xx http status code exceeds a given threshold within a 15-minute
     * window.
     *
-    * This alert is enabled by default at 100%, but can be disabled by setting it to >100.
+    * This alert is enabled by default at 100%, but can be disabled by using .disableHttp5xxPercentThreshold().
     *
     * @param percentThreshold
     *   The %age of requests that must be 5xx to trigger the alarm
@@ -110,7 +110,13 @@ case class AlertConfigBuilder(
    *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
-    this.copy(http5xxPercentThreshold = Some(Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity)))
+    if (percentThreshold >= 100) {
+      println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
+      throw new Exception(
+        s"withHttp5xxPercentThreshold percentThreshold '${percentThreshold}' cannot be over 100% - use .disableHttp5xxPercentThreshold() to disable this alert")
+    } else {
+      this.copy(http5xxPercentThreshold = Some(Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity)))
+    }
 
   /** This alert will notify you when the 90th Percentile request time goes above the defined thresholds for the time period specified by the user.
     * @param threshold
@@ -352,7 +358,7 @@ case class TeamAlertConfigBuilder(
   /** This alert will notify when the percentage of http responses returning a 5xx http status code exceeds a given threshold within a 15-minute
     * window.
     *
-    * This alert is enabled by default at 100%, but can be disabled by setting it to >100.
+    * This alert is enabled by default at 100%, but can be disabled by using .disableHttp5xxPercentThreshold().
     *
     * @param percentThreshold
     *   The %age of requests that must be 5xx to trigger the alarm
@@ -371,7 +377,13 @@ case class TeamAlertConfigBuilder(
    *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
   def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
-    this.copy(http5xxPercentThreshold = Some(Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity)))
+    if (percentThreshold >= 100) {
+      println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
+      throw new Exception(
+        s"withHttp5xxPercentThreshold percentThreshold '${percentThreshold}' cannot be over 100% - use .disableHttp5xxPercentThreshold() to disable this alert")
+    } else {
+      this.copy(http5xxPercentThreshold = Some(Http5xxPercentThreshold(percentThreshold, minimumHttp5xxCountThreshold, severity)))
+    }
 
   /** This alert will notify you when the 90th Percentile request time goes above the defined thresholds for the time period specified by the user.
     * @param threshold
