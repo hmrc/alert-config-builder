@@ -26,6 +26,8 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *
   * @param alertName
   *   Name that the alert will be created with
+  * @param alertPerInstance
+  *   Whether to generate multiple alerts if the graphite metric query produces multiple result instances
   * @param pendingPeriodMinutes
   *   Amount of time in minutes that a threshold needs to be breached before the alert fires
   * @param dashboardUri
@@ -62,18 +64,19 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   */
 case class CustomGraphiteMetricAlert(
     alertName: String,
+    alertPerInstance: Boolean = false,
     checkIntervalMinutes: Option[CheckIntervalMinutes] = None,
-    pendingPeriodMinutes: Option[Int] = None,
-    dashboardUri: Option[String],
     dashboardPanelId: Option[Int],
+    dashboardUri: Option[String],
     integrations: Seq[String],
     operator: EvaluationOperator,
+    pendingPeriodMinutes: Option[Int] = None,
     query: String,
-    teamName: String,
+    queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
     reducerFunction: ReducerFunction,
     runbookUrl: Option[String],
     severity: AlertSeverity,
     summary: String,
-    thresholds: EnvironmentThresholds,
-    queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES
+    teamName: String,
+    thresholds: EnvironmentThresholds
 ) extends CustomAlert
