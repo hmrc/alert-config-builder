@@ -30,10 +30,10 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   Whether to generate multiple alerts if the graphite metric query produces multiple result instances
   * @param checkIntervalMinutes
   *   Number of minutes between each check. See [[CheckIntervalMinutes]] for supported values
-  * @param dashboardUri
-  *   Grafana uri to link to. This should just be the uri path and not include the domain
   * @param dashboardPanelId
   *   Specific panel to deep link to that is specific to this alert
+  * @param dashboardUri
+  *   Grafana uri to link to. This should just be the uri path and not include the domain
   * @param integrations
   *   Which PagerDuty integrations to direct this alert to
   * @param operator
