@@ -19,24 +19,7 @@ package uk.gov.hmrc.alertconfig.builder
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.yaml.{
-  Alerts,
-  AlertsYamlBuilder,
-  PagerDuty,
-  YamlAverageCPUThresholdAlert,
-  YamlContainerKillThresholdAlert,
-  YamlErrorsLoggedThresholdAlert,
-  YamlExceptionThresholdAlert,
-  YamlHttp5xxPercentThresholdAlert,
-  YamlHttp5xxThresholdAlert,
-  YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert,
-  YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert,
-  YamlHttpAbsolutePercentSplitThresholdAlert,
-  YamlHttpStatusPercentThresholdAlert,
-  YamlHttpStatusThresholdAlert,
-  YamlHttpTrafficThresholdAlert,
-  YamlTotalHttpRequestThresholdAlert
-}
+import uk.gov.hmrc.alertconfig.builder.yaml._
 
 class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
