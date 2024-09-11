@@ -19,7 +19,24 @@ package uk.gov.hmrc.alertconfig.builder
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.alertconfig.builder.yaml.{Alerts, AlertsYamlBuilder, PagerDuty, YamlAverageCPUThresholdAlert, YamlContainerKillThresholdAlert, YamlErrorsLoggedThresholdAlert, YamlExceptionThresholdAlert, YamlHttp5xxPercentThresholdAlert, YamlHttp5xxThresholdAlert, YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert, YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert, YamlHttpAbsolutePercentSplitThresholdAlert, YamlHttpStatusPercentThresholdAlert, YamlHttpStatusThresholdAlert, YamlHttpTrafficThresholdAlert, YamlTotalHttpRequestThresholdAlert}
+import uk.gov.hmrc.alertconfig.builder.yaml.{
+  Alerts,
+  AlertsYamlBuilder,
+  PagerDuty,
+  YamlAverageCPUThresholdAlert,
+  YamlContainerKillThresholdAlert,
+  YamlErrorsLoggedThresholdAlert,
+  YamlExceptionThresholdAlert,
+  YamlHttp5xxPercentThresholdAlert,
+  YamlHttp5xxThresholdAlert,
+  YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert,
+  YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert,
+  YamlHttpAbsolutePercentSplitThresholdAlert,
+  YamlHttpStatusPercentThresholdAlert,
+  YamlHttpStatusThresholdAlert,
+  YamlHttpTrafficThresholdAlert,
+  YamlTotalHttpRequestThresholdAlert
+}
 
 class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach {
 
@@ -268,13 +285,13 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     }
 
     "configure HttpAbsolutePercentSplitThreshold with given thresholds" in {
-      val percent = 10.2
-      val crossOver = 20
-      val absolute = 30
-      val hysteresis = 1.2
+      val percent       = 10.2
+      val crossOver     = 20
+      val absolute      = 30
+      val hysteresis    = 1.2
       val excludeSpikes = 2
-      val filter = "Some error"
-      val severity = AlertSeverity.Warning
+      val filter        = "Some error"
+      val severity      = AlertSeverity.Warning
 
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq(integration))
         .withHttpAbsolutePercentSplitThreshold(
@@ -305,14 +322,14 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     }
 
     "configure HttpAbsolutePercentSplitDownstreamServiceThreshold with given thresholds" in {
-      val percent = 10.2
-      val crossOver = 20
-      val absolute = 30
-      val hysteresis = 1.2
+      val percent       = 10.2
+      val crossOver     = 20
+      val absolute      = 30
+      val hysteresis    = 1.2
       val excludeSpikes = 2
-      val filter = "Some error"
-      val target = "service.invalid"
-      val severity = AlertSeverity.Warning
+      val filter        = "Some error"
+      val target        = "service.invalid"
+      val severity      = AlertSeverity.Warning
 
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq(integration))
         .withHttpAbsolutePercentSplitDownstreamServiceThreshold(
@@ -335,7 +352,15 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         http5xxPercentThreshold = Some(YamlHttp5xxPercentThresholdAlert(100.0, 0, "critical")),
         httpAbsolutePercentSplitDownstreamServiceThreshold = Some(
           Seq(
-            YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, "warning")
+            YamlHttpAbsolutePercentSplitDownstreamServiceThresholdAlert(
+              percent,
+              crossOver,
+              absolute,
+              hysteresis,
+              excludeSpikes,
+              filter,
+              target,
+              "warning")
           ))
       )
 
@@ -343,14 +368,14 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
     }
 
     "configure HttpAbsolutePercentSplitDownstreamHodThreshold with given thresholds" in {
-      val percent = 10.2
-      val crossOver = 20
-      val absolute = 30
-      val hysteresis = 1.2
+      val percent       = 10.2
+      val crossOver     = 20
+      val absolute      = 30
+      val hysteresis    = 1.2
       val excludeSpikes = 2
-      val filter = "Some error"
-      val target = "hod-endpoint"
-      val severity = AlertSeverity.Warning
+      val filter        = "Some error"
+      val target        = "hod-endpoint"
+      val severity      = AlertSeverity.Warning
 
       val serviceConfig = AlertConfigBuilder("service1", integrations = Seq(integration))
         .withHttpAbsolutePercentSplitDownstreamHodThreshold(
@@ -371,10 +396,9 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
         containerKillThreshold = Some(YamlContainerKillThresholdAlert(1)),
         exceptionThreshold = Some(YamlExceptionThresholdAlert(2, "critical")),
         http5xxPercentThreshold = Some(YamlHttp5xxPercentThresholdAlert(100.0, 0, "critical")),
-        httpAbsolutePercentSplitDownstreamHodThreshold = Some(
-          Seq(
-            YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert(percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, "warning")
-          ))
+        httpAbsolutePercentSplitDownstreamHodThreshold = Some(Seq(
+          YamlHttpAbsolutePercentSplitDownstreamHodThresholdAlert(percent, crossOver, absolute, hysteresis, excludeSpikes, filter, target, "warning")
+        ))
       )
 
       service1Config.alerts shouldBe expected
@@ -582,4 +606,5 @@ class AlertConfigBuilderSpec extends AnyWordSpec with Matchers with BeforeAndAft
       service1Config.alerts shouldBe expected
     }
   }
+
 }

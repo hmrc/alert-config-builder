@@ -57,7 +57,8 @@ object CustomAlertConfigYamlBuilder {
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
-    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customElasticsearchAlerts, CustomElasticsearchPercentageAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
+    val separatedAlerts = CustomAlertsTopLevel(
+      CustomAlerts(customElasticsearchAlerts, CustomElasticsearchPercentageAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }

@@ -53,7 +53,7 @@ case class AlertConfigBuilder(
     *   The number of logs at ERROR level that this alert will trigger on
     * @return
     * @example
-    * <pre> <pre>.withErrorsLoggedThreshold(5) # alert when 5 logs at ERROR level are logged in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withErrorsLoggedThreshold(5) # alert when 5 logs at ERROR level are logged in a 15-minute window </pre> </pre>
     */
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int): AlertConfigBuilder =
     this.copy(errorsLoggedThreshold = Some(ErrorsLoggedThreshold(errorsLoggedThreshold)))
@@ -66,7 +66,7 @@ case class AlertConfigBuilder(
     *   The number of exceptions thrown that this alert will trigger on
     * @return
     * @example
-    * <pre> <pre>.withExceptionThreshold(count: Int, severity: AlertSeverity &#61; AlertSeverity.Critical) </pre> </pre>
+    *   <pre> <pre>.withExceptionThreshold(count: Int, severity: AlertSeverity &#61; AlertSeverity.Critical) </pre> </pre>
     */
   def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
     this.copy(exceptionThreshold = Some(ExceptionThreshold(exceptionThreshold, severity)))
@@ -79,8 +79,8 @@ case class AlertConfigBuilder(
     *   Whether to raise the alert as critical or warning
     * @return
     * @example
-    * <pre> <pre>.withHttp5xxThreshold(5) # alert when 5 requests return a 5xx status code in a 15-minute window .withHttp5xxThreshold(5,
-   *  AlertSeverity.Warning) # raise a warning alert when 5 requests return a 5xx status code in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withHttp5xxThreshold(5) # alert when 5 requests return a 5xx status code in a 15-minute window .withHttp5xxThreshold(5,
+    *   AlertSeverity.Warning) # raise a warning alert when 5 requests return a 5xx status code in a 15-minute window </pre> </pre>
     */
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
     this.copy(http5xxThreshold = Some(Http5xxThreshold(http5xxThreshold, severity)))
@@ -104,12 +104,14 @@ case class AlertConfigBuilder(
     * @return
     *   Configured threshold object
     * @example
-    * <pre> <pre>.withHttp5xxPercentThreshold(25.0) # alert when 25% of all requests return a 5xx status code in a 15-minute window
-   *  .withHttp5xxPercentThreshold(25.0, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx status code in a
-   *  15-minute window .withHttp5xxPercentThreshold(25.0, 5, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx
-   *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
+    *   <pre> <pre>.withHttp5xxPercentThreshold(25.0) # alert when 25% of all requests return a 5xx status code in a 15-minute window
+    *   .withHttp5xxPercentThreshold(25.0, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx status code in a
+    *   15-minute window .withHttp5xxPercentThreshold(25.0, 5, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx
+    *   status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
-  def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
+  def withHttp5xxPercentThreshold(percentThreshold: Double,
+                                  minimumHttp5xxCountThreshold: Int = 0,
+                                  severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
     if (percentThreshold > 100) {
       println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
       throw new Exception(
@@ -123,8 +125,8 @@ case class AlertConfigBuilder(
     *   Object representing the response time in milliseconds above which alerts will be raised at given severities for a given time period
     * @return
     * @example
-    * <pre> <pre>.withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning &#61; Some(1000), critical &#61; Some(2000),
-   *  timePeriod &#61; 7)) </pre> </pre>
+    *   <pre> <pre>.withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning &#61; Some(1000), critical &#61;
+    *   Some(2000), timePeriod &#61; 7)) </pre> </pre>
     */
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold): AlertConfigBuilder = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {
@@ -142,7 +144,8 @@ case class AlertConfigBuilder(
     *   Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, severity
     * @return
     * @example
-    * <pre> <pre>.withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(100.0, Int.MaxValue, 40, 1.0, 2, "status:499")) </pre> </pre>
+    *   <pre> <pre>.withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(100.0, Int.MaxValue, 40, 1.0, 2, "status:499")) </pre>
+    *   </pre>
     */
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold): AlertConfigBuilder =
     this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
@@ -151,18 +154,18 @@ case class AlertConfigBuilder(
     *   Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, target, severity
     * @return
     * @example
-    * <pre> <pre>.withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(10.0, 0, -1, 1.1, 2,
-    *  "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
+    *   <pre> <pre>.withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(10.0, 0, -1, 1.1, 2,
+    *   "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
     */
   def withHttpAbsolutePercentSplitDownstreamServiceThreshold(threshold: HttpAbsolutePercentSplitDownstreamServiceThreshold): AlertConfigBuilder =
     this.copy(httpAbsolutePercentSplitDownstreamServiceThresholds = httpAbsolutePercentSplitDownstreamServiceThresholds :+ threshold)
 
   /** @param threshold
-    * Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, target, severity
+    *   Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, target, severity
     * @return
     * @example
-    * <pre> <pre>.withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(10.0, 0, -1, 1.1, 2,
-    *  "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
+    *   <pre> <pre>.withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(10.0, 0, -1, 1.1, 2,
+    *   "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
     */
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold): AlertConfigBuilder =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
@@ -174,11 +177,11 @@ case class AlertConfigBuilder(
     * @return
     *
     * @example
-    * <pre> <pre>.withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_500, 5)) # alert when 5 occurences of status code 500 in a 15-minute
-   *  window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(501), 5)) # alert when 5 occurences of status code 501 in a 15-minute window
-   *  .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_502, 5, AlertSeverity.Warning)) # raise a warning alert when 5 occurences of status
-   *  code 502 in a 15-minute window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_503, 5, AlertSeverity.Warning, httpMethod.Post)) #
-   *  raise a warning alert when 5 occurences of Post requests with response status code 503 in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_500, 5)) # alert when 5 occurences of status code 500 in a 15-minute
+    *   window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(501), 5)) # alert when 5 occurences of status code 501 in a 15-minute window
+    *   .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_502, 5, AlertSeverity.Warning)) # raise a warning alert when 5 occurences of status
+    *   code 502 in a 15-minute window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_503, 5, AlertSeverity.Warning, httpMethod.Post)) #
+    *   raise a warning alert when 5 occurences of Post requests with response status code 503 in a 15-minute window </pre> </pre>
     */
   def withHttpStatusThreshold(threshold: HttpStatusThreshold): AlertConfigBuilder =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
@@ -188,12 +191,11 @@ case class AlertConfigBuilder(
     * One or both of warning and critical must be given.
     *
     * @param threshold
-    * Object with fields warning, critical and maxMinutesBelowThreshold
+    *   Object with fields warning, critical and maxMinutesBelowThreshold
     * @return
     * @example
-    * <pre> <pre>.withHttpTrafficThreshold(HttpTrafficThreshold(10, 5, 15)) # alert with a warning when less than 10
-    * requests or critical when less than 5 requests are received in a 15-minute
-    * </pre>
+    *   <pre> <pre>.withHttpTrafficThreshold(HttpTrafficThreshold(10, 5, 15)) # alert with a warning when less than 10 requests or critical when less
+    *   than 5 requests are received in a 15-minute </pre>
     */
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold): AlertConfigBuilder = {
     if (httpTrafficThresholds.nonEmpty) {
@@ -206,13 +208,13 @@ case class AlertConfigBuilder(
   /** This alert will notify when the percentage of http responses with a given http status code exceeds a given threshold within a 15-minute window.
     *
     * @param threshold
-    * Object with fields httpStatus, percentage, severity and httpMethod
+    *   Object with fields httpStatus, percentage, severity and httpMethod
     * @return
-    * <pre> <pre>.withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_404, 25.0)) # alert when 25% of all requests return status
-    *  code 404 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_500, 25.0)) # alert when 25% of all
-    *  requests return status code 500 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_504, 25.0,
-    *  AlertSeverity.Warning, httpMethod.Post)) # raise a warning alert when 25% of all Post requests return status code 500 in a 15-minute window </pre>
-    * </pre>
+    *   <pre> <pre>.withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_404, 25.0)) # alert when 25% of all requests return status
+    *   code 404 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_500, 25.0)) # alert when 25% of all
+    *   requests return status code 500 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_504, 25.0,
+    *   AlertSeverity.Warning, httpMethod.Post)) # raise a warning alert when 25% of all Post requests return status code 500 in a 15-minute window
+    *   </pre> </pre>
     */
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold): AlertConfigBuilder =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
@@ -227,8 +229,8 @@ case class AlertConfigBuilder(
     * @param containerCrashThreshold
     *   The number of container kills to alert on
     * @return
-    * <pre> <pre>.withContainerKillThreshold(5) # alert if 5 microservice instances are killed with an out-of-memory exception in a 15-minute
-   *  window </pre> </pre>
+    *   <pre> <pre>.withContainerKillThreshold(5) # alert if 5 microservice instances are killed with an out-of-memory exception in a 15-minute window
+    *   </pre> </pre>
     */
   def withContainerKillThreshold(containerCrashThreshold: Int): AlertConfigBuilder =
     this.copy(containerKillThreshold = Some(ContainerKillThreshold(containerCrashThreshold)))
@@ -238,7 +240,7 @@ case class AlertConfigBuilder(
     * @param threshold
     *   The number of all http requests to alert on
     * @return
-    * <pre> <pre>.withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window </pre> </pre>
     */
   def withTotalHttpRequestThreshold(threshold: Int): AlertConfigBuilder =
     this.copy(totalHttpRequestThreshold = Some(TotalHttpRequestThreshold(threshold)))
@@ -253,13 +255,16 @@ case class AlertConfigBuilder(
     * @param severity
     *   The severity to set for this check in PagerDuty
     * @return
-    * <pre> <pre>.withLogMessageThreshold("Custom logs", 5) // occurrences of a specific log message in a 15-minute window
-   *  .withLogMessageThreshold("heartbeat", 4, lessThanMode&#61;true) // triggers if a specific log message appears less than 4 times in a 15-minute
-   *  window .withLogMessageThreshold("MY_LOG_MESSAGE", 10, severity &#61; AlertSeverity.Warning) // Raise warning alert in PagerDuty after 10 logs
-   *  containing &#96;MY_LOG_MESSAGE&#96; are detected .withLogMessageThreshold("MY_LOG_MESSAGE", 2) // Raise an alert when a service generates two or more
-   *  logs containing the specified MY_LOG_MESSAGE within a 15-minute timeframe. </pre>
+    *   <pre> <pre>.withLogMessageThreshold("Custom logs", 5) // occurrences of a specific log message in a 15-minute window
+    *   .withLogMessageThreshold("heartbeat", 4, lessThanMode&#61;true) // triggers if a specific log message appears less than 4 times in a 15-minute
+    *   window .withLogMessageThreshold("MY_LOG_MESSAGE", 10, severity &#61; AlertSeverity.Warning) // Raise warning alert in PagerDuty after 10 logs
+    *   containing &#96;MY_LOG_MESSAGE&#96; are detected .withLogMessageThreshold("MY_LOG_MESSAGE", 2) // Raise an alert when a service generates two
+    *   or more logs containing the specified MY_LOG_MESSAGE within a 15-minute timeframe. </pre>
     */
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false, severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
+  def withLogMessageThreshold(message: String,
+                              threshold: Int,
+                              lessThanMode: Boolean = false,
+                              severity: AlertSeverity = AlertSeverity.Critical): AlertConfigBuilder =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
 
   /** This alert will notify when the average CPU used by all instances of your microservice exceeds a given threshold within a 5-minute window.
@@ -268,8 +273,8 @@ case class AlertConfigBuilder(
     *   The average percentage CPU used by all instances of your microservice
     * @return
     * @example
-    * <pre> <pre>.withAverageCPUThreshold(50) # alert if average CPU usage across all microservice instances is above 50% for the last 15 minutes
-   *  </pre> </pre>
+    *   <pre> <pre>.withAverageCPUThreshold(50) # alert if average CPU usage across all microservice instances is above 50% for the last 15 minutes
+    *   </pre> </pre>
     */
   def withAverageCPUThreshold(averageCPUThreshold: Int): AlertConfigBuilder =
     this.copy(averageCPUThreshold = Some(AverageCPUThreshold(averageCPUThreshold)))
@@ -324,7 +329,7 @@ case class TeamAlertConfigBuilder(
     *   The number of logs at ERROR level that this alert will trigger on
     * @return
     * @example
-    * <pre> <pre>.withErrorsLoggedThreshold(5) # alert when 5 logs at ERROR level are logged in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withErrorsLoggedThreshold(5) # alert when 5 logs at ERROR level are logged in a 15-minute window </pre> </pre>
     */
   def withErrorsLoggedThreshold(errorsLoggedThreshold: Int): TeamAlertConfigBuilder =
     this.copy(errorsLoggedThreshold = Some(ErrorsLoggedThreshold(errorsLoggedThreshold)))
@@ -337,7 +342,7 @@ case class TeamAlertConfigBuilder(
     *   The number of exceptions thrown that this alert will trigger on
     * @return
     * @example
-    * <pre> <pre>.withExceptionThreshold(count: Int, severity: AlertSeverity &#61; AlertSeverity.Critical) </pre> </pre>
+    *   <pre> <pre>.withExceptionThreshold(count: Int, severity: AlertSeverity &#61; AlertSeverity.Critical) </pre> </pre>
     */
   def withExceptionThreshold(exceptionThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
     this.copy(exceptionThreshold = Some(ExceptionThreshold(exceptionThreshold, severity)))
@@ -350,8 +355,8 @@ case class TeamAlertConfigBuilder(
     *   Whether to raise the alert as critical or warning
     * @return
     * @example
-    * <pre> <pre>.withHttp5xxThreshold(5) # alert when 5 requests return a 5xx status code in a 15-minute window .withHttp5xxThreshold(5,
-   *  AlertSeverity.Warning) # raise a warning alert when 5 requests return a 5xx status code in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withHttp5xxThreshold(5) # alert when 5 requests return a 5xx status code in a 15-minute window .withHttp5xxThreshold(5,
+    *   AlertSeverity.Warning) # raise a warning alert when 5 requests return a 5xx status code in a 15-minute window </pre> </pre>
     */
   def withHttp5xxThreshold(http5xxThreshold: Int, severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
     this.copy(http5xxThreshold = Some(Http5xxThreshold(http5xxThreshold, severity)))
@@ -375,12 +380,14 @@ case class TeamAlertConfigBuilder(
     * @return
     *   Configured threshold object
     * @example
-    * <pre> <pre>.withHttp5xxPercentThreshold(25.0) # alert when 25% of all requests return a 5xx status code in a 15-minute window
-   *  .withHttp5xxPercentThreshold(25.0, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx status code in a
-   *  15-minute window .withHttp5xxPercentThreshold(25.0, 5, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx
-   *  status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
+    *   <pre> <pre>.withHttp5xxPercentThreshold(25.0) # alert when 25% of all requests return a 5xx status code in a 15-minute window
+    *   .withHttp5xxPercentThreshold(25.0, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx status code in a
+    *   15-minute window .withHttp5xxPercentThreshold(25.0, 5, AlertSeverity.Warning) # raise a warning alert when 25% of all requests return a 5xx
+    *   status code in a 15-minute window, where there are at least 5 total 5xx status codes observed in the time window </pre> </pre>
     */
-  def withHttp5xxPercentThreshold(percentThreshold: Double, minimumHttp5xxCountThreshold: Int = 0, severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
+  def withHttp5xxPercentThreshold(percentThreshold: Double,
+                                  minimumHttp5xxCountThreshold: Int = 0,
+                                  severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
     if (percentThreshold > 100) {
       println(Console.CYAN + s" = ${percentThreshold}" + Console.RESET)
       throw new Exception(
@@ -394,8 +401,8 @@ case class TeamAlertConfigBuilder(
     *   Object representing the response time in milliseconds above which alerts will be raised at given severities for a given time period
     * @return
     * @example
-    * <pre> <pre>.withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning &#61; Some(1000), critical &#61; Some(2000),
-   *  timePeriod &#61; 7)) </pre> </pre>
+    *   <pre> <pre>.withHttp90PercentileResponseTimeThreshold(Http90PercentileResponseTimeThreshold(warning &#61; Some(1000), critical &#61;
+    *   Some(2000), timePeriod &#61; 7)) </pre> </pre>
     */
   def withHttp90PercentileResponseTimeThreshold(threshold: Http90PercentileResponseTimeThreshold): TeamAlertConfigBuilder = {
     if (http90PercentileResponseTimeThresholds.nonEmpty) {
@@ -413,28 +420,29 @@ case class TeamAlertConfigBuilder(
     *   Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, severity
     * @return
     * @example
-    * <pre> <pre>.withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(100.0, Int.MaxValue, 40, 1.0, 2, "status:499")) </pre> </pre>
+    *   <pre> <pre>.withHttpAbsolutePercentSplitThreshold(HttpAbsolutePercentSplitThreshold(100.0, Int.MaxValue, 40, 1.0, 2, "status:499")) </pre>
+    *   </pre>
     */
   def withHttpAbsolutePercentSplitThreshold(threshold: HttpAbsolutePercentSplitThreshold): TeamAlertConfigBuilder =
     this.copy(httpAbsolutePercentSplitThresholds = httpAbsolutePercentSplitThresholds :+ threshold)
 
   /** @param threshold
-   * Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, target, severity
-   * @return
-   * @example
-   * <pre> <pre>.withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(10.0, 0, -1, 1.1, 2,
-   * "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
-   */
+    *   Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, target, severity
+    * @return
+    * @example
+    *   <pre> <pre>.withHttpAbsolutePercentSplitDownstreamServiceThreshold(HttpAbsolutePercentSplitDownstreamServiceThreshold(10.0, 0, -1, 1.1, 2,
+    *   "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
+    */
   def withHttpAbsolutePercentSplitDownstreamServiceThreshold(threshold: HttpAbsolutePercentSplitDownstreamServiceThreshold): TeamAlertConfigBuilder =
     this.copy(httpAbsolutePercentSplitDownstreamServiceThresholds = httpAbsolutePercentSplitDownstreamServiceThresholds :+ threshold)
 
   /** @param threshold
-   * Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, target, severity
-   * @return
-   * @example
-   * <pre> <pre>.withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(10.0, 0, -1, 1.1, 2,
-   * "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
-   */
+    *   Object with fields percentThreshold, crossover, absoluteThreshold, hysteresis, excludeSpikes, errorFilter, target, severity
+    * @return
+    * @example
+    *   <pre> <pre>.withHttpAbsolutePercentSplitDownstreamHodThreshold(HttpAbsolutePercentSplitDownstreamHodThreshold(10.0, 0, -1, 1.1, 2,
+    *   "status:>498", "nps-hod-service",AlertSeverity.Critical)) </pre> </pre>
+    */
   def withHttpAbsolutePercentSplitDownstreamHodThreshold(threshold: HttpAbsolutePercentSplitDownstreamHodThreshold): TeamAlertConfigBuilder =
     this.copy(httpAbsolutePercentSplitDownstreamHodThresholds = httpAbsolutePercentSplitDownstreamHodThresholds :+ threshold)
 
@@ -448,8 +456,8 @@ case class TeamAlertConfigBuilder(
     * @param containerKillThreshold
     *   The number of container kills to alert on
     * @return
-    * <pre> <pre>.withContainerKillThreshold(5) # alert if 5 microservice instances are killed with an out-of-memory exception in a 15-minute
-   *  window </pre> </pre>
+    *   <pre> <pre>.withContainerKillThreshold(5) # alert if 5 microservice instances are killed with an out-of-memory exception in a 15-minute window
+    *   </pre> </pre>
     */
   def withContainerKillThreshold(containerKillThreshold: Int): TeamAlertConfigBuilder =
     this.copy(containerKillThreshold = Some(ContainerKillThreshold(containerKillThreshold)))
@@ -462,9 +470,8 @@ case class TeamAlertConfigBuilder(
     *   Object with fields warning, critical and maxMinutesBelowThreshold
     * @return
     * @example
-    * <pre> <pre>.withHttpTrafficThreshold(HttpTrafficThreshold(10, 5, 15)) # alert with a warning when less than 10
-    * requests or critical when less than 5 requests are received in a 15-minute
-    * </pre>
+    *   <pre> <pre>.withHttpTrafficThreshold(HttpTrafficThreshold(10, 5, 15)) # alert with a warning when less than 10 requests or critical when less
+    *   than 5 requests are received in a 15-minute </pre>
     */
   def withHttpTrafficThreshold(threshold: HttpTrafficThreshold): TeamAlertConfigBuilder = {
     if (httpTrafficThresholds.nonEmpty) {
@@ -481,11 +488,11 @@ case class TeamAlertConfigBuilder(
     * @return
     *
     * @example
-    * <pre> <pre>.withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_500, 5)) # alert when 5 occurences of status code 500 in a 15-minute
-   *  window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(501), 5)) # alert when 5 occurences of status code 501 in a 15-minute window
-   *  .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_502, 5, AlertSeverity.Warning)) # raise a warning alert when 5 occurences of status
-   *  code 502 in a 15-minute window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_503, 5, AlertSeverity.Warning, httpMethod.Post)) #
-   *  raise a warning alert when 5 occurences of Post requests with response status code 503 in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_500, 5)) # alert when 5 occurences of status code 500 in a 15-minute
+    *   window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS(501), 5)) # alert when 5 occurences of status code 501 in a 15-minute window
+    *   .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_502, 5, AlertSeverity.Warning)) # raise a warning alert when 5 occurences of status
+    *   code 502 in a 15-minute window .withHttpStatusThreshold(HttpStatusThreshold(HTTP_STATUS_503, 5, AlertSeverity.Warning, httpMethod.Post)) #
+    *   raise a warning alert when 5 occurences of Post requests with response status code 503 in a 15-minute window </pre> </pre>
     */
   def withHttpStatusThreshold(threshold: HttpStatusThreshold): TeamAlertConfigBuilder =
     this.copy(httpStatusThresholds = httpStatusThresholds :+ threshold)
@@ -495,11 +502,11 @@ case class TeamAlertConfigBuilder(
     * @param threshold
     *   Object with fields httpStatus, percentage, severity and httpMethod
     * @return
-    * <pre> <pre>.withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_404, 25.0)) # alert when 25% of all requests return status
-   *  code 404 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_500, 25.0)) # alert when 25% of all
-   *  requests return status code 500 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_504, 25.0,
-   *  AlertSeverity.Warning, httpMethod.Post)) # raise a warning alert when 25% of all Post requests return status code 500 in a 15-minute window </pre>
-    * </pre>
+    *   <pre> <pre>.withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_404, 25.0)) # alert when 25% of all requests return status
+    *   code 404 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_500, 25.0)) # alert when 25% of all
+    *   requests return status code 500 in a 15-minute window .withHttpStatusPercentThreshold(HttpStatusPercentThreshold(HTTP_STATUS_504, 25.0,
+    *   AlertSeverity.Warning, httpMethod.Post)) # raise a warning alert when 25% of all Post requests return status code 500 in a 15-minute window
+    *   </pre> </pre>
     */
   def withHttpStatusPercentThreshold(threshold: HttpStatusPercentThreshold): TeamAlertConfigBuilder =
     this.copy(httpStatusPercentThresholds = httpStatusPercentThresholds :+ threshold)
@@ -509,7 +516,7 @@ case class TeamAlertConfigBuilder(
     * @param threshold
     *   The number of all http requests to alert on
     * @return
-    * <pre> <pre>.withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window </pre> </pre>
+    *   <pre> <pre>.withTotalHttpRequestThreshold(1000) # alert when 1000 requests are received in a 15-minute window </pre> </pre>
     */
   def withTotalHttpRequestThreshold(threshold: Int): TeamAlertConfigBuilder =
     this.copy(totalHttpRequestThreshold = Some(TotalHttpRequestThreshold(threshold)))
@@ -524,13 +531,16 @@ case class TeamAlertConfigBuilder(
     * @param severity
     *   The severity to set for this check in PagerDuty
     * @return
-    * <pre> <pre>.withLogMessageThreshold("Custom logs", 5) // occurrences of a specific log message in a 15-minute window
-   *  .withLogMessageThreshold("heartbeat", 4, lessThanMode&#61;true) // triggers if a specific log message appears less than 4 times in a 15-minute
-   *  window .withLogMessageThreshold("MY_LOG_MESSAGE", 10, severity &#61; AlertSeverity.Warning) // Raise warning alert in PagerDuty after 10 logs
-   *  containing &#96;MY_LOG_MESSAGE&#96; are detected .withLogMessageThreshold("MY_LOG_MESSAGE", 2) // Raise an alert when a service generates two or more
-   *  logs containing the specified MY_LOG_MESSAGE within a 15-minute timeframe. </pre>
+    *   <pre> <pre>.withLogMessageThreshold("Custom logs", 5) // occurrences of a specific log message in a 15-minute window
+    *   .withLogMessageThreshold("heartbeat", 4, lessThanMode&#61;true) // triggers if a specific log message appears less than 4 times in a 15-minute
+    *   window .withLogMessageThreshold("MY_LOG_MESSAGE", 10, severity &#61; AlertSeverity.Warning) // Raise warning alert in PagerDuty after 10 logs
+    *   containing &#96;MY_LOG_MESSAGE&#96; are detected .withLogMessageThreshold("MY_LOG_MESSAGE", 2) // Raise an alert when a service generates two
+    *   or more logs containing the specified MY_LOG_MESSAGE within a 15-minute timeframe. </pre>
     */
-  def withLogMessageThreshold(message: String, threshold: Int, lessThanMode: Boolean = false, severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
+  def withLogMessageThreshold(message: String,
+                              threshold: Int,
+                              lessThanMode: Boolean = false,
+                              severity: AlertSeverity = AlertSeverity.Critical): TeamAlertConfigBuilder =
     this.copy(logMessageThresholds = logMessageThresholds :+ LogMessageThreshold(message, threshold, lessThanMode, severity))
 
   /** This alert will notify when the average CPU used by all instances of your microservice exceeds a given threshold within a 5-minute window.
@@ -539,8 +549,8 @@ case class TeamAlertConfigBuilder(
     *   The average percentage CPU used by all instances of your microservice
     * @return
     * @example
-    * <pre> <pre>.withAverageCPUThreshold(50) # alert if average CPU usage across all microservice instances is above 50% for the last 15 minutes
-   *  </pre> </pre>
+    *   <pre> <pre>.withAverageCPUThreshold(50) # alert if average CPU usage across all microservice instances is above 50% for the last 15 minutes
+    *   </pre> </pre>
     */
   def withAverageCPUThreshold(averageCPUThreshold: Int): TeamAlertConfigBuilder =
     this.copy(averageCPUThreshold = Some(AverageCPUThreshold(averageCPUThreshold)))

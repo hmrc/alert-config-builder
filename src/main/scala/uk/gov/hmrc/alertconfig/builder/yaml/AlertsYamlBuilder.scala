@@ -148,25 +148,28 @@ object AlertsYamlBuilder {
   }
 
   private def convertExceptionThreshold(exceptionThreshold: Option[ExceptionThreshold]): Option[YamlExceptionThresholdAlert] = {
-    exceptionThreshold.map(threshold => YamlExceptionThresholdAlert(
-      count = threshold.count,
-      severity = threshold.severity.toString
-    ))
+    exceptionThreshold.map(threshold =>
+      YamlExceptionThresholdAlert(
+        count = threshold.count,
+        severity = threshold.severity.toString
+      ))
   }
 
   private def convertHttp5xxPercentThresholds(http5xxPercentThreshold: Option[Http5xxPercentThreshold]): Option[YamlHttp5xxPercentThresholdAlert] = {
-    http5xxPercentThreshold.map(threshold => YamlHttp5xxPercentThresholdAlert(
-      percentage = threshold.percentage,
-      minimumHttp5xxCountThreshold = threshold.minimumHttp5xxCountThreshold,
-      severity = threshold.severity.toString
-    ))
+    http5xxPercentThreshold.map(threshold =>
+      YamlHttp5xxPercentThresholdAlert(
+        percentage = threshold.percentage,
+        minimumHttp5xxCountThreshold = threshold.minimumHttp5xxCountThreshold,
+        severity = threshold.severity.toString
+      ))
   }
 
   private def convertHttp5xxThreshold(http5xxThreshold: Option[Http5xxThreshold]): Option[YamlHttp5xxThresholdAlert] = {
-    http5xxThreshold.map(threshold => YamlHttp5xxThresholdAlert(
-      count = threshold.count,
-      severity = threshold.severity.toString
-    ))
+    http5xxThreshold.map(threshold =>
+      YamlHttp5xxThresholdAlert(
+        count = threshold.count,
+        severity = threshold.severity.toString
+      ))
   }
 
   private def convertHttpAbsolutePercentSplitThresholdAlert(
@@ -286,9 +289,9 @@ object AlertsYamlBuilder {
     Option.when(converted.nonEmpty)(converted)
   }
 
-  private def convertTotalHttpRequestThreshold(totalHttpRequestThreshold: Option[TotalHttpRequestThreshold]): Option[YamlTotalHttpRequestThresholdAlert] = {
-    totalHttpRequestThreshold.map(threshold =>
-      YamlTotalHttpRequestThresholdAlert(threshold.count))
+  private def convertTotalHttpRequestThreshold(
+      totalHttpRequestThreshold: Option[TotalHttpRequestThreshold]): Option[YamlTotalHttpRequestThresholdAlert] = {
+    totalHttpRequestThreshold.map(threshold => YamlTotalHttpRequestThresholdAlert(threshold.count))
   }
 
   private def convertMetricsThreshold(metricsThreshold: Seq[MetricsThreshold]): Option[Seq[YamlMetricsThresholdAlert]] = {
