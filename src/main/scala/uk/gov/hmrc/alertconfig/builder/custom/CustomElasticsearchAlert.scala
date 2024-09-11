@@ -22,7 +22,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOpera
 import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
 import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinutes
 
-/** CloudWatch metrics based alert.
+/** Elasticsearch logs based alert.
   *
   * @param alertName
   *   Name that the alert will be created with
