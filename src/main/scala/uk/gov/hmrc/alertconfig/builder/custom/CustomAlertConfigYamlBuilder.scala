@@ -26,7 +26,7 @@ case class CustomAlertsTopLevel(alerts: CustomAlerts)
 case class CustomAlerts(
     customElasticsearchAlerts: Seq[CustomElasticsearchAlert],
     customElasticsearchPercentageAlerts: Seq[CustomElasticsearchPercentageAlert],
-    customElasticsearchPercentageSplitAlert: Seq[CustomElasticsearchPercentageSplitAlert],
+    customElasticsearchPercentageSplitAlerts: Seq[CustomElasticsearchPercentageSplitAlert],
     customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert],
     customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
 )
@@ -64,7 +64,7 @@ object CustomAlertConfigYamlBuilder {
       }
 
     val separatedAlerts = CustomAlertsTopLevel(
-      CustomAlerts(customElasticsearchAlerts, customElasticsearchPercentageAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
+      CustomAlerts(customElasticsearchAlerts, customElasticsearchPercentageAlerts, customElasticsearchPercentageSplitAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
