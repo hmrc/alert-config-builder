@@ -55,15 +55,15 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   */
 case class CustomElasticsearchPercentageAlert(
     alertName: String,
-    checkIntervalMinutes: CheckIntervalMinutes = CheckIntervalMinutes.TWO_MINUTES,
+    checkIntervalMinutes: Option[CheckIntervalMinutes] = None,
     integrations: Seq[String],
-    kibanaDashboardUri: Option[String],
+    kibanaDashboardUri: Option[String] = None,
     luceneQuerySubset: String,
     luceneQueryTotal: String,
     operator: EvaluationOperator = EvaluationOperator.GREATER_THAN,
     pendingPeriodMinutes: Option[Int] = None,
     queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
-    runbookUrl: Option[String],
+    runbookUrl: Option[String] = None,
     severity: AlertSeverity,
     summary: String,
     teamName: String,
