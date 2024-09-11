@@ -20,6 +20,7 @@ import uk.gov.hmrc.alertconfig.builder.custom.CheckIntervalMinutes.CheckInterval
 import uk.gov.hmrc.alertconfig.builder.custom.CustomAlertSeverity.AlertSeverity
 import uk.gov.hmrc.alertconfig.builder.custom.EvaluationOperator.EvaluationOperator
 import uk.gov.hmrc.alertconfig.builder.custom.ReducerFunction.ReducerFunction
+import uk.gov.hmrc.alertconfig.builder.custom.ThresholdType.ThresholdType
 import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinutes
 
 /** CloudWatch metrics based alert.
@@ -58,19 +59,19 @@ import uk.gov.hmrc.alertconfig.builder.custom.TimeRangeAsMinutes.TimeRangeAsMinu
   *   The sample period to check data for. If you set it to FIVE_MINUTES, the alert check will evaluate data starting from 6 minutes ago until one
   *   minute ago (so that only fully shipped metrics are evaluated).
   */
-case class CustomElasticsearchAlert(
+case class CustomElasticsearchPercentageAlert(
     alertName: String,
-    checkIntervalMinutes: Option[CheckIntervalMinutes] = None,
-    pendingPeriodMinutes: Option[Int] = None,
-    kibanaDashboardUri: Option[String] = None,
+    checkIntervalMinutes: CheckIntervalMinutes = CheckIntervalMinutes.TWO_MINUTES,
     integrations: Seq[String],
-    luceneQuery: String,
-    operator: EvaluationOperator,
-    reducerFunction: ReducerFunction,
+    kibanaDashboardUri: Option[String] = None,
+    luceneQuerySubset: String,
+    luceneQueryTotal: String,
+    operator: EvaluationOperator = EvaluationOperator.GREATER_THAN,
+    pendingPeriodMinutes: Option[Int] = None,
+    queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES,
     runbookUrl: Option[String] = None,
     severity: AlertSeverity,
     summary: String,
     teamName: String,
-    thresholds: EnvironmentThresholds,
-    queryTimeRangeMinutes: TimeRangeAsMinutes = TimeRangeAsMinutes.FIFTEEN_MINUTES
+    thresholds: EnvironmentThresholds
 ) extends CustomAlert
