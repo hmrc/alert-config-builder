@@ -26,6 +26,7 @@ case class CustomAlertsTopLevel(alerts: CustomAlerts)
 case class CustomAlerts(
     customElasticsearchAlerts: Seq[CustomElasticsearchAlert],
     customElasticsearchPercentageAlerts: Seq[CustomElasticsearchPercentageAlert],
+    customElasticsearchPercentageSplitAlert: Seq[CustomElasticsearchPercentageSplitAlert],
     customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert],
     customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
 )
@@ -44,6 +45,11 @@ object CustomAlertConfigYamlBuilder {
 
     val customElasticsearchPercentageAlerts: Seq[CustomElasticsearchPercentageAlert] = activeAlerts
       .collect { case alert: CustomElasticsearchPercentageAlert =>
+        alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
+      }
+
+    val customElasticsearchPercentageSplitAlerts: Seq[CustomElasticsearchPercentageSplitAlert] = activeAlerts
+      .collect { case alert: CustomElasticsearchPercentageSplitAlert =>
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
@@ -94,10 +100,11 @@ object CustomAlertConfigYamlBuilder {
     */
   private def isAlertDefinedForEnv(alert: CustomAlert, currentEnvironment: Environment): Boolean = {
     alert match {
-      case alert: CustomCloudWatchMetricAlert        => alert.thresholds.isEnvironmentDefined(currentEnvironment)
-      case alert: CustomElasticsearchAlert           => alert.thresholds.isEnvironmentDefined(currentEnvironment)
-      case alert: CustomElasticsearchPercentageAlert => alert.thresholds.isEnvironmentDefined(currentEnvironment)
-      case alert: CustomGraphiteMetricAlert          => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomCloudWatchMetricAlert             => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomElasticsearchAlert                => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomElasticsearchPercentageAlert      => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomElasticsearchPercentageSplitAlert => alert.thresholds.isEnvironmentDefined(currentEnvironment)
+      case alert: CustomGraphiteMetricAlert               => alert.thresholds.isEnvironmentDefined(currentEnvironment)
       case other => throw new IllegalArgumentException(s"isAlertDefinedForEnv is not defined for ${other.getClass.getSimpleName}. Please update it.")
     }
   }
@@ -128,10 +135,11 @@ object CustomAlertConfigYamlBuilder {
     */
   private def updateIntegrationsForCustomAlert(customAlert: CustomAlert, enabledIntegrations: Seq[String]): CustomAlert = {
     customAlert match {
-      case alert: CustomCloudWatchMetricAlert        => alert.copy(integrations = enabledIntegrations)
-      case alert: CustomElasticsearchAlert           => alert.copy(integrations = enabledIntegrations)
-      case alert: CustomElasticsearchPercentageAlert => alert.copy(integrations = enabledIntegrations)
-      case alert: CustomGraphiteMetricAlert          => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomCloudWatchMetricAlert             => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomElasticsearchAlert                => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomElasticsearchPercentageAlert      => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomElasticsearchPercentageSplitAlert => alert.copy(integrations = enabledIntegrations)
+      case alert: CustomGraphiteMetricAlert               => alert.copy(integrations = enabledIntegrations)
       case other => throw new IllegalArgumentException(s"Unsupported CustomAlert type: ${customAlert.getClass.getName}")
     }
   }
