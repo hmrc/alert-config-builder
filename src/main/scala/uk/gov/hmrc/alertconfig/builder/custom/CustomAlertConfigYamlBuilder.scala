@@ -25,6 +25,7 @@ case class CustomAlertsTopLevel(alerts: CustomAlerts)
 
 case class CustomAlerts(
     customElasticsearchAlerts: Seq[CustomElasticsearchAlert],
+    CustomElasticsearchPercentageAlerts: Seq[CustomElasticsearchPercentageAlert],
     customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert],
     customCloudWatchMetricAlerts: Seq[CustomCloudWatchMetricAlert]
 )
@@ -41,6 +42,11 @@ object CustomAlertConfigYamlBuilder {
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
+    val CustomElasticsearchPercentageAlerts: Seq[CustomElasticsearchPercentageAlert] = activeAlerts
+      .collect { case alert: CustomElasticsearchPercentageAlert =>
+        alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
+      }
+
     val customGraphiteMetricAlerts: Seq[CustomGraphiteMetricAlert] = activeAlerts
       .collect { case alert: CustomGraphiteMetricAlert =>
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
@@ -51,7 +57,7 @@ object CustomAlertConfigYamlBuilder {
         alert.copy(thresholds = alert.thresholds.removeAllOtherEnvironmentThresholds(currentEnvironment))
       }
 
-    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customElasticsearchAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
+    val separatedAlerts = CustomAlertsTopLevel(CustomAlerts(customElasticsearchAlerts, CustomElasticsearchPercentageAlerts, customGraphiteMetricAlerts, customCloudWatchMetricAlerts))
 
     mapper.writeValue(saveLocation, separatedAlerts)
   }
