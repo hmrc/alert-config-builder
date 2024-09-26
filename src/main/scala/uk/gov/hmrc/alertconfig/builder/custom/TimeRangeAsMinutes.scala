@@ -25,6 +25,8 @@ object TimeRangeAsMinutes {
   val THREE_MINUTES     = 3
   val FOUR_MINUTES      = 4
   val FIVE_MINUTES      = 5
+  val SIX_MINUTES       = 6
+  val EIGHT_MINUTES     = 8
   val TEN_MINUTES       = 10
   val FIFTEEN_MINUTES   = 15
   val SIXTEEN_MINUTES   = 16
