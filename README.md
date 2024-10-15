@@ -1,5 +1,7 @@
+# alert-config-builder (archive)
 
-# alert-config-builder
+> [!CAUTION]
+> This repository is no longer maintained. It is kept here for reference purposes. All the code in this repository was merged into the [alert-config](https://github.com/hmrc/alert-config) repository on [Monday 14th October 2024](https://github.com/hmrc/alert-config/pull/4012). For any questions please reach out to [#team-telemetry](https://hmrcdigital.slack.com/archives/C5PEKHRHC) in Slack.  
 
 `alert-config-builder` is a Scala utility which, given an alert specification for a number of services, generates and emits JSON alert configuration documents for those services, suitable for indexing in Elasticsearch.
 
